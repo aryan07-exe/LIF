@@ -1,0 +1,43 @@
+.task-form-container {
+    max-width: 500px;
+    margin: auto;
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: #f0f4f8;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .task-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .task-form label {
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+  
+  .task-form input,
+  .task-form select,
+  .task-form textarea {
+    padding: 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-top: 0.3rem;
+  }
+  
+  .task-form button {
+    margin-top: 1.5rem;
+    padding: 0.8rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .task-form button:hover {
+    background-color: #0056b3;
+  }
+  
