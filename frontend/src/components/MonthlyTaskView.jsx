@@ -1,0 +1,184 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+import { Calendar, User, Search, Trash2, Award } from 'lucide-react';
+import './MonthlyTaskView.css';
+
+const MonthlyTaskView = () => {
+  const [tasks, setTasks] = useState([]);
+  const [filters, setFilters] = useState({ 
+    eid: '', 
+    month: new Date().toISOString().slice(0, 7) // Default to current month (YYYY-MM)
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalPoints, setTotalPoints] = useState(0);
+
+  const fetchTasks = async () => {
+    if (!filters.eid) return; // Don't fetch if no EID is provided
+    
+    setIsLoading(true);
+    try {
+      const response = await axios.get('http://localhost:5000/monthly/tasks', { 
+        params: { 
+          eid: filters.eid,
+          month: filters.month
+        } 
+      });
+      
+      setTasks(response.data.tasks);
+      setTotalPoints(response.data.totalPoints);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFilterChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchTasks();
+  };
+
+  const handleClear = () => {
+    setFilters({ 
+      eid: '', 
+      month: new Date().toISOString().slice(0, 7) 
+    });
+    setTasks([]);
+    setTotalPoints(0);
+  };
+
+  const formatDate = (dateInput) => {
+    const date = new Date(dateInput);
+    return date.toLocaleDateString('en-GB');
+  };
+
+  const formatMonthYear = (monthYear) => {
+    const [year, month] = monthYear.split('-');
+    const date = new Date(year, month - 1);
+    return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+  };
+
+  return (
+    <div className="monthly-task-view">
+      <div className="dashboard-header">
+        <h2 className="dashboard-title">Monthly Task Performance</h2>
+      </div>
+
+      <div className="points-summary">
+        <div className="points-card">
+          <Award size={40} className="points-icon" />
+          <div className="points-info">
+            <h3>Total Points for {formatMonthYear(filters.month)}</h3>
+            <p>{totalPoints}</p>
+          </div>
+        </div>
+      </div>
+
+      <form className="filter-form" onSubmit={handleSearch}>
+        <div className="input-group">
+          <div className="form-field">
+            <label htmlFor="eid">
+              <User size={18} className="field-icon" />
+              Employee ID
+            </label>
+            <input
+              type="text"
+              id="eid"
+              name="eid"
+              value={filters.eid}
+              onChange={handleFilterChange}
+              placeholder="Enter employee ID"
+              required
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="month">
+              <Calendar size={18} className="field-icon" />
+              Month
+            </label>
+            <input
+              type="month"
+              id="month"
+              name="month"
+              value={filters.month}
+              onChange={handleFilterChange}
+              required
+            />
+          </div>
+        </div>
+        <div className="button-group">
+          <button type="submit">
+            <Search size={16} style={{ marginRight: '8px' }} />
+            Search
+          </button>
+          <button type="button" className="clear-btn" onClick={handleClear}>
+            <Trash2 size={16} style={{ marginRight: '8px' }} />
+            Clear
+          </button>
+        </div>
+      </form>
+
+      <div className="table-container">
+        {isLoading ? (
+          <div className="loading-spinner">
+            <div className="spinner"></div>
+            <p>Loading tasks...</p>
+          </div>
+        ) : tasks.length > 0 ? (
+          <table className="task-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Project Name</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Points</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tasks.map((task, idx) => (
+                <tr key={idx}>
+                  <td>{formatDate(task.date)}</td>
+                  <td>{task.projectname}</td>
+                  <td>
+                    <span className="project-type-badge">
+                      {task.projecttype}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="status-badge">
+                      {task.projectstatus}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="points-badge">
+                      {task.points || 0}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className="no-tasks-msg">
+            {filters.eid ? (
+              <>
+                <p>No tasks found for Employee {filters.eid} in {formatMonthYear(filters.month)}.</p>
+                <p className="no-tasks-subtitle">Try a different month or employee ID.</p>
+              </>
+            ) : (
+              <p>Enter an Employee ID and select a month to view tasks.</p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default MonthlyTaskView; 

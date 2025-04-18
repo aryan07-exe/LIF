@@ -21,6 +21,11 @@ projectstatus:{
     type:String,
     required:true 
 },
+points: {
+    type: Number,
+    required: true,
+    default: 0
+},
 note:{
     type:String,
     required:false
