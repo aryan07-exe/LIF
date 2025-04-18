@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Camera, Film, Save, X, User, Calendar, FileText, Award, AlertCircle } from 'lucide-react';
 import './TaskForm.css';
 
 const TaskForm = () => {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  
   const [formData, setFormData] = useState({
-    eid: '',
+    eid: user.employeeId || '',
     date: new Date().toISOString().split('T')[0],
     projectname: '',
     projecttype: '',
     projectstatus: '',
-    note: ''
+    notes: ''
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState({ success: false, message: '' });
+  
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const projectTypes = [
     'Reel',
@@ -37,41 +40,39 @@ const TaskForm = () => {
   ];
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    if (e.target.name === 'eid') return; // Prevent manual EID changes
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus({ success: false, message: '' });
+    setMessage('');
+    setError('');
+    setLoading(true);
 
     try {
-      await axios.post('http://localhost:5000/task', formData);
-      setSubmitStatus({
-        success: true,
-        message: 'Task created successfully!'
+      const response = await axios.post('http://localhost:5000/task', formData, {
+        headers: {
+          'Authorization': localStorage.getItem('token')
+        }
       });
-      // Reset form
-      setFormData({
-        eid: '',
-        date: new Date().toISOString().split('T')[0],
+      
+      setMessage('Task submitted successfully!');
+      // Reset form except EID and date
+      setFormData(prev => ({
+        ...prev,
         projectname: '',
         projecttype: '',
         projectstatus: '',
-        note: ''
-      });
-    } catch (error) {
-      console.error('Error creating task:', error);
-      setSubmitStatus({
-        success: false,
-        message: 'Error creating task. Please try again.'
-      });
+        notes: ''
+      }));
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error submitting task');
     } finally {
-      setIsSubmitting(false);
+      setLoading(false);
     }
   };
 
@@ -97,6 +98,23 @@ const TaskForm = () => {
         <div className="header-subtitle">Create New Task</div>
       </motion.div>
 
+      {message && <motion.div 
+        className="success-message"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {message}
+      </motion.div>}
+      {error && <motion.div 
+        className="error-message"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {error}
+      </motion.div>}
+
       <motion.form 
         className="task-form"
         initial={{ opacity: 0 }}
@@ -117,9 +135,8 @@ const TaskForm = () => {
                 id="eid"
                 name="eid"
                 value={formData.eid}
-                onChange={handleChange}
-                required
-                placeholder="Enter employee ID"
+                disabled
+                className="disabled-input"
               />
             </div>
 
@@ -193,14 +210,14 @@ const TaskForm = () => {
             </div>
 
             <div className="form-field full-width">
-              <label htmlFor="note">
+              <label htmlFor="notes">
                 <FileText size={18} className="field-icon" />
                 Notes
               </label>
               <textarea
-                id="note"
-                name="note"
-                value={formData.note}
+                id="notes"
+                name="notes"
+                value={formData.notes}
                 onChange={handleChange}
                 placeholder="Enter any additional notes"
                 rows="3"
@@ -209,27 +226,16 @@ const TaskForm = () => {
           </div>
         </div>
 
-        {submitStatus.message && (
-          <motion.div 
-            className={`status-message ${submitStatus.success ? 'success' : 'error'}`}
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {submitStatus.message}
-          </motion.div>
-        )}
-
         <div className="form-actions">
           <motion.button
             type="submit"
             className="submit-btn"
-            disabled={isSubmitting}
+            disabled={loading}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
             <Save size={18} />
-            <span>{isSubmitting ? 'Submitting...' : 'Create Task'}</span>
+            <span>{loading ? 'Submitting...' : 'Submit Task'}</span>
           </motion.button>
           <motion.button
             type="button"

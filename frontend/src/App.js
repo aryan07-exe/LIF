@@ -1,26 +1,45 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import TaskForm from './components/TaskForm';
 import Monthly from './components/MonthlyTaskView';
 import AdminPanel from './components/AdminPanel';
-//import LoginPage from './components/LoginPage';
+import LoginPage from './components/LoginPage';
+
+const ProtectedRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('token');
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+  
+  return children;
+};
 
 const App = () => {
+  const isAuthenticated = localStorage.getItem('token');
+
   return (
     <Router>
       <div>
-        {/* Simple Navigation Bar */}
-        <nav style={{ padding: '10px', background: '#f5f5f5' }}>
-          <Link to="/" style={{ marginRight: '20px' }}>Submit Task</Link>
-          <Link to="/admin">Admin Panel</Link>
-        </nav>
-
         {/* Define Routes */}
         <Routes>
-          <Route path="/" element={<TaskForm />} />
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/monthly" element={<Monthly />} />
-       
+          <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" />} />
+          <Route path="/" element={
+            <ProtectedRoute>
+              <TaskForm />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <AdminPanel />
+            </ProtectedRoute>
+          } />
+          <Route path="/monthly" element={
+            <ProtectedRoute>
+              <Monthly />
+            </ProtectedRoute>
+          } />
+          <Route path="*" element={<Navigate to={isAuthenticated ? "/" : "/login"} />} />
         </Routes>
       </div>
     </Router>

@@ -8,6 +8,9 @@ require('dotenv').config();
 const Task=require('./models/Task');
 const pointsConfig = require('./config/pointsConfig');
 
+// Import routes
+const authRoutes = require('./routes/auth');
+
 app.use(cors({
     origin: '*',
   }));
@@ -129,6 +132,9 @@ app.get('/tasks/today', async (req, res) => {
     res.status(500).json({ message: 'Error fetching tasks' });
   }
 });
+
+// Routes
+app.use('/api/auth', authRoutes);
 
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`);
