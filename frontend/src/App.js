@@ -23,7 +23,7 @@ const App = () => {
       <div>
         {/* Define Routes */}
         <Routes>
-          <Route path="/login" element={!isAuthenticated ? <LoginPage /> : <Navigate to="/" />} />
+          <Route path="/login"    element={<LoginPage />} />
           <Route path="/" element={
             <ProtectedRoute>
               <TaskForm />

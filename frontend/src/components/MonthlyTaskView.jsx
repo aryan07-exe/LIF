@@ -3,6 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Calendar, User, Search, Trash2, Award } from 'lucide-react';
 import './MonthlyTaskView.css';
+import Navbar from './Navbar';
 
 const MonthlyTaskView = () => {
   const [tasks, setTasks] = useState([]);
@@ -64,120 +65,128 @@ const MonthlyTaskView = () => {
   };
 
   return (
-    <div className="monthly-task-view">
-      <div className="dashboard-header">
-        <h2 className="dashboard-title">Monthly Task Performance</h2>
-      </div>
+    <>
+      <Navbar />
+      <div className="monthly-task-view">
+        <motion.h2 
+          className="dashboard-title"
+          initial={{ scale: 0.9 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          Monthly Task Performance
+        </motion.h2>
 
-      <div className="points-summary">
-        <div className="points-card">
-          <Award size={40} className="points-icon" />
-          <div className="points-info">
-            <h3>Total Points for {formatMonthYear(filters.month)}</h3>
-            <p>{totalPoints}</p>
+        <div className="points-summary">
+          <div className="points-card">
+            <Award size={40} className="points-icon" />
+            <div className="points-info">
+              <h3>Total Points for {formatMonthYear(filters.month)}</h3>
+              <p>{totalPoints}</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <form className="filter-form" onSubmit={handleSearch}>
-        <div className="input-group">
-          <div className="form-field">
-            <label htmlFor="eid">
-              <User size={18} className="field-icon" />
-              Employee ID
-            </label>
-            <input
-              type="text"
-              id="eid"
-              name="eid"
-              value={filters.eid}
-              onChange={handleFilterChange}
-              placeholder="Enter employee ID"
-              required
-            />
+        <form className="filter-form" onSubmit={handleSearch}>
+          <div className="input-group">
+            <div className="form-field">
+              <label htmlFor="eid">
+                <User size={18} className="field-icon" />
+                Employee ID
+              </label>
+              <input
+                type="text"
+                id="eid"
+                name="eid"
+                value={filters.eid}
+                onChange={handleFilterChange}
+                placeholder="Enter employee ID"
+                required
+              />
+            </div>
+            <div className="form-field">
+              <label htmlFor="month">
+                <Calendar size={18} className="field-icon" />
+                Month
+              </label>
+              <input
+                type="month"
+                id="month"
+                name="month"
+                value={filters.month}
+                onChange={handleFilterChange}
+                required
+              />
+            </div>
           </div>
-          <div className="form-field">
-            <label htmlFor="month">
-              <Calendar size={18} className="field-icon" />
-              Month
-            </label>
-            <input
-              type="month"
-              id="month"
-              name="month"
-              value={filters.month}
-              onChange={handleFilterChange}
-              required
-            />
+          <div className="button-group">
+            <button type="submit">
+              <Search size={16} style={{ marginRight: '8px' }} />
+              Search
+            </button>
+            <button type="button" className="clear-btn" onClick={handleClear}>
+              <Trash2 size={16} style={{ marginRight: '8px' }} />
+              Clear
+            </button>
           </div>
-        </div>
-        <div className="button-group">
-          <button type="submit">
-            <Search size={16} style={{ marginRight: '8px' }} />
-            Search
-          </button>
-          <button type="button" className="clear-btn" onClick={handleClear}>
-            <Trash2 size={16} style={{ marginRight: '8px' }} />
-            Clear
-          </button>
-        </div>
-      </form>
+        </form>
 
-      <div className="table-container">
-        {isLoading ? (
-          <div className="loading-spinner">
-            <div className="spinner"></div>
-            <p>Loading tasks...</p>
-          </div>
-        ) : tasks.length > 0 ? (
-          <table className="task-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Project Name</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Points</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map((task, idx) => (
-                <tr key={idx}>
-                  <td>{formatDate(task.date)}</td>
-                  <td>{task.projectname}</td>
-                  <td>
-                    <span className="project-type-badge">
-                      {task.projecttype}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="status-badge">
-                      {task.projectstatus}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="points-badge">
-                      {task.points || 0}
-                    </span>
-                  </td>
+        <div className="table-container">
+          {isLoading ? (
+            <div className="loading-spinner">
+              <div className="spinner"></div>
+              <p>Loading tasks...</p>
+            </div>
+          ) : tasks.length > 0 ? (
+            <table className="task-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Project Name</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Points</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <div className="no-tasks-msg">
-            {filters.eid ? (
-              <>
-                <p>No tasks found for Employee {filters.eid} in {formatMonthYear(filters.month)}.</p>
-                <p className="no-tasks-subtitle">Try a different month or employee ID.</p>
-              </>
-            ) : (
-              <p>Enter an Employee ID and select a month to view tasks.</p>
-            )}
-          </div>
-        )}
+              </thead>
+              <tbody>
+                {tasks.map((task, idx) => (
+                  <tr key={idx}>
+                    <td>{formatDate(task.date)}</td>
+                    <td>{task.projectname}</td>
+                    <td>
+                      <span className="project-type-badge">
+                        {task.projecttype}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="status-badge">
+                        {task.projectstatus}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="points-badge">
+                        {task.points || 0}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="no-tasks-msg">
+              {filters.eid ? (
+                <>
+                  <p>No tasks found for Employee {filters.eid} in {formatMonthYear(filters.month)}.</p>
+                  <p className="no-tasks-subtitle">Try a different month or employee ID.</p>
+                </>
+              ) : (
+                <p>Enter an Employee ID and select a month to view tasks.</p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

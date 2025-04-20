@@ -5,7 +5,9 @@ import MonthlyTaskView from './components/MonthlyTaskView';
 import LoginPage from './components/LoginPage';
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem('token') !== null
+  );
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -18,9 +20,9 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/admin" replace />} />
-        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/" element={<AdminPanel />} />
         <Route path="/monthly" element={<MonthlyTaskView />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
