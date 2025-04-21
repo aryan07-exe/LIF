@@ -19,6 +19,7 @@ const MonthlyTaskView = () => {
     
     setIsLoading(true);
     try {
+      console.log("Fetching monthly tasks with filters:", filters);
       const response = await axios.get('http://localhost:5000/monthly/tasks', { 
         params: { 
           eid: filters.eid,
@@ -26,10 +27,13 @@ const MonthlyTaskView = () => {
         } 
       });
       
-      setTasks(response.data.tasks);
-      setTotalPoints(response.data.totalPoints);
+      console.log("Monthly tasks response:", response.data);
+      setTasks(response.data.tasks || []);
+      setTotalPoints(response.data.totalPoints || 0);
     } catch (error) {
       console.error('Error fetching tasks:', error);
+      setTasks([]);
+      setTotalPoints(0);
     } finally {
       setIsLoading(false);
     }

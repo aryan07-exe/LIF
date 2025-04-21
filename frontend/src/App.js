@@ -23,8 +23,8 @@ const App = () => {
       <div>
         {/* Define Routes */}
         <Routes>
-          <Route path="/login"    element={<LoginPage />} />
-          <Route path="/" element={
+          <Route path="/"    element={<LoginPage />} />
+          <Route path="/task" element={
             <ProtectedRoute>
               <TaskForm />
             </ProtectedRoute>

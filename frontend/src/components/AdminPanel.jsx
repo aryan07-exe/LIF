@@ -30,17 +30,26 @@ const AdminPanel = () => {
   const fetchTasks = async () => {
     setIsLoading(true);
     try {
+      console.log("Fetching tasks with filters:", filters);
+      
       // If no filters are applied, fetch today's tasks
       if (!filters.eid && !filters.projecttype && !filters.projectstatus && 
           filters.date === getCurrentDate()) {
+        console.log("Fetching today's tasks");
         const response = await axios.get('http://localhost:5000/tasks/today');
-        setTasks(response.data.tasks);
-        setTotalPoints(response.data.totalPoints);
-        setAvailableFilters(response.data.filters);
+        console.log("Today's tasks response:", response.data);
+        setTasks(response.data.tasks || []);
+        setTotalPoints(response.data.totalPoints || 0);
+        setAvailableFilters(response.data.filters || {
+          eids: [],
+          projectTypes: [],
+          projectStatuses: []
+        });
         return;
       }
 
       // Otherwise, fetch filtered tasks
+      console.log("Fetching filtered tasks");
       const response = await axios.get('http://localhost:5000/admin/tasks', {
         params: {
           ...filters,
@@ -48,11 +57,18 @@ const AdminPanel = () => {
         }
       });
       
-      setTasks(response.data.tasks);
-      setTotalPoints(response.data.totalPoints);
-      setAvailableFilters(response.data.filters);
+      console.log("Filtered tasks response:", response.data);
+      setTasks(response.data.tasks || []);
+      setTotalPoints(response.data.totalPoints || 0);
+      setAvailableFilters(response.data.filters || {
+        eids: [],
+        projectTypes: [],
+        projectStatuses: []
+      });
     } catch (error) {
       console.error('Error fetching tasks:', error);
+      setTasks([]);
+      setTotalPoints(0);
     } finally {
       setIsLoading(false);
     }

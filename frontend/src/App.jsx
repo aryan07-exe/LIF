@@ -20,9 +20,10 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AdminPanel />} />
+        <Route path="/" element={<Navigate to="/admin" replace />} />
+        <Route path="/admin" element={<AdminPanel />} />
         <Route path="/monthly" element={<MonthlyTaskView />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </Router>
   );

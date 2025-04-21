@@ -46,15 +46,21 @@ app.post("/task",async(req,res)=>{
     }
 })
 
+// Helper function to escape regex special characters
+const escapeRegex = (string) => {
+  return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+
 // GET endpoint for AdminPanel with filters
 app.get('/admin/tasks', async (req, res) => {
   const { eid, date, projecttype, projectstatus } = req.query;
   const query = {};
 
-  if (eid) query.eid = eid;
-  if (date) query.date = date;
-  if (projecttype) query.projecttype = projecttype;
-  if (projectstatus) query.projectstatus = projectstatus;
+  // Use regex for case-insensitive search with escaped patterns
+  if (eid) query.eid = { $regex: new RegExp(escapeRegex(eid), 'i') };
+  if (date) query.date = date; // Keep date as exact match
+  if (projecttype) query.projecttype = { $regex: new RegExp(escapeRegex(projecttype), 'i') };
+  if (projectstatus) query.projectstatus = { $regex: new RegExp(escapeRegex(projectstatus), 'i') };
 
   try {
     const tasks = await Task.find(query).sort({ date: -1 });
@@ -92,7 +98,7 @@ app.get('/monthly/tasks', async (req, res) => {
     const endOfMonth = `${year}-${monthNum}-${lastDay}`;
     
     const query = {
-      eid,
+      eid: { $regex: new RegExp(escapeRegex(eid), 'i') }, // Case-insensitive search for employee ID
       date: { 
         $gte: startOfMonth,
         $lte: endOfMonth
@@ -120,16 +126,31 @@ app.get('/monthly/tasks', async (req, res) => {
 app.get('/tasks/today', async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
+    console.log(`Fetching tasks for today: ${today}`);
+    
     const tasks = await Task.find({ date: today }).sort({ date: -1 });
+    console.log(`Found ${tasks.length} tasks for today`);
+    
     const totalPoints = tasks.reduce((sum, task) => sum + (task.points || 0), 0);
+    console.log(`Total points for today: ${totalPoints}`);
+    
+    // Get unique values for filters
+    const uniqueEids = await Task.distinct('eid');
+    const uniqueProjectTypes = await Task.distinct('projecttype');
+    const uniqueProjectStatuses = await Task.distinct('projectstatus');
 
     res.json({
       tasks,
-      totalPoints
+      totalPoints,
+      filters: {
+        eids: uniqueEids,
+        projectTypes: uniqueProjectTypes,
+        projectStatuses: uniqueProjectStatuses
+      }
     });
   } catch (error) {
     console.error('Error fetching today\'s tasks:', error);
-    res.status(500).json({ message: 'Error fetching tasks' });
+    res.status(500).json({ message: 'Error fetching tasks', error: error.message });
   }
 });
 

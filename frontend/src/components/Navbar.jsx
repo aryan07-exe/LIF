@@ -26,7 +26,7 @@ const Navbar = () => {
         </div>
         
         <div className="navbar-links">
-          <Link to="/admin" className={`nav-link ${isActive('/') ? 'active' : ''}`}>
+          <Link to="/admin" className={`nav-link ${isActive('/admin') ? 'active' : ''}`}>
             <Home size={18} className="nav-icon" />
             <span>Admin Dashboard</span>
           </Link>
