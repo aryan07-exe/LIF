@@ -4,6 +4,7 @@ import TaskForm from './components/TaskForm';
 import Monthly from './components/MonthlyTaskView';
 import AdminPanel from './components/AdminPanel';
 import LoginPage from './components/LoginPage';
+import Task2 from './components/Task2';
 
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('token');
@@ -27,6 +28,11 @@ const App = () => {
           <Route path="/task" element={
             <ProtectedRoute>
               <TaskForm />
+            </ProtectedRoute>
+          } />
+          <Route path="/task2" element={
+            <ProtectedRoute>
+              <Task2 />
             </ProtectedRoute>
           } />
           <Route path="/admin" element={
