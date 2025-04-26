@@ -9,21 +9,27 @@ const MonthlyTaskView = () => {
   const [tasks, setTasks] = useState([]);
   const [filters, setFilters] = useState({ 
     eid: '', 
-    month: new Date().toISOString().slice(0, 7) // Default to current month (YYYY-MM)
+    month: new Date().toISOString().slice(0, 7), // Default to current month (YYYY-MM)
+    category: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
 
+  const categories = [
+    'Haldi',
+    'Mehendi',
+    'Wedding'
+  ];
+
   const fetchTasks = async () => {
-    if (!filters.eid) return; // Don't fetch if no EID is provided
-    
     setIsLoading(true);
     try {
       console.log("Fetching monthly tasks with filters:", filters);
       const response = await axios.get('http://localhost:5000/monthly/tasks', { 
         params: { 
-          eid: filters.eid,
-          month: filters.month
+          eid: filters.eid || undefined,
+          month: filters.month,
+          category: filters.category
         } 
       });
       
@@ -51,7 +57,8 @@ const MonthlyTaskView = () => {
   const handleClear = () => {
     setFilters({ 
       eid: '', 
-      month: new Date().toISOString().slice(0, 7) 
+      month: new Date().toISOString().slice(0, 7),
+      category: ''
     });
     setTasks([]);
     setTotalPoints(0);
@@ -104,8 +111,7 @@ const MonthlyTaskView = () => {
                 name="eid"
                 value={filters.eid}
                 onChange={handleFilterChange}
-                placeholder="Enter employee ID"
-                required
+                placeholder="Enter employee ID (optional)"
               />
             </div>
             <div className="form-field">
@@ -121,6 +127,23 @@ const MonthlyTaskView = () => {
                 onChange={handleFilterChange}
                 required
               />
+            </div>
+            <div className="form-field">
+              <label htmlFor="category">
+                <Calendar size={18} className="field-icon" />
+                Category
+              </label>
+              <select
+                id="category"
+                name="category"
+                value={filters.category}
+                onChange={handleFilterChange}
+              >
+                <option value="">All Categories</option>
+                {categories.map(category => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="button-group">
@@ -149,6 +172,7 @@ const MonthlyTaskView = () => {
                   <th>Project Name</th>
                   <th>Type</th>
                   <th>Status</th>
+                  <th>Category</th>
                   <th>Points</th>
                 </tr>
               </thead>
@@ -168,6 +192,11 @@ const MonthlyTaskView = () => {
                       </span>
                     </td>
                     <td>
+                      <span className="category-badge">
+                        {task.category}
+                      </span>
+                    </td>
+                    <td>
                       <span className="points-badge">
                         {task.points || 0}
                       </span>
@@ -184,7 +213,7 @@ const MonthlyTaskView = () => {
                   <p className="no-tasks-subtitle">Try a different month or employee ID.</p>
                 </>
               ) : (
-                <p>Enter an Employee ID and select a month to view tasks.</p>
+                <p>No tasks found for {formatMonthYear(filters.month)}.</p>
               )}
             </div>
           )}

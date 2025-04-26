@@ -1,58 +1,36 @@
-const express=require('express');
-const mongoose=require('mongoose');
-const cors=require('cors');
-const app=express();
-const port=5000;
-require('dotenv').config();
-
-const Task=require('./models/Task');
-const pointsConfig = require('./config/pointsConfig');
-
-// Import routes
-const authRoutes = require('./routes/auth');
-
-app.use(cors({
-    origin: '*',
-  }));
-  
-app.use(express.json());
-
-mongoose.connect(process.env.Mongo_URL)
-  .then(() => {
-    console.log("✅ Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
-    console.log("Error details:", err);
-  });
-
-// Calculate points based on project type only
-const calculatePoints = (projectType) => {
-    return pointsConfig.projectType[projectType] || 0;
-};
-
-app.post("/task",async(req,res)=>{
-    try{
-        const points = calculatePoints(req.body.projecttype);
-        const task = new Task({
-            ...req.body,
-            points
-        });
-        await task.save();
-        res.status(201).json({message:"Task created successfully"});
-    }catch(error){
-        console.log(error);
-        res.status(500).json({message: "Error creating task"});
-    }
-})
+const express = require('express');
+const router = express.Router();
+const Task = require('../models/Task');
+const pointsConfig = require('../config/pointsConfig');
 
 // Helper function to escape regex special characters
 const escapeRegex = (string) => {
   return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 };
 
+// Calculate points based on project type only
+const calculatePoints = (projectType) => {
+  return pointsConfig.projectType[projectType] || 0;
+};
+
+// Create new task
+router.post("/task", async (req, res) => {
+  try {
+    const points = calculatePoints(req.body.projecttype);
+    const task = new Task({
+      ...req.body,
+      points
+    });
+    await task.save();
+    res.status(201).json({ message: "Task created successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Error creating task" });
+  }
+});
+
 // GET endpoint for AdminPanel with filters
-app.get('/admin/tasks', async (req, res) => {
+router.get('/admin/tasks', async (req, res) => {
   const { eid, date, projecttype, projectstatus, category } = req.query;
   const query = {};
 
@@ -90,8 +68,8 @@ app.get('/admin/tasks', async (req, res) => {
 });
 
 // GET endpoint for MonthlyTaskView
-app.get('/monthly/tasks', async (req, res) => {
-  const { eid, month } = req.query;
+router.get('/monthly/tasks', async (req, res) => {
+  const { eid, month, category } = req.query;
   
   try {
     // If month is provided (YYYY-MM format), filter by that month
@@ -101,12 +79,20 @@ app.get('/monthly/tasks', async (req, res) => {
     const endOfMonth = `${year}-${monthNum}-${lastDay}`;
     
     const query = {
-      eid: { $regex: new RegExp(escapeRegex(eid), 'i') }, // Case-insensitive search for employee ID
       date: { 
         $gte: startOfMonth,
         $lte: endOfMonth
       }
     };
+
+    // Add filters if provided
+    if (eid) {
+      query.eid = { $regex: new RegExp(escapeRegex(eid), 'i') };
+    }
+    
+    if (category) {
+      query.category = { $regex: new RegExp(escapeRegex(category), 'i') };
+    }
 
     // Get tasks with sorting by date
     const tasks = await Task.find(query).sort({ date: 1 });
@@ -126,7 +112,7 @@ app.get('/monthly/tasks', async (req, res) => {
 });
 
 // GET endpoint for current day's tasks (default for AdminPanel)
-app.get('/tasks/today', async (req, res) => {
+router.get('/tasks/today', async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
     console.log(`Fetching tasks for today: ${today}`);
@@ -157,10 +143,6 @@ app.get('/tasks/today', async (req, res) => {
     console.error('Error fetching today\'s tasks:', error);
     res.status(500).json({ message: 'Error fetching tasks', error: error.message });
   }
-});// Routes
-app.use('/api/auth', authRoutes);
+});
 
-app.listen(port,()=>{
-    console.log(`Server is running on port ${port}`);
-})
-
+module.exports = router; 

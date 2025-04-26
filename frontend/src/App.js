@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
  import Landing from "./components/Landing"
  import Admin from "./components/AdminPanel"
  import Task from "./components/TaskForm"
+ import Task2 from "./components/Task2"
  import Monthly from "./components/MonthlyTaskView"
 
 const App = () => {
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/task" element={<Task />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/monthly" element={<Monthly />} />
+        <Route path="/task2" element={<Task2 />} />
         {/* Catch-all route for 404 */}
         <Route path="/admin" element={<Admin />} />
       </Routes>

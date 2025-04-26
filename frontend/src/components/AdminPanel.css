@@ -274,12 +274,22 @@ body {
 }
 
 .status-badge {
-  display: inline-block;
-  padding: var(--spacing-xs) var(--spacing-sm);
+  padding: 4px 8px;
   border-radius: 4px;
-  color: white;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 500;
+  color: white;
+  display: inline-block;
+}
+
+.category-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background-color: var(--primary-color);
+  color: white;
+  display: inline-block;
 }
 
 .points-badge {

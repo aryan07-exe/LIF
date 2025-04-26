@@ -224,6 +224,7 @@ const AdminPanel = () => {
                       <th>Project Name</th>
                       <th>Project Type</th>
                       <th>Status</th>
+                      <th>Category</th>
                       <th>Points</th>
                       <th>Notes</th>
                     </tr>
@@ -250,6 +251,11 @@ const AdminPanel = () => {
                             style={{ backgroundColor: getStatusColor(task.projectstatus) }}
                           >
                             {task.projectstatus}
+                          </span>
+                        </td>
+                        <td>
+                          <span className="project-type-badge">
+                            {task.category}
                           </span>
                         </td>
                         <td>

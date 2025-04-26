@@ -607,4 +607,37 @@ body {
 
 .points-card {
   animation: aperture 1s ease-out;
+}
+
+.category-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  background-color: #f0f9ff;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.form-field select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #1e293b;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+.form-field select:hover {
+  border-color: #94a3b8;
+}
+
+.form-field select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
 } 
