@@ -35,7 +35,7 @@ const LoginPage = () => {
       if (user.role === 'admin') {
         navigate('/admin');
       } else {
-        navigate('/task');
+        navigate('/landing');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
