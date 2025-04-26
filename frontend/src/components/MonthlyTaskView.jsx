@@ -168,6 +168,7 @@ const MonthlyTaskView = () => {
             <table className="task-table">
               <thead>
                 <tr>
+                <th>Eid</th>
                   <th>Date</th>
                   <th>Project Name</th>
                   <th>Type</th>
@@ -179,6 +180,7 @@ const MonthlyTaskView = () => {
               <tbody>
                 {tasks.map((task, idx) => (
                   <tr key={idx}>
+                    <td>{task.eid}</td>
                     <td>{formatDate(task.date)}</td>
                     <td>{task.projectname}</td>
                     <td>
