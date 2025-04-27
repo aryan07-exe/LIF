@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Save, X, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './AddProject.css';
+import Navbar from './Navbar';
 
 const AddProject = () => {
   const [projectName, setProjectName] = useState('');
@@ -55,11 +56,13 @@ const AddProject = () => {
   };
 
   return (
-    <motion.div 
-      className="add-project-container"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+    <>
+      <Navbar />
+      <motion.div 
+        className="add-project-container"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
     >
       <motion.div 
         className="form-header"
@@ -139,6 +142,7 @@ const AddProject = () => {
         </div>
       </motion.form>
     </motion.div>
+    </>
   );
 };
 

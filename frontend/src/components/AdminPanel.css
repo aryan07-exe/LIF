@@ -257,12 +257,14 @@ body {
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-color);
+  overflow-x: auto;
 }
 
 .task-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  min-width: 800px;
 }
 
 .task-table th,
@@ -387,6 +389,10 @@ body {
     padding: var(--spacing-md);
   }
 
+  .dashboard-title {
+    font-size: 1.5rem;
+  }
+
   .input-group {
     flex-direction: column;
   }
@@ -413,12 +419,55 @@ body {
     font-size: 1.5rem;
   }
 
+  .download-btn {
+    margin: var(--spacing-md) 0 0;
+    width: 100%;
+    justify-content: center;
+  }
+
   .task-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
+    font-size: 0.875rem;
+  }
+
+  .task-table th,
+  .task-table td {
+    padding: var(--spacing-sm);
   }
 }
+
+/* Small screens */
+@media (max-width: 480px) {
+  .admin-panel {
+    margin: var(--spacing-sm);
+    padding: var(--spacing-sm);
+  }
+
+  .dashboard-title {
+    font-size: 1.25rem;
+  }
+
+  .points-card {
+    padding: var(--spacing-sm);
+  }
+
+  .points-info h3 {
+    font-size: 0.875rem;
+  }
+
+  .points-info p {
+    font-size: 1.25rem;
+  }
+
+  .filter-form {
+    padding: var(--spacing-sm);
+  }
+
+  .filter-form input,
+  .filter-form button {
+    font-size: 0.8rem;
+  }
+}
+
 /* Animation Classes */
 @keyframes fadeIn {
   from {

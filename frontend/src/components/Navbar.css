@@ -68,6 +68,21 @@
   color: var(--accent-color);
 }
 
+/* Hamburger menu button */
+.menu-button {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: var(--spacing-sm);
+}
+
+.menu-button svg {
+  width: 24px;
+  height: 24px;
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .navbar-container {
@@ -75,8 +90,44 @@
     gap: var(--spacing-md);
   }
   
+  .navbar-logo {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .menu-button {
+    display: block;
+  }
+  
   .navbar-links {
     width: 100%;
+    flex-direction: column;
+    display: none;
+    gap: var(--spacing-sm);
+  }
+
+  .navbar-links.active {
+    display: flex;
+  }
+  
+  .nav-link {
+    width: 100%;
     justify-content: center;
+    padding: var(--spacing-md);
+  }
+
+  .nav-icon {
+    margin-right: var(--spacing-md);
+  }
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+  .logo-text {
+    font-size: 1rem;
+  }
+
+  .nav-link {
+    font-size: 0.9rem;
   }
 } 
