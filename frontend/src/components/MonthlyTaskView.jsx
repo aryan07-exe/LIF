@@ -30,6 +30,7 @@ const MonthlyTaskView = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
+  const [users, setUsers] = useState([]);
 
   const categories = [
     'Haldi',
@@ -60,6 +61,20 @@ const MonthlyTaskView = () => {
       setIsLoading(false);
     }
   };
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/users/eids');
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+    fetchTasks();
+  }, [filters]);
 
   const handleFilterChange = (e) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -130,14 +145,20 @@ const MonthlyTaskView = () => {
                 <User size={18} className="field-icon" />
                 Employee ID
               </label>
-              <input
-                type="text"
+              <select
                 id="eid"
                 name="eid"
                 value={filters.eid}
                 onChange={handleFilterChange}
-                placeholder="Enter employee ID (optional)"
-              />
+                className="filter-select"
+              >
+                <option value="">Select Employee ID</option>
+                {users.map((user) => (
+                  <option key={user.employeeId} value={user.employeeId}>
+                    {user.employeeId} - {user.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="form-field">
               <label htmlFor="month">
@@ -153,7 +174,6 @@ const MonthlyTaskView = () => {
                 required
               />
             </div>
-           
           </div>
           <div className="button-group">
             <button type="submit">

@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const Task=require('./models/Task');
 const pointsConfig = require('./config/pointsConfig');
+const User = require('./models/User');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -178,6 +179,17 @@ app.get('/tasks/today', async (req, res) => {
   } catch (error) {
     console.error('Error fetching today\'s tasks:', error);
     res.status(500).json({ message: 'Error fetching tasks', error: error.message });
+  }
+});
+
+// GET endpoint for all users' EIDs
+app.get('/api/users/eids', async (req, res) => {
+  try {
+    const users = await User.find({}, 'employeeId name');
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ message: 'Error fetching users' });
   }
 });
 

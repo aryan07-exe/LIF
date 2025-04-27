@@ -43,6 +43,16 @@ const AdminPanel = () => {
     projectTypes: [],
     projectStatuses: []
   });
+  const [users, setUsers] = useState([]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/users/eids');
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
   const fetchTasks = async () => {
     setIsLoading(true);
@@ -92,6 +102,7 @@ const AdminPanel = () => {
   };
 
   useEffect(() => {
+    fetchUsers();
     fetchTasks();
   }, [filters]);
 
@@ -188,13 +199,19 @@ const AdminPanel = () => {
           onSubmit={handleSearch}
         >
           <div className="input-group">
-            <input
-              type="text"
+            <select
               name="eid"
-              placeholder="Search by Employee ID"
               value={filters.eid}
               onChange={handleFilterChange}
-            />
+              className="filter-select"
+            >
+              <option value="">Select Employee ID</option>
+              {users.map((user) => (
+                <option key={user.employeeId} value={user.employeeId}>
+                  {user.employeeId} - {user.name}
+                </option>
+              ))}
+            </select>
             <input
               type="date"
               name="date"

@@ -189,8 +189,9 @@ body {
 
 .input-group {
   display: flex;
-  gap: var(--spacing-md);
-  width: 100%;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 .button-group {
@@ -502,4 +503,86 @@ body {
 
 .points-card {
   animation: aperture 1s ease-out;
+}
+
+.filter-select {
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-size: 14px;
+  width: 100%;
+  max-width: 300px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+.filter-select:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.filter-select option {
+  padding: 12px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+.filter-select option:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.input-group input[type="date"] {
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  font-size: 14px;
+  width: 100%;
+  max-width: 200px;
+  transition: all 0.3s ease;
+}
+
+.input-group input[type="date"]:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+.input-group input[type="date"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* Custom scrollbar for select dropdown */
+.filter-select::-webkit-scrollbar {
+  width: 8px;
+}
+
+.filter-select::-webkit-scrollbar-track {
+  background: var(--input-bg);
+  border-radius: 4px;
+}
+
+.filter-select::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+.filter-select::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color-dark);
 }
