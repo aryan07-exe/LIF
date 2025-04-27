@@ -11,7 +11,7 @@ const Landing = () => {
       <div className="options-container">
         <div 
           className="option-card"
-          onClick={() => navigate('/post-production')}
+          onClick={() => navigate('/task3')}
         >
           <h2>Post Production</h2>
           <p>Manage post-production tasks and workflows</p>

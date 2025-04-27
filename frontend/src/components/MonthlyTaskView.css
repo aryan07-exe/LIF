@@ -111,13 +111,13 @@ body {
 }
 
 .points-card {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-  color: white;
-  padding: var(--spacing-lg);
-  border-radius: 12px;
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+  color: white;
+  border-radius: 12px;
   box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
@@ -640,4 +640,31 @@ body {
   outline: none;
   border-color: #3b82f6;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.download-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--accent-color);
+  color: var(--primary-color);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  margin-left: auto;
+  font-weight: 500;
+}
+
+.download-btn:hover {
+  background: #e6a832;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.download-btn svg {
+  width: 18px;
+  height: 18px;
 } 

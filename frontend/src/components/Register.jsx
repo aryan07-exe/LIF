@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { UserPlus, Save, X, User, Lock, Building } from 'lucide-react';
 import './TaskForm.css';
-
+import Navbar from './Navbar'
 const Register = () => {
   const [formData, setFormData] = useState({
     employeeId: '',
@@ -55,6 +55,8 @@ const Register = () => {
   };
 
   return (
+    <>
+    <Navbar/>
     <motion.div 
       className="task-form-container"
       initial={{ opacity: 0, y: 20 }}
@@ -210,6 +212,7 @@ const Register = () => {
         </div>
       </motion.form>
     </motion.div>
+    </>
   );
 };
 

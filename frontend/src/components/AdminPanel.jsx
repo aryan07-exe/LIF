@@ -1,9 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Film, Award, Search, Trash2 } from 'lucide-react';
+import { Camera, Film, Award, Search, Trash2, Download } from 'lucide-react';
 import './AdminPanel.css';
 import Navbar from './Navbar';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
+
+const exportToExcel = (tasks, fileName) => {
+  // Convert JSON data to worksheet
+  const worksheet = XLSX.utils.json_to_sheet(tasks);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Tasks");
+
+  // Create a buffer
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+  // Save it
+  const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+  saveAs(data, `${fileName}.xlsx`);
+};
 
 const AdminPanel = () => {
 
@@ -151,6 +168,15 @@ const AdminPanel = () => {
               <h3>Total Points</h3>
               <p>{totalPoints}</p>
             </div>
+            <motion.button
+              className="download-btn"
+              onClick={() => exportToExcel(tasks, 'Tasks-Data')}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Download size={18} />
+              <span>Download Excel</span>
+            </motion.button>
           </div>
         </motion.div>
 
