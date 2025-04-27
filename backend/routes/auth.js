@@ -71,6 +71,21 @@ router.post('/register', async (req, res) => {
   try {
     const { employeeId, password, name, department, role } = req.body;
     
+    // Validate required fields
+    if (!employeeId || !password || !name || !department) {
+      return res.status(400).json({ message: 'All required fields must be provided' });
+    }
+
+    // Validate employee ID format (you can customize this based on your requirements)
+    if (!/^[A-Za-z0-9]+$/.test(employeeId)) {
+      return res.status(400).json({ message: 'Employee ID must contain only letters and numbers' });
+    }
+
+    // Validate password strength
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+    }
+    
     // Check if user already exists
     const existingUser = await User.findOne({ employeeId });
     if (existingUser) {
@@ -91,7 +106,7 @@ router.post('/register', async (req, res) => {
     res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 

@@ -35,6 +35,12 @@ const Navbar = () => {
             <Calendar size={18} className="nav-icon" />
             <span>Monthly View</span>
           </Link>
+
+          <Link to="/register" className={`nav-link ${isActive('/monthly') ? 'active' : ''}`}>
+            <Calendar size={18} className="nav-icon" />
+            <span>Add New User</span>
+          </Link>
+
         </div>
       </div>
     </motion.nav>
