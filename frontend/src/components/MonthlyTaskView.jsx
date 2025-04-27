@@ -128,23 +128,7 @@ const MonthlyTaskView = () => {
                 required
               />
             </div>
-            <div className="form-field">
-              <label htmlFor="category">
-                <Calendar size={18} className="field-icon" />
-                Category
-              </label>
-              <select
-                id="category"
-                name="category"
-                value={filters.category}
-                onChange={handleFilterChange}
-              >
-                <option value="">All Categories</option>
-                {categories.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-            </div>
+           
           </div>
           <div className="button-group">
             <button type="submit">
@@ -169,6 +153,7 @@ const MonthlyTaskView = () => {
               <thead>
                 <tr>
                 <th>Eid</th>
+                <th>E Name</th>
                   <th>Date</th>
                   <th>Project Name</th>
                   <th>Type</th>
@@ -181,6 +166,7 @@ const MonthlyTaskView = () => {
                 {tasks.map((task, idx) => (
                   <tr key={idx}>
                     <td>{task.eid}</td>
+                    <td>{task.ename}</td>
                     <td>{formatDate(task.date)}</td>
                     <td>{task.projectname}</td>
                     <td>

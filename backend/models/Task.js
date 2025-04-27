@@ -5,6 +5,10 @@ eid:{
     type:String,
     required:true
     },
+ename:{
+        type:String,
+        required:true
+        },
 date:{
     type:String,
     required:true
@@ -18,6 +22,10 @@ projecttype:{
     required:true
 },
 projectstatus:{
+    type:String,
+    required:true 
+},
+category:{
     type:String,
     required:true 
 },

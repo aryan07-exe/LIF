@@ -33,18 +33,33 @@ const calculatePoints = (projectType) => {
 
 app.post("/task",async(req,res)=>{
     try{
-        const points = calculatePoints(req.body.projecttype);
+        // Validate required fields
+        const { eid, ename, date, projectname, projecttype, projectstatus, category } = req.body;
+        
+        if (!eid || !ename || !date || !projectname || !projecttype || !projectstatus || !category) {
+            return res.status(400).json({ message: "All required fields must be provided" });
+        }
+
+        const points = calculatePoints(projecttype);
         const task = new Task({
-            ...req.body,
-            points
+            eid,
+            ename,
+            date,
+            projectname,
+            projecttype,
+            projectstatus,
+            category,
+            points,
+            note: req.body.notes || '' // Handle the notes field
         });
+        
         await task.save();
         res.status(201).json({message:"Task created successfully"});
     }catch(error){
-        console.log(error);
-        res.status(500).json({message: "Error creating task"});
+        console.error('Task creation error:', error);
+        res.status(500).json({message: "Error creating task", error: error.message});
     }
-})
+});
 
 // Helper function to escape regex special characters
 const escapeRegex = (string) => {

@@ -220,6 +220,7 @@ const AdminPanel = () => {
                   <thead>
                     <tr>
                       <th>Employee ID</th>
+                      <th>Employee Name</th>
                       <th>Date</th>
                       <th>Project Name</th>
                       <th>Project Type</th>
@@ -238,6 +239,7 @@ const AdminPanel = () => {
                         transition={{ delay: idx * 0.1 }}
                       >
                         <td>{task.eid}</td>
+                        <td>{task.ename}</td>
                         <td>{formatDate(task.date)}</td>
                         <td>{task.projectname}</td>
                         <td>
