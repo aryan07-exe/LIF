@@ -10,12 +10,18 @@ const pointsConfig = require('./config/pointsConfig');
 
 // Import routes
 const authRoutes = require('./routes/auth');
+const projectRoutes = require('./routes/projects')
 
+const tasks = require('./routes/tasks')
 app.use(cors({
     origin: '*',
   }));
   
 app.use(express.json());
+
+// Mount routes
+app.use('/api/projects', projectRoutes);
+app.use('/api/auth', authRoutes);
 
 mongoose.connect(process.env.Mongo_URL)
   .then(() => {
@@ -26,6 +32,7 @@ mongoose.connect(process.env.Mongo_URL)
     console.log("Error details:", err);
   });
 
+  
 // Calculate points based on project type only
 const calculatePoints = (projectType) => {
     return pointsConfig.projectType[projectType] || 0;
@@ -172,8 +179,7 @@ app.get('/tasks/today', async (req, res) => {
     console.error('Error fetching today\'s tasks:', error);
     res.status(500).json({ message: 'Error fetching tasks', error: error.message });
   }
-});// Routes
-app.use('/api/auth', authRoutes);
+});
 
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`);

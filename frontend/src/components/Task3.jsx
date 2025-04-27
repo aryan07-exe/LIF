@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { Camera, Film, Save, X, User, Calendar, FileText, AlertCircle, Search, Trash2 } from 'lucide-react';
+import { Camera, Film, Save, X, User, Calendar, FileText, AlertCircle } from 'lucide-react';
 import './TaskForm.css';
 
-const Task2 = () => {
+const Taskname = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   
   const [formData, setFormData] = useState({
     eid: user.employeeId || '',
+    ename: user.name || '',
     date: new Date().toISOString().split('T')[0],
     projectname: '',
     projecttype: '',
@@ -16,12 +17,12 @@ const Task2 = () => {
     category: '',
     notes: ''
   });
-  
+
+  const [projects, setProjects] = useState([]);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(true);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [projects, setProjects] = useState([]);
-  const [isLoadingProjects, setIsLoadingProjects] = useState(true);
 
   const projectTypes = [
     'Reel',
@@ -47,53 +48,17 @@ const Task2 = () => {
     'Wedding'
   ];
 
-  const handleChange = (e) => {
-    if (e.target.name === 'eid') return; // Prevent manual EID changes
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  // Add useEffect to update form data when user data changes
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('user') || '{}');
+    setFormData(prev => ({
+      ...prev,
+      eid: userData.employeeId || '',
+      ename: userData.name || ''
+    }));
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage('');
-    setError('');
-    setLoading(true);
-
-    try {
-      const response = await axios.post('http://localhost:5000/task', formData, {
-        headers: {
-          'Authorization': localStorage.getItem('token')
-        }
-      });
-      
-      setMessage('Task submitted successfully!');
-      // Reset form except EID and date
-      setFormData(prev => ({
-        ...prev,
-        projectname: '',
-        projecttype: '',
-        projectstatus: '',
-        category: '',
-        notes: ''
-      }));
-    } catch (err) {
-      setError(err.response?.data?.message || 'Error submitting task');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const [tasks, setTasks] = useState([]);
-  const [filters, setFilters] = useState({ 
-    eid: '', 
-    month: new Date().toISOString().slice(0, 7),
-    projectname: ''
-  });
-  const [isLoading, setIsLoading] = useState(true);
-  const [totalPoints, setTotalPoints] = useState(0);
-
+  // Add useEffect to fetch projects when component mounts
   useEffect(() => {
     fetchProjects();
   }, []);
@@ -113,36 +78,61 @@ const Task2 = () => {
     }
   };
 
-  const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    if (e.target.name === 'eid') return; // Prevent manual EID changes
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
-  const handleSearch = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
+    setMessage('');
+    setError('');
+    setLoading(true);
+
     try {
-      const response = await axios.get('http://localhost:5000/api/tasks', {
-        params: {
-          eid: filters.eid,
-          month: filters.month,
-          projectname: filters.projectname
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found. Please login again.');
+      }
+
+      console.log('Submitting form data:', formData);
+      const response = await axios.post('http://localhost:5000/task', formData, {
+        headers: {
+          'Authorization': token,
+          'Content-Type': 'application/json'
         }
       });
-      setTasks(response.data.tasks);
-      setTotalPoints(response.data.totalPoints);
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-      setError('Failed to fetch tasks. Please try again later.');
+      
+      console.log('Server response:', response.data);
+      setMessage('Task submitted successfully!');
+      // Reset form except EID and date
+      setFormData(prev => ({
+        ...prev,
+        projectname: '',
+        projecttype: '',
+        projectstatus: '',
+        category: '',
+        notes: ''
+      }));
+    } catch (err) {
+      console.error('Submission error:', err);
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        setError(`Server error: ${err.response.status} - ${err.response.data?.message || err.response.data || 'Unknown error'}`);
+      } else if (err.request) {
+        // The request was made but no response was received
+        setError('No response from server. Please check if the server is running.');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        setError(`Error: ${err.message}`);
+      }
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
-  };
-
-  const handleClear = () => {
-    setFilters({ eid: '', month: new Date().toISOString().slice(0, 7), projectname: '' });
-    setTasks([]);
-    setTotalPoints(0);
   };
 
   return (
@@ -204,9 +194,22 @@ const Task2 = () => {
                 id="eid"
                 name="eid"
                 value={formData.eid}
-                onChange={handleChange}
                 disabled
-                required
+                className="disabled-input"
+              />
+            </div>
+            <div className="form-field">
+              <label htmlFor="ename">
+                <User size={18} className="field-icon" />
+                Employee Name
+              </label>
+              <input
+                type="text"
+                id="ename"
+                name="ename"
+                value={formData.ename}
+                disabled
+                className="disabled-input"
               />
             </div>
 
@@ -354,4 +357,4 @@ const Task2 = () => {
   );
 };
 
-export default Task2;
+export default Taskname;

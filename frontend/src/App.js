@@ -2,14 +2,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
- import Login from "./components/LoginPage"
- import Landing from "./components/Landing"
- import Admin from "./components/AdminPanel"
- import Task from "./components/TaskForm"
- import Task2 from "./components/Task2"
- import Monthly from "./components/MonthlyTaskView"
- import Task3 from "./components/Taskname"
- import Register from "./components/Register"
+import Login from "./components/LoginPage"
+import Landing from "./components/Landing"
+import Admin from "./components/AdminPanel"
+import Task from "./components/TaskForm"
+import Task2 from "./components/Task2"
+import Monthly from "./components/MonthlyTaskView"
+import Task3 from "./components/Task3"
+import Taskname from "./components/Taskname"
+import Register from "./components/Register"
+import TestConnection from "./components/TestConnection"
+import AddProject from "./components/AddProject"
 
 const App = () => {
   return (
@@ -18,13 +21,15 @@ const App = () => {
         {/* Define routes here */}
         <Route path="/" element={<Login />} />
         <Route path="/task" element={<Task />} />
-        <Route path="/landing" element={<Landing />} />
-        <Route path="/monthly" element={<Monthly />} />
         <Route path="/task2" element={<Task2 />} />
         <Route path="/task3" element={<Task3 />} />
-        <Route path="/register" element={<Register />} />
-        {/* Catch-all route for 404 */}
         <Route path="/admin" element={<Admin />} />
+        <Route path="/monthly" element={<Monthly />} />
+        <Route path="/landing" element={<Landing />} />
+        <Route path="/taskname" element={<Taskname />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/test-connection" element={<TestConnection />} />
+        <Route path="/add-project" element={<AddProject />} />
       </Routes>
     </Router>
   );
