@@ -4,7 +4,7 @@
 :root {
   /* Color Variables - Photography/Cinematography Theme */
   --primary-color: #1A2238; /* Deep navy blue */
-  --primary-light: #2A3149;
+  --primary-light: #1A2238;
   --secondary-color: #9FEDD7; /* Mint green */
   --accent-color: #F7B538; /* Golden yellow */
   --background-color: #F5F5F5;
@@ -111,13 +111,13 @@ body {
 }
 
 .points-card {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+  color: white;
+  padding: var(--spacing-lg);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
-  padding: var(--spacing-lg);
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-  color: white;
-  border-radius: 12px;
   box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
@@ -434,7 +434,7 @@ body {
   gap: var(--spacing-xs);
   padding: var(--spacing-xs) var(--spacing-sm);
   border-radius: 4px;
-  color: rgb(0, 0, 0);
+  color: white;
   font-size: 0.75rem;
   font-weight: 500;
 }
@@ -643,28 +643,26 @@ body {
 }
 
 .download-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--accent-color);
-  color: var(--primary-color);
+  background-color: var(--success-color);
+  color: white;
   border: none;
+  padding: var(--spacing-md) var(--spacing-lg);
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-weight: 500;
   transition: all 0.2s ease;
   margin-left: auto;
-  font-weight: 500;
 }
 
 .download-btn:hover {
-  background: #e6a832;
+  background-color: #1b5e20;
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
 .download-btn svg {
-  width: 18px;
-  height: 18px;
+  font-size: 1.1rem;
 } 

@@ -13,6 +13,7 @@ import Taskname from "./components/Taskname"
 import Register from "./components/Register"
 import TestConnection from "./components/TestConnection"
 import AddProject from "./components/AddProject"
+import MonthWiseView from "./components/MonthWiseView"
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/task3" element={<Task3 />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/monthly" element={<Monthly />} />
+        <Route path="/month-wise" element={<MonthWiseView />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/taskname" element={<Taskname />} />
         <Route path="/register" element={<Register />} />

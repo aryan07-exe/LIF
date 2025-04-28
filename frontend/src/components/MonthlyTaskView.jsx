@@ -7,18 +7,100 @@ import Navbar from './Navbar';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
-const exportToExcel = (tasks, fileName) => {
-  // Convert JSON data to worksheet
-  const worksheet = XLSX.utils.json_to_sheet(tasks);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Tasks");
+const formatDate = (dateInput) => {
+  try {
+    // Handle case where dateInput is already in YYYY-MM-DD format
+    if (typeof dateInput === 'string' && dateInput.includes('-')) {
+      const [year, month, day] = dateInput.split('-');
+      return `${day}/${month}/${year}`;
+    }
 
-  // Create a buffer
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date input:', dateInput);
+      return 'Invalid date';
+    }
 
-  // Save it
-  const data = new Blob([excelBuffer], { type: "application/octet-stream" });
-  saveAs(data, `${fileName}.xlsx`);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return 'Invalid date';
+  }
+};
+
+const formatMonthYear = (monthYear) => {
+  const [year, month] = monthYear.split('-');
+  const date = new Date(year, month - 1);
+  return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+};
+
+const exportToExcel = (tasks, month) => {
+  try {
+    if (!tasks || !Array.isArray(tasks)) {
+      throw new Error('Invalid tasks data');
+    }
+
+    // Format the tasks data
+    const formattedTasks = tasks.map(task => ({
+      'Employee ID': task.eid || 'N/A',
+      'Employee Name': task.ename || 'N/A',
+      'Date': formatDate(task.date),
+      'Project Name': task.projectname || 'N/A',
+      'Project Type': task.projecttype || 'N/A',
+      'Project Status': task.projectstatus || 'N/A',
+      'Category': task.category || 'N/A',
+      'Points': task.points || 0,
+      'Notes': task.note || 'N/A'
+    }));
+
+    if (formattedTasks.length === 0) {
+      throw new Error('No tasks to export');
+    }
+
+    // Create worksheet
+    const worksheet = XLSX.utils.json_to_sheet(formattedTasks);
+    
+    // Set column widths
+    const columnWidths = {
+      'A': 15, // Employee ID
+      'B': 20, // Employee Name
+      'C': 12, // Date
+      'D': 25, // Project Name
+      'E': 15, // Project Type
+      'F': 15, // Project Status
+      'G': 15, // Category
+      'H': 10, // Points
+      'I': 30  // Notes
+    };
+    
+    worksheet['!cols'] = Object.values(columnWidths).map(width => ({ wch: width }));
+
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Tasks");
+
+    // Generate Excel file
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { 
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+    });
+    
+    // Create download link
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(data);
+    link.download = `Monthly-Tasks-${month}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  } catch (error) {
+    console.error('Error exporting to Excel:', error);
+    alert(`Error exporting to Excel: ${error.message}`);
+  }
 };
 
 const MonthlyTaskView = () => {
@@ -95,17 +177,6 @@ const MonthlyTaskView = () => {
     setTotalPoints(0);
   };
 
-  const formatDate = (dateInput) => {
-    const date = new Date(dateInput);
-    return date.toLocaleDateString('en-GB');
-  };
-
-  const formatMonthYear = (monthYear) => {
-    const [year, month] = monthYear.split('-');
-    const date = new Date(year, month - 1);
-    return date.toLocaleString('default', { month: 'long', year: 'numeric' });
-  };
-
   return (
     <>
       <Navbar />
@@ -126,15 +197,17 @@ const MonthlyTaskView = () => {
               <h3>Total Points for {formatMonthYear(filters.month)}</h3>
               <p>{totalPoints}</p>
             </div>
-            <motion.button
-              className="download-btn"
-              onClick={() => exportToExcel(tasks, `Monthly-Tasks-${filters.month}`)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Download size={18} />
-              <span>Download Excel</span>
-            </motion.button>
+            {tasks.length > 0 && (
+              <motion.button
+                className="download-btn"
+                onClick={() => exportToExcel(tasks, filters.month)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Download size={18} />
+                <span>Download Excel</span>
+              </motion.button>
+            )}
           </div>
         </div>
 

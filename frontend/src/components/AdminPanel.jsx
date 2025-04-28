@@ -6,22 +6,97 @@ import './AdminPanel.css';
 import Navbar from './Navbar';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
+const formatDate = (dateInput) => {
+  try {
+    // Handle case where dateInput is already in YYYY-MM-DD format
+    if (typeof dateInput === 'string' && dateInput.includes('-')) {
+      const [year, month, day] = dateInput.split('-');
+      return `${day}/${month}/${year}`;
+    }
 
-const exportToExcel = (tasks, fileName) => {
-  // Convert JSON data to worksheet
-  const worksheet = XLSX.utils.json_to_sheet(tasks);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Tasks");
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date input:', dateInput);
+      return 'Invalid date';
+    }
 
-  // Create a buffer
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
 
-  // Save it
-  const data = new Blob([excelBuffer], { type: "application/octet-stream" });
-  saveAs(data, `${fileName}.xlsx`);
+    return `${day}/${month}/${year}`;
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return 'Invalid date';
+  }
 };
+const exportToExcel = (tasks, fileName) => {
+  try {
+    if (!tasks || !Array.isArray(tasks)) {
+      throw new Error('Invalid tasks data');
+    }
 
+    // Format the tasks data
+    const formattedTasks = tasks.map(task => ({
+      'Employee ID': task.eid || 'N/A',
+      'Employee Name': task.ename || 'N/A',
+      'Date': formatDate(task.date),
+      'Project Name': task.projectname || 'N/A',
+      'Project Type': task.projecttype || 'N/A',
+      'Project Status': task.projectstatus || 'N/A',
+      'Category': task.category || 'N/A',
+      'Points': task.points || 0,
+      'Notes': task.note || 'N/A'
+    }));
+
+    if (formattedTasks.length === 0) {
+      throw new Error('No tasks to export');
+    }
+
+    // Create worksheet
+    const worksheet = XLSX.utils.json_to_sheet(formattedTasks);
+    
+    // Set column widths
+    const columnWidths = {
+      'A': 15, // Employee ID
+      'B': 20, // Employee Name
+      'C': 12, // Date
+      'D': 25, // Project Name
+      'E': 15, // Project Type
+      'F': 15, // Project Status
+      'G': 15, // Category
+      'H': 10, // Points
+      'I': 30  // Notes
+    };
+    
+    worksheet['!cols'] = Object.values(columnWidths).map(width => ({ wch: width }));
+
+    // Create workbook
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Tasks");
+
+    // Generate Excel file
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data = new Blob([excelBuffer], { 
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+    });
+    
+    // Save the file
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(data);
+    link.download = `${fileName || 'Admin-Tasks-Export'}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  } catch (error) {
+    console.error('Error exporting to Excel:', error);
+    alert(`Error exporting to Excel: ${error.message}`);
+  }
+};
 const AdminPanel = () => {
 
   const getCurrentDate = () => {
@@ -128,17 +203,6 @@ const AdminPanel = () => {
     });
   };
 
-  const formatDate = (dateInput) => {
-    const date = new Date(dateInput);
-    if (isNaN(date)) return 'Invalid date';
-
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
-
   const getStatusColor = (status) => {
     const statusColors = {
       'Complete': 'var(--success-color)',
@@ -147,6 +211,64 @@ const AdminPanel = () => {
       'Client\'s Correction': 'var(--danger-color)'
     };
     return statusColors[status] || 'var(--text-color)';
+  };
+
+  const exportToExcel = () => {
+    try {
+      if (!tasks || tasks.length === 0) {
+        alert('No data to export');
+        return;
+      }
+
+      // Prepare data for Excel
+      const excelData = tasks.map(task => ({
+        'Employee ID': task.eid,
+        'Employee Name': task.ename,
+        'Date': new Date(task.date).toLocaleDateString(),
+        'Project Name': task.projectname,
+        'Project Type': task.projecttype,
+        'Project Status': task.projectstatus,
+        'Category': task.category,
+        'Points': task.points,
+        'Notes': task.note || ''
+      }));
+
+      // Create worksheet
+      const ws = XLSX.utils.json_to_sheet(excelData);
+
+      // Set column widths
+      const wscols = [
+        { wch: 15 }, // Employee ID
+        { wch: 20 }, // Employee Name
+        { wch: 15 }, // Date
+        { wch: 30 }, // Project Name
+        { wch: 20 }, // Project Type
+        { wch: 15 }, // Project Status
+        { wch: 15 }, // Category
+        { wch: 10 }, // Points
+        { wch: 40 }  // Notes
+      ];
+      ws['!cols'] = wscols;
+
+      // Create workbook
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Tasks Data');
+
+      // Generate Excel file
+      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+      const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(data);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Admin-Tasks-${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error exporting to Excel:', error);
+      alert('Error exporting data to Excel');
+    }
   };
 
   return (
@@ -179,15 +301,6 @@ const AdminPanel = () => {
               <h3>Total Points</h3>
               <p>{totalPoints}</p>
             </div>
-            <motion.button
-              className="download-btn"
-              onClick={() => exportToExcel(tasks, 'Tasks-Data')}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Download size={18} />
-              <span>Download Excel</span>
-            </motion.button>
           </div>
         </motion.div>
 
@@ -238,6 +351,17 @@ const AdminPanel = () => {
               <Trash2 size={16} style={{ marginRight: '8px' }} />
               Clear
             </motion.button>
+            {tasks.length > 0 && (
+              <motion.button 
+                type="button" 
+                className="download-btn"
+                onClick={exportToExcel}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Download size={16} style={{ marginRight: '8px' }} /> Download Excel
+              </motion.button>
+            )}
           </div>
         </motion.form>
 

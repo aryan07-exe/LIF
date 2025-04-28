@@ -124,12 +124,16 @@ app.get('/monthly/tasks', async (req, res) => {
     const endOfMonth = `${year}-${monthNum}-${lastDay}`;
     
     const query = {
-      eid: { $regex: new RegExp(escapeRegex(eid), 'i') }, // Case-insensitive search for employee ID
       date: { 
         $gte: startOfMonth,
         $lte: endOfMonth
       }
     };
+
+    // Add eid filter only if it's provided
+    if (eid) {
+      query.eid = { $regex: new RegExp(escapeRegex(eid), 'i') };
+    }
 
     // Get tasks with sorting by date
     const tasks = await Task.find(query).sort({ date: 1 });
