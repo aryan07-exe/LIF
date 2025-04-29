@@ -1,255 +1,226 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { motion } from 'framer-motion';
-import { Calendar, Award, Download } from 'lucide-react';
-import './MonthWiseView.css';
-import Navbar from './Navbar';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
+// import { motion } from 'framer-motion';
+// import { Calendar, User, Search, Trash2, Award } from 'lucide-react';
+// import './MonthlyTaskView.css';
+// import Navbar from './Navbar';
 
-const formatDate = (dateInput) => {
-  try {
-    // Handle case where dateInput is already in YYYY-MM-DD format
-    if (typeof dateInput === 'string' && dateInput.includes('-')) {
-      const [year, month, day] = dateInput.split('-');
-      return `${day}/${month}/${year}`;
-    }
+// const MonthlyTaskView = () => {
+//   const [tasks, setTasks] = useState([]);
+//   const [filters, setFilters] = useState({ 
+//     eid: '', 
+//     month: new Date().toISOString().slice(0, 7), // Default to current month (YYYY-MM)
+//     category: ''
+//   });
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [totalPoints, setTotalPoints] = useState(0);
 
-    const date = new Date(dateInput);
-    if (isNaN(date.getTime())) {
-      console.error('Invalid date input:', dateInput);
-      return 'Invalid date';
-    }
+//   const categories = [
+//     'Haldi',
+//     'Mehendi',
+//     'Wedding'
+//   ];
 
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
+//   const fetchTasks = async () => {
+//     setIsLoading(true);
+//     try {
+//       console.log("Fetching monthly tasks with filters:", filters);
+//       const response = await axios.get('http://localhost:5000/monthly/tasks', { 
+//         params: { 
+//           eid: filters.eid || undefined,
+//           month: filters.month,
+//           category: filters.category
+//         } 
+//       });
 
-    return `${day}/${month}/${year}`;
-  } catch (error) {
-    console.error('Error formatting date:', error);
-    return 'Invalid date';
-  }
-};
+//       console.log("Monthly tasks response:", response.data);
+//       setTasks(response.data.tasks || []);
+//       setTotalPoints(response.data.totalPoints || 0);
+//     } catch (error) {
+//       console.error('Error fetching tasks:', error);
+//       setTasks([]);
+//       setTotalPoints(0);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
 
-const exportToExcel = (tasks, fileName) => {
-  try {
-    if (!tasks || !Array.isArray(tasks)) {
-      throw new Error('Invalid tasks data');
-    }
+//   const handleFilterChange = (e) => {
+//     setFilters({ ...filters, [e.target.name]: e.target.value });
+//   };
 
-    // Flatten the nested tasks structure
-    const flattenedTasks = tasks.flatMap(employeeData => {
-      if (!employeeData || !employeeData.tasks || !Array.isArray(employeeData.tasks)) {
-        console.warn('Invalid employee data:', employeeData);
-        return [];
-      }
-      
-      return employeeData.tasks.map(task => ({
-        'Employee ID': employeeData.eid || 'N/A',
-        'Employee Name': employeeData.ename || 'N/A',
-        'Date': formatDate(task.date),
-        'Project Name': task.projectname || 'N/A',
-        'Project Type': task.projecttype || 'N/A',
-        'Project Status': task.projectstatus || 'N/A',
-        'Category': task.category || 'N/A',
-        'Points': task.points || 0,
-        'Total Points': employeeData.totalPoints || 0
-      }));
-    });
+//   const handleSearch = (e) => {
+//     e.preventDefault();
+//     fetchTasks();
+//   };
 
-    if (flattenedTasks.length === 0) {
-      throw new Error('No valid tasks to export');
-    }
+//   const handleClear = () => {
+//     setFilters({ 
+//       eid: '', 
+//       month: new Date().toISOString().slice(0, 7),
+//       category: ''
+//     });
+//     setTasks([]);
+//     setTotalPoints(0);
+//   };
 
-    // Create worksheet with the flattened data
-    const worksheet = XLSX.utils.json_to_sheet(flattenedTasks);
-    
-    // Set column widths
-    const columnWidths = {
-      'A': 15, // Employee ID
-      'B': 20, // Employee Name
-      'C': 12, // Date
-      'D': 25, // Project Name
-      'E': 15, // Project Type
-      'F': 15, // Project Status
-      'G': 15, // Category
-      'H': 10, // Points
-      'I': 12  // Total Points
-    };
-    
-    worksheet['!cols'] = Object.values(columnWidths).map(width => ({ wch: width }));
+//   const formatDate = (dateInput) => {
+//     const date = new Date(dateInput);
+//     return date.toLocaleDateString('en-GB');
+//   };
 
-    // Create workbook and append sheet
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Tasks");
+//   const formatMonthYear = (monthYear) => {
+//     const [year, month] = monthYear.split('-');
+//     const date = new Date(year, month - 1);
+//     return date.toLocaleString('default', { month: 'long', year: 'numeric' });
+//   };
 
-    // Generate Excel file
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const data = new Blob([excelBuffer], { 
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
-    });
-    
-    // Save the file
-    saveAs(data, `${fileName || 'Monthly-Tasks-Export'}.xlsx`);
-  } catch (error) {
-    console.error('Error exporting to Excel:', error);
-    alert(`Error exporting to Excel: ${error.message}`);
-  }
-};
+//   return (
+//     <>
+//       <Navbar />
+//       <div className="monthly-task-view">
+//         <motion.h2 
+//           className="dashboard-title"
+//           initial={{ scale: 0.9 }}
+//           animate={{ scale: 1 }}
+//           transition={{ duration: 0.3 }}
+//         >
+//           Monthly Task Performance
+//         </motion.h2>
 
-const MonthWiseView = () => {
-  const [monthlyData, setMonthlyData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7));
+//         <div className="points-summary">
+//           <div className="points-card">
+//             <Award size={40} className="points-icon" />
+//             <div className="points-info">
+//               <h3>Total Points for {formatMonthYear(filters.month)}</h3>
+//               <p>{totalPoints}</p>
+//             </div>
+//           </div>
+//         </div>
 
-  const fetchMonthlyData = async () => {
-    setIsLoading(true);
-    try {
-      const response = await axios.get('http://localhost:5000/monthly/tasks', {
-        params: {
-          month: selectedMonth
-        }
-      });
-      
-      // Group tasks by employee
-      const groupedTasks = response.data.tasks.reduce((acc, task) => {
-        if (!acc[task.eid]) {
-          acc[task.eid] = {
-            eid: task.eid,
-            ename: task.ename,
-            tasks: [],
-            totalPoints: 0
-          };
-        }
-        acc[task.eid].tasks.push(task);
-        acc[task.eid].totalPoints += task.points || 0;
-        return acc;
-      }, {});
+//         <form className="filter-form" onSubmit={handleSearch}>
+//           <div className="input-group">
+//             <div className="form-field">
+//               <label htmlFor="eid">
+//                 <User size={18} className="field-icon" />
+//                 Employee ID
+//               </label>
+//               <input
+//                 type="text"
+//                 id="eid"
+//                 name="eid"
+//                 value={filters.eid}
+//                 onChange={handleFilterChange}
+//                 placeholder="Enter employee ID (optional)"
+//               />
+//             </div>
+//             <div className="form-field">
+//               <label htmlFor="month">
+//                 <Calendar size={18} className="field-icon" />
+//                 Month
+//               </label>
+//               <input
+//                 type="month"
+//                 id="month"
+//                 name="month"
+//                 value={filters.month}
+//                 onChange={handleFilterChange}
+//                 required
+//               />
+//             </div>
+//             <div className="form-field">
+//               <label htmlFor="category">
+//                 <Calendar size={18} className="field-icon" />
+//                 Category
+//               </label>
+//               <select
+//                 id="category"
+//                 name="category"
+//                 value={filters.category}
+//                 onChange={handleFilterChange}
+//               >
+//                 <option value="">All Categories</option>
+//                 {categories.map(category => (
+//                   <option key={category} value={category}>{category}</option>
+//                 ))}
+//               </select>
+//             </div>
+//           </div>
+//           <div className="button-group">
+//             <button type="submit">
+//               <Search size={16} style={{ marginRight: '8px' }} />
+//               Search
+//             </button>
+//             <button type="button" className="clear-btn" onClick={handleClear}>
+//               <Trash2 size={16} style={{ marginRight: '8px' }} />
+//               Clear
+//             </button>
+//           </div>
+//         </form>
 
-      setMonthlyData(Object.values(groupedTasks));
-    } catch (error) {
-      console.error('Error fetching monthly data:', error);
-      setMonthlyData([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+//         <div className="table-container">
+//           {isLoading ? (
+//             <div className="loading-spinner">
+//               <div className="spinner"></div>
+//               <p>Loading tasks...</p>
+//             </div>
+//           ) : tasks.length > 0 ? (
+//             <table className="task-table">
+//               <thead>
+//                 <tr>
+//                   <th>Date</th>
+//                   <th>Project Name</th>
+//                   <th>Type</th>
+//                   <th>Status</th>
+//                   <th>Category</th>
+//                   <th>Points</th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {tasks.map((task, idx) => (
+//                   <tr key={idx}>
+//                     <td>{formatDate(task.date)}</td>
+//                     <td>{task.projectname}</td>
+//                     <td>
+//                       <span className="project-type-badge">
+//                         {task.projecttype}
+//                       </span>
+//                     </td>
+//                     <td>
+//                       <span className="status-badge">
+//                         {task.projectstatus}
+//                       </span>
+//                     </td>
+//                     <td>
+//                       <span className="category-badge">
+//                         {task.category}
+//                       </span>
+//                     </td>
+//                     <td>
+//                       <span className="points-badge">
+//                         {task.points || 0}
+//                       </span>
+//                     </td>
+//                   </tr>
+//                 ))}
+//               </tbody>
+//             </table>
+//           ) : (
+//             <div className="no-tasks-msg">
+//               {filters.eid ? (
+//                 <>
+//                   <p>No tasks found for Employee {filters.eid} in {formatMonthYear(filters.month)}.</p>
+//                   <p className="no-tasks-subtitle">Try a different month or employee ID.</p>
+//                 </>
+//               ) : (
+//                 <p>No tasks found for {formatMonthYear(filters.month)}.</p>
+//               )}
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </>
+//   );
+// };
 
-  useEffect(() => {
-    fetchMonthlyData();
-  }, [selectedMonth]);
-
-  const formatMonthYear = (monthYear) => {
-    const [year, month] = monthYear.split('-');
-    const date = new Date(year, month - 1);
-    return date.toLocaleString('default', { month: 'long', year: 'numeric' });
-  };
-
-  const handleMonthChange = (e) => {
-    setSelectedMonth(e.target.value);
-  };
-
-  return (
-    <>
-      <Navbar />
-      <div className="month-wise-view">
-        <motion.h2 
-          className="dashboard-title"
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          Monthly Task Overview
-        </motion.h2>
-
-        <div className="month-selector">
-          <div className="form-field">
-            <label htmlFor="month">
-              <Calendar size={18} className="field-icon" />
-              Select Month
-            </label>
-            <input
-              type="month"
-              id="month"
-              value={selectedMonth}
-              onChange={handleMonthChange}
-              className="month-input"
-            />
-          </div>
-        </div>
-
-        {isLoading ? (
-          <div className="loading-spinner">
-            <div className="spinner"></div>
-            <p>Loading data...</p>
-          </div>
-        ) : monthlyData.length > 0 ? (
-          <div className="monthly-cards">
-            {monthlyData.map((employeeData, idx) => (
-              <motion.div
-                key={employeeData.eid}
-                className="employee-card"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <div className="employee-header">
-                  <h3>{employeeData.ename}</h3>
-                  <span className="employee-id">ID: {employeeData.eid}</span>
-                  <div className="points-summary">
-                    <Award size={24} className="points-icon" />
-                    <span className="total-points">{employeeData.totalPoints} Points</span>
-                  </div>
-                </div>
-
-                <div className="tasks-list">
-                  <table className="task-table">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Project Name</th>
-                        <th>Type</th>
-                        <th>Status</th>
-                        <th>Points</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {employeeData.tasks.map((task, taskIdx) => (
-                        <tr key={taskIdx}>
-                          <td>{formatDate(task.date)}</td>
-                          <td>{task.projectname}</td>
-                          <td>
-                            <span className="project-type-badge">
-                              {task.projecttype}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="status-badge">
-                              {task.projectstatus}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="points-badge">
-                              {task.points || 0}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="no-data-message">
-            <p>No tasks found for {formatMonthYear(selectedMonth)}</p>
-          </div>
-        )}
-      </div>
-    </>
-  );
-};
-
-export default MonthWiseView; 
+// export default MonthlyTaskView;
