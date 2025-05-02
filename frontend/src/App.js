@@ -14,6 +14,8 @@ import Register from "./components/Register"
 import TestConnection from "./components/TestConnection"
 import AddProject from "./components/AddProject"
 import MonthWiseView from "./components/MonthWiseView"
+import EmployeeProfile from "./components/EmployeeProfile"
+import OnsiteForm from "./components/OnsiteForm"
 
 const App = () => {
   return (
@@ -32,6 +34,8 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/test-connection" element={<TestConnection />} />
         <Route path="/add-project" element={<AddProject />} />
+        <Route path="/employee-profile" element={<EmployeeProfile />} />
+        <Route path="/onsite" element={<OnsiteForm />} />
       </Routes>
     </Router>
   );

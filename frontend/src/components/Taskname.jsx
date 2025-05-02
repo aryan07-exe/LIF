@@ -17,7 +17,15 @@ const Taskname = () => {
     category: '',
     notes: ''
   });
-  
+
+  const [projects, setProjects] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
   // Add useEffect to update form data when user data changes
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem('user') || '{}');
@@ -28,9 +36,71 @@ const Taskname = () => {
     }));
   }, []);
 
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  // Add useEffect to fetch projects when component mounts
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const fetchProjects = async () => {
+    setIsLoadingProjects(true);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await axios.get('http://localhost:5000/api/projects', {
+        headers: {
+          'Authorization': token
+        }
+      });
+      setProjects(response.data);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      setError('Failed to fetch projects. Please try again later.');
+    } finally {
+      setIsLoadingProjects(false);
+    }
+  };
+
+  const handleProjectNameChange = (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      projectname: value
+    }));
+
+    if (value.length >= 2) {
+      const filteredProjects = projects.filter(project => 
+        project.projectname.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filteredProjects.map(project => project.projectname));
+      setShowSuggestions(true);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setFormData(prev => ({
+      ...prev,
+      projectname: suggestion
+    }));
+    setShowSuggestions(false);
+  };
+
+  const handleChange = (e) => {
+    if (e.target.name === 'eid') return; // Prevent manual EID changes
+    if (e.target.name === 'projectname') {
+      handleProjectNameChange(e);
+      return;
+    }
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
   const projectTypes = [
     'Reel',
@@ -55,14 +125,6 @@ const Taskname = () => {
     'Mehendi',
     'Wedding'
   ];
-
-  const handleChange = (e) => {
-    if (e.target.name === 'eid') return; // Prevent manual EID changes
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -211,15 +273,35 @@ const Taskname = () => {
                 <FileText size={18} className="field-icon" />
                 Project Name
               </label>
-              <input
-                type="text"
-                id="projectname"
-                name="projectname"
-                value={formData.projectname}
-                onChange={handleChange}
-                required
-                placeholder="Enter project name"
-              />
+              <div className="suggestion-container">
+                <input
+                  type="text"
+                  id="projectname"
+                  name="projectname"
+                  value={formData.projectname}
+                  onChange={handleProjectNameChange}
+                  required
+                  placeholder="Enter project name"
+                  autoComplete="off"
+                  disabled={isLoadingProjects}
+                />
+                {isLoadingProjects && (
+                  <div className="loading-text">Loading projects...</div>
+                )}
+                {showSuggestions && suggestions.length > 0 && (
+                  <ul className="suggestions-list">
+                    {suggestions.map((suggestion, index) => (
+                      <li
+                        key={index}
+                        onClick={() => handleSuggestionClick(suggestion)}
+                        className="suggestion-item"
+                      >
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
 
             <div className="form-field">

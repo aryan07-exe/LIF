@@ -108,17 +108,34 @@ const MonthlyTaskView = () => {
   const [filters, setFilters] = useState({ 
     eid: '', 
     month: new Date().toISOString().slice(0, 7), // Default to current month (YYYY-MM)
-    category: ''
+    category: '',
+    projectType: '',
+    projectStatus: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
   const [users, setUsers] = useState([]);
+  const [projectTypes, setProjectTypes] = useState([]);
+  const [projectStatuses, setProjectStatuses] = useState([]);
 
   const categories = [
     'Haldi',
     'Mehendi',
     'Wedding'
   ];
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Completed':
+        return '#2E7D32'; // Green
+      case 'In Progress':
+        return '#F57C00'; // Orange
+      case 'Pending':
+        return '#D32F2F'; // Red
+      default:
+        return '#1976D2'; // Blue
+    }
+  };
 
   const fetchTasks = async () => {
     setIsLoading(true);
@@ -128,17 +145,46 @@ const MonthlyTaskView = () => {
         params: { 
           eid: filters.eid || undefined,
           month: filters.month,
-          category: filters.category
+          category: filters.category || undefined,
+          projectType: filters.projectType || undefined,
+          projectStatus: filters.projectStatus || undefined
         } 
       });
       
       console.log("Monthly tasks response:", response.data);
-      setTasks(response.data.tasks || []);
-      setTotalPoints(response.data.totalPoints || 0);
+      
+      // Filter the tasks based on all selected criteria
+      let filteredTasks = response.data.tasks || [];
+      
+      // Apply filters in memory if needed (as a backup to server-side filtering)
+      if (filters.eid) {
+        filteredTasks = filteredTasks.filter(task => task.eid === filters.eid);
+      }
+      if (filters.category) {
+        filteredTasks = filteredTasks.filter(task => task.category === filters.category);
+      }
+      if (filters.projectType) {
+        filteredTasks = filteredTasks.filter(task => task.projecttype === filters.projectType);
+      }
+      if (filters.projectStatus) {
+        filteredTasks = filteredTasks.filter(task => task.projectstatus === filters.projectStatus);
+      }
+      
+      setTasks(filteredTasks);
+      setTotalPoints(filteredTasks.reduce((sum, task) => sum + (task.points || 0), 0));
+      
+      // Extract unique project types and statuses from the filtered tasks
+      const uniqueTypes = [...new Set(filteredTasks.map(task => task.projecttype))].filter(Boolean);
+      const uniqueStatuses = [...new Set(filteredTasks.map(task => task.projectstatus))].filter(Boolean);
+      
+      setProjectTypes(uniqueTypes);
+      setProjectStatuses(uniqueStatuses);
     } catch (error) {
       console.error('Error fetching tasks:', error);
       setTasks([]);
       setTotalPoints(0);
+      setProjectTypes([]);
+      setProjectStatuses([]);
     } finally {
       setIsLoading(false);
     }
@@ -159,7 +205,11 @@ const MonthlyTaskView = () => {
   }, [filters]);
 
   const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      [name]: value
+    }));
   };
 
   const handleSearch = (e) => {
@@ -171,10 +221,10 @@ const MonthlyTaskView = () => {
     setFilters({ 
       eid: '', 
       month: new Date().toISOString().slice(0, 7),
-      category: ''
+      category: '',
+      projectType: '',
+      projectStatus: ''
     });
-    setTasks([]);
-    setTotalPoints(0);
   };
 
   return (
@@ -247,6 +297,46 @@ const MonthlyTaskView = () => {
                 required
               />
             </div>
+            <div className="form-field">
+              <label htmlFor="projectType">
+                <Award size={18} className="field-icon" />
+                Project Type
+              </label>
+              <select
+                id="projectType"
+                name="projectType"
+                value={filters.projectType}
+                onChange={handleFilterChange}
+                className="filter-select"
+              >
+                <option value="">All Types</option>
+                {projectTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-field">
+              <label htmlFor="projectStatus">
+                <Award size={18} className="field-icon" />
+                Project Status
+              </label>
+              <select
+                id="projectStatus"
+                name="projectStatus"
+                value={filters.projectStatus}
+                onChange={handleFilterChange}
+                className="filter-select"
+              >
+                <option value="">All Statuses</option>
+                {projectStatuses.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="button-group">
             <button type="submit">
@@ -293,7 +383,7 @@ const MonthlyTaskView = () => {
                       </span>
                     </td>
                     <td>
-                      <span className="status-badge">
+                      <span className="status-badge" style={{ backgroundColor: getStatusColor(task.projectstatus) }}>
                         {task.projectstatus}
                       </span>
                     </td>

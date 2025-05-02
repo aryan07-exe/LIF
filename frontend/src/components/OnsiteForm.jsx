@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Camera, Film, Save, X, User, Calendar, FileText, AlertCircle } from 'lucide-react';
 import './TaskForm.css';
 
-const Taskname = () => {
+const OnsiteForm = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   
   const [formData, setFormData] = useState({
@@ -19,8 +19,6 @@ const Taskname = () => {
   });
 
   const [projects, setProjects] = useState([]);
-  const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -68,16 +66,9 @@ const Taskname = () => {
   const fetchProjects = async () => {
     setIsLoadingProjects(true);
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
-      const response = await axios.get('http://localhost:5000/api/projects', {
-        headers: {
-          'Authorization': token
-        }
-      });
+      console.log('Fetching projects...');
+      const response = await axios.get('http://localhost:5000/api/projects');
+      console.log('Projects received:', response.data);
       setProjects(response.data);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -87,39 +78,8 @@ const Taskname = () => {
     }
   };
 
-  const handleProjectNameChange = (e) => {
-    const value = e.target.value;
-    setFormData(prev => ({
-      ...prev,
-      projectname: value
-    }));
-
-    if (value.length >= 2) {
-      const filteredProjects = projects.filter(project => 
-        project.projectname.toLowerCase().includes(value.toLowerCase())
-      );
-      setSuggestions(filteredProjects.map(project => project.projectname));
-      setShowSuggestions(true);
-    } else {
-      setSuggestions([]);
-      setShowSuggestions(false);
-    }
-  };
-
-  const handleSuggestionClick = (suggestion) => {
-    setFormData(prev => ({
-      ...prev,
-      projectname: suggestion
-    }));
-    setShowSuggestions(false);
-  };
-
   const handleChange = (e) => {
     if (e.target.name === 'eid') return; // Prevent manual EID changes
-    if (e.target.name === 'projectname') {
-      handleProjectNameChange(e);
-      return;
-    }
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
@@ -273,35 +233,27 @@ const Taskname = () => {
                 <FileText size={18} className="field-icon" />
                 Project Name
               </label>
-              <div className="suggestion-container">
-                <input
-                  type="text"
-                  id="projectname"
-                  name="projectname"
-                  value={formData.projectname}
-                  onChange={handleProjectNameChange}
-                  required
-                  placeholder="Enter project name"
-                  autoComplete="off"
-                  disabled={isLoadingProjects}
-                />
-                {isLoadingProjects && (
-                  <div className="loading-text">Loading projects...</div>
+              <select
+                id="projectname"
+                name="projectname"
+                value={formData.projectname}
+                onChange={handleChange}
+                required
+                disabled={isLoadingProjects}
+              >
+                <option value="">Select Project</option>
+                {isLoadingProjects ? (
+                  <option disabled>Loading projects...</option>
+                ) : projects.length > 0 ? (
+                  projects.map((project) => (
+                    <option key={project._id} value={project.projectname}>
+                      {project.projectname}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No projects available</option>
                 )}
-                {showSuggestions && suggestions.length > 0 && (
-                  <ul className="suggestions-list">
-                    {suggestions.map((suggestion, index) => (
-                      <li
-                        key={index}
-                        onClick={() => handleSuggestionClick(suggestion)}
-                        className="suggestion-item"
-                      >
-                        {suggestion}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              </select>
             </div>
 
             <div className="form-field">
@@ -405,4 +357,4 @@ const Taskname = () => {
   );
 };
 
-export default Taskname;
+export default OnsiteForm;
