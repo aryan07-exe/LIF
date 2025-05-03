@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { Camera, Film, Save, X, User, Calendar, FileText, AlertCircle } from 'lucide-react';
+import { Camera, Film, Save, X, User, Calendar, Clock, Users, FileText } from 'lucide-react';
 import './TaskForm.css';
 
 const OnsiteForm = () => {
@@ -10,11 +10,19 @@ const OnsiteForm = () => {
   const [formData, setFormData] = useState({
     eid: user.employeeId || '',
     ename: user.name || '',
-    date: new Date().toISOString().split('T')[0],
     projectname: '',
-    projecttype: '',
-    projectstatus: '',
-    category: '',
+    shootDate: new Date().toISOString().split('T')[0],
+    startTime: '',
+    endTime: '',
+    categories: {
+      weddingCeremony: false,
+      engagementSangeet: false,
+      haldiGrahShanti: false,
+      preWedding: false,
+      birthdayAnniversaryFamily: false,
+      corporateEvent: false
+    },
+    teamNames: '',
     notes: ''
   });
 
@@ -23,30 +31,6 @@ const OnsiteForm = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const projectTypes = [
-    'Reel',
-    'Teaser',
-    'Highlight',
-    'Film',
-    'Cine Film',
-    'Photo Edit',
-    'Album Edit',
-    'Album Design',
-    'Others'
-  ];
-
-  const projectStatuses = [
-    'Complete',
-    'In-Process',
-    'In House Correction',
-    'Client\'s Correction'
-  ];
-  const categories = [
-    'Haldi',
-    'Mehendi',
-    'Wedding'
-  ];
 
   // Add useEffect to update form data when user data changes
   useEffect(() => {
@@ -66,9 +50,16 @@ const OnsiteForm = () => {
   const fetchProjects = async () => {
     setIsLoadingProjects(true);
     try {
-      console.log('Fetching projects...');
-      const response = await axios.get('http://localhost:5000/api/projects');
-      console.log('Projects received:', response.data);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await axios.get('http://localhost:5000/api/projects', {
+        headers: {
+          'Authorization': token
+        }
+      });
       setProjects(response.data);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -80,10 +71,22 @@ const OnsiteForm = () => {
 
   const handleChange = (e) => {
     if (e.target.name === 'eid') return; // Prevent manual EID changes
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    
+    if (e.target.name.startsWith('categories.')) {
+      const categoryName = e.target.name.split('.')[1];
+      setFormData(prev => ({
+        ...prev,
+        categories: {
+          ...prev.categories,
+          [categoryName]: e.target.checked
+        }
+      }));
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -98,8 +101,20 @@ const OnsiteForm = () => {
         throw new Error('No authentication token found. Please login again.');
       }
 
+      // Validate required fields
+      if (!formData.projectname || !formData.shootDate || !formData.startTime || 
+          !formData.endTime || !formData.teamNames) {
+        throw new Error('Please fill in all required fields');
+      }
+
+      // Validate at least one category is selected
+      const hasSelectedCategory = Object.values(formData.categories).some(value => value);
+      if (!hasSelectedCategory) {
+        throw new Error('Please select at least one category');
+      }
+
       console.log('Submitting form data:', formData);
-      const response = await axios.post('http://localhost:5000/task', formData, {
+      const response = await axios.post('http://localhost:5000/onsiteTask', formData, {
         headers: {
           'Authorization': token,
           'Content-Type': 'application/json'
@@ -107,29 +122,29 @@ const OnsiteForm = () => {
       });
       
       console.log('Server response:', response.data);
-      setMessage('Task submitted successfully!');
-      // Reset form except EID and date
+      setMessage('Onsite task submitted successfully!');
+      
+      // Reset form except EID and ename
       setFormData(prev => ({
         ...prev,
         projectname: '',
-        projecttype: '',
-        projectstatus: '',
-        category: '',
+        shootDate: new Date().toISOString().split('T')[0],
+        startTime: '',
+        endTime: '',
+        categories: {
+          weddingCeremony: false,
+          engagementSangeet: false,
+          haldiGrahShanti: false,
+          preWedding: false,
+          birthdayAnniversaryFamily: false,
+          corporateEvent: false
+        },
+        teamNames: '',
         notes: ''
       }));
     } catch (err) {
       console.error('Submission error:', err);
-      if (err.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        setError(`Server error: ${err.response.status} - ${err.response.data?.message || err.response.data || 'Unknown error'}`);
-      } else if (err.request) {
-        // The request was made but no response was received
-        setError('No response from server. Please check if the server is running.');
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        setError(`Error: ${err.message}`);
-      }
+      setError(err.response?.data?.message || err.message || 'Failed to submit onsite task. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -154,7 +169,7 @@ const OnsiteForm = () => {
           <Camera size={32} className="logo-icon" />
         </div>
         <div className="header-divider"></div>
-        <div className="header-subtitle">Create New Task</div>
+        <div className="header-subtitle">Create New Onsite Task</div>
       </motion.div>
 
       {message && <motion.div 
@@ -214,21 +229,6 @@ const OnsiteForm = () => {
             </div>
 
             <div className="form-field">
-              <label htmlFor="date">
-                <Calendar size={18} className="field-icon" />
-                Date
-              </label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-field">
               <label htmlFor="projectname">
                 <FileText size={18} className="field-icon" />
                 Project Name
@@ -257,60 +257,130 @@ const OnsiteForm = () => {
             </div>
 
             <div className="form-field">
-              <label htmlFor="projecttype">
-                <Film size={18} className="field-icon" />
-                Project Type
+              <label htmlFor="shootDate">
+                <Calendar size={18} className="field-icon" />
+                Shoot Date
               </label>
-              <select
-                id="projecttype"
-                name="projecttype"
-                value={formData.projecttype}
+              <input
+                type="date"
+                id="shootDate"
+                name="shootDate"
+                value={formData.shootDate}
                 onChange={handleChange}
                 required
-              >
-                <option value="">Select project type</option>
-                {projectTypes.map(type => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </select>
+              />
             </div>
 
             <div className="form-field">
-              <label htmlFor="projectstatus">
-                <AlertCircle size={18} className="field-icon" />
-                Project Status
+              <label htmlFor="startTime">
+                <Clock size={18} className="field-icon" />
+                Start Time
               </label>
-              <select
-                id="projectstatus"
-                name="projectstatus"
-                value={formData.projectstatus}
+              <input
+                type="time"
+                id="startTime"
+                name="startTime"
+                value={formData.startTime}
                 onChange={handleChange}
                 required
-              >
-                <option value="">Select project status</option>
-                {projectStatuses.map(status => (
-                  <option key={status} value={status}>{status}</option>
-                ))}
-              </select>
+              />
             </div>
 
             <div className="form-field">
-              <label htmlFor="category">
-                <AlertCircle size={18} className="field-icon" />
-                Category
+              <label htmlFor="endTime">
+                <Clock size={18} className="field-icon" />
+                End Time
               </label>
-              <select
-                id="category"
-                name="category"
-                value={formData.category}
+              <input
+                type="time"
+                id="endTime"
+                name="endTime"
+                value={formData.endTime}
                 onChange={handleChange}
                 required
-              >
-                <option value="">Select category</option>
-                {categories.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="teamNames">
+                <Users size={18} className="field-icon" />
+                Team Names
+              </label>
+              <input
+                type="text"
+                id="teamNames"
+                name="teamNames"
+                value={formData.teamNames}
+                onChange={handleChange}
+                required
+                placeholder="Enter team members' names"
+              />
+            </div>
+
+            <div className="form-field full-width">
+              <label>Categories</label>
+              <div className="categories-grid">
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="weddingCeremony"
+                    name="categories.weddingCeremony"
+                    checked={formData.categories.weddingCeremony}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="weddingCeremony">Wedding Ceremony</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="engagementSangeet"
+                    name="categories.engagementSangeet"
+                    checked={formData.categories.engagementSangeet}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="engagementSangeet">Engagement/Sangeet</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="haldiGrahShanti"
+                    name="categories.haldiGrahShanti"
+                    checked={formData.categories.haldiGrahShanti}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="haldiGrahShanti">Haldi/Grah Shanti</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="preWedding"
+                    name="categories.preWedding"
+                    checked={formData.categories.preWedding}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="preWedding">Pre-Wedding</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="birthdayAnniversaryFamily"
+                    name="categories.birthdayAnniversaryFamily"
+                    checked={formData.categories.birthdayAnniversaryFamily}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="birthdayAnniversaryFamily">Birthday/Anniversary/Family</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="corporateEvent"
+                    name="categories.corporateEvent"
+                    checked={formData.categories.corporateEvent}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="corporateEvent">Corporate Event</label>
+                </div>
+              </div>
             </div>
 
             <div className="form-field full-width">

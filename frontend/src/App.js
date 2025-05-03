@@ -16,6 +16,7 @@ import AddProject from "./components/AddProject"
 import MonthWiseView from "./components/MonthWiseView"
 import EmployeeProfile from "./components/EmployeeProfile"
 import OnsiteForm from "./components/OnsiteForm"
+import OnsiteTaskView from './components/OnsiteTaskView'; 
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/add-project" element={<AddProject />} />
         <Route path="/employee-profile" element={<EmployeeProfile />} />
         <Route path="/onsite" element={<OnsiteForm />} />
+        <Route path="/onsitedata" element={<OnsiteTaskView/>}/>
       </Routes>
     </Router>
   );
