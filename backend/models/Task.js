@@ -10,7 +10,7 @@ ename:{
         required:true
         },
 date:{
-    type:String,
+    type:Date,
     required:true
 },
 projectname:{
@@ -38,6 +38,8 @@ note:{
     type:String,
     required:false
 }
+}, {
+    timestamps: true
 });
 
 module.exports=mongoose.model('Task',Taskschema);

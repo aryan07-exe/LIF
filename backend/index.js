@@ -8,6 +8,7 @@ require('dotenv').config();
 const Task=require('./models/Task');
 const pointsConfig = require('./config/pointsConfig');
 const User = require('./models/User');
+const OnsiteTask = require('./models/OnsiteTask');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -48,17 +49,23 @@ app.post("/task",async(req,res)=>{
             return res.status(400).json({ message: "All required fields must be provided" });
         }
 
+        // Convert date string to Date object
+        const dateObj = new Date(date);
+        if (isNaN(dateObj.getTime())) {
+            return res.status(400).json({ message: "Invalid date format" });
+        }
+
         const points = calculatePoints(projecttype);
         const task = new Task({
             eid,
             ename,
-            date,
+            date: dateObj,
             projectname,
             projecttype,
             projectstatus,
             category,
             points,
-            note: req.body.notes || '' // Handle the notes field
+            note: req.body.notes || ''
         });
         
         await task.save();
@@ -66,6 +73,42 @@ app.post("/task",async(req,res)=>{
     }catch(error){
         console.error('Task creation error:', error);
         res.status(500).json({message: "Error creating task", error: error.message});
+    }
+});
+
+app.post("/task3",async(req,res)=>{
+    try{
+        // Validate required fields
+        const { eid, ename, date, projectname, projecttype, projectstatus, category } = req.body;
+        
+        if (!eid || !ename || !date || !projectname || !projecttype || !projectstatus || !category) {
+            return res.status(400).json({ message: "All required fields must be provided" });
+        }
+
+        // Convert date string to Date object
+        const dateObj = new Date(date);
+        if (isNaN(dateObj.getTime())) {
+            return res.status(400).json({ message: "Invalid date format" });
+        }
+
+        const points = calculatePoints(projecttype);
+        const task3 = new Task3({
+            eid,
+            ename,
+            date: dateObj,
+            projectname,
+            projecttype,
+            projectstatus,
+            category,
+            points,
+            note: req.body.notes || ''
+        });
+        
+        await task3.save();
+        res.status(201).json({message:"Task3 created successfully"});
+    }catch(error){
+        console.error('Task3 creation error:', error);
+        res.status(500).json({message: "Error creating task3", error: error.message});
     }
 });
 
@@ -194,6 +237,100 @@ app.get('/api/users/eids', async (req, res) => {
   } catch (error) {
     console.error('Error fetching users:', error);
     res.status(500).json({ message: 'Error fetching users' });
+  }
+});
+
+// Onsite task submission
+app.post('/onsiteTask', async (req, res) => {
+  try {
+    const {
+      eid,
+      ename,
+      projectname,
+      shootDate,
+      startTime,
+      endTime,
+      categories,
+      teamNames,
+      notes
+    } = req.body;
+
+    // Validate required fields
+    if (!eid || !ename || !projectname || !shootDate || !startTime || !endTime || !teamNames) {
+      return res.status(400).json({ message: 'All required fields must be provided' });
+    }
+
+    // Validate at least one category is selected
+    const hasSelectedCategory = Object.values(categories).some(value => value);
+    if (!hasSelectedCategory) {
+      return res.status(400).json({ message: 'At least one category must be selected' });
+    }
+
+    // Convert shootDate to Date object
+    const shootDateObj = new Date(shootDate);
+    if (isNaN(shootDateObj.getTime())) {
+      return res.status(400).json({ message: 'Invalid shoot date format' });
+    }
+
+    // Create new onsite task
+    const onsiteTask = new OnsiteTask({
+      eid,
+      ename,
+      projectname,
+      shootDate: shootDateObj,
+      startTime,
+      endTime,
+      categories,
+      teamNames,
+      notes: notes || ''
+    });
+
+    await onsiteTask.save();
+    console.log(`New onsite task created for project: ${projectname}`);
+    
+    res.status(201).json({
+      message: 'Onsite task created successfully',
+      task: onsiteTask
+    });
+  } catch (error) {
+    console.error('Error creating onsite task:', error);
+    res.status(500).json({ 
+      message: 'Error creating onsite task',
+      error: error.message 
+    });
+  }
+});
+
+// GET endpoint for OnsiteTaskView
+app.get('/onsite/tasks', async (req, res) => {
+  const { eid, shootDate, projectname, teamNames } = req.query;
+  const query = {};
+
+  // Use regex for case-insensitive search with escaped patterns
+  if (eid) query.eid = { $regex: new RegExp(escapeRegex(eid), 'i') };
+  if (shootDate) query.shootDate = shootDate;
+  if (projectname) query.projectname = { $regex: new RegExp(escapeRegex(projectname), 'i') };
+  if (teamNames) query.teamNames = { $regex: new RegExp(escapeRegex(teamNames), 'i') };
+
+  try {
+    const tasks = await OnsiteTask.find(query).sort({ shootDate: -1 });
+    
+    // Get unique values for filters
+    const uniqueEids = await OnsiteTask.distinct('eid');
+    const uniqueProjectNames = await OnsiteTask.distinct('projectname');
+    const uniqueTeamNames = await OnsiteTask.distinct('teamNames');
+
+    res.json({
+      tasks,
+      filters: {
+        eids: uniqueEids,
+        projectNames: uniqueProjectNames,
+        teamNames: uniqueTeamNames
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching onsite tasks:', error);
+    res.status(500).json({ message: 'Error fetching onsite tasks' });
   }
 });
 

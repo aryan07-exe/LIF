@@ -9,10 +9,12 @@ const TaskForm = () => {
   
   const [formData, setFormData] = useState({
     eid: user.employeeId || '',
+    ename: user.name || '',
     date: new Date().toISOString().split('T')[0],
     projectname: '',
     projecttype: '',
     projectstatus: '',
+    category: '',
     notes: ''
   });
   
@@ -54,23 +56,47 @@ const TaskForm = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/task', formData, {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found. Please login again.');
+      }
+
+      // Validate required fields
+      if (!formData.projectname || !formData.date || !formData.projecttype || 
+          !formData.projectstatus || !formData.category) {
+        throw new Error('Please fill in all required fields');
+      }
+
+      // Convert date to ISO string
+      const submitData = {
+        ...formData,
+        date: new Date(formData.date).toISOString()
+      };
+
+      console.log('Submitting form data:', submitData);
+      const response = await axios.post('http://localhost:5000/task', submitData, {
         headers: {
-          'Authorization': localStorage.getItem('token')
+          'Authorization': token,
+          'Content-Type': 'application/json'
         }
       });
       
+      console.log('Server response:', response.data);
       setMessage('Task submitted successfully!');
-      // Reset form except EID and date
+      
+      // Reset form except EID and ename
       setFormData(prev => ({
         ...prev,
+        date: new Date().toISOString().split('T')[0],
         projectname: '',
         projecttype: '',
         projectstatus: '',
+        category: '',
         notes: ''
       }));
     } catch (err) {
-      setError(err.response?.data?.message || 'Error submitting task');
+      console.error('Submission error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to submit task. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -135,6 +161,21 @@ const TaskForm = () => {
                 id="eid"
                 name="eid"
                 value={formData.eid}
+                disabled
+                className="disabled-input"
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="ename">
+                <User size={18} className="field-icon" />
+                Employee Name
+              </label>
+              <input
+                type="text"
+                id="ename"
+                name="ename"
+                value={formData.ename}
                 disabled
                 className="disabled-input"
               />
@@ -207,6 +248,21 @@ const TaskForm = () => {
                   <option key={status} value={status}>{status}</option>
                 ))}
               </select>
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="category">
+                <FileText size={18} className="field-icon" />
+                Category
+              </label>
+              <input
+                type="text"
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                placeholder="Enter category"
+              />
             </div>
 
             <div className="form-field full-width">

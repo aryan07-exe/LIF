@@ -17,10 +17,20 @@ const OnsiteForm = () => {
     categories: {
       weddingCeremony: false,
       engagementSangeet: false,
-      haldiGrahShanti: false,
+      reception: false,
       preWedding: false,
-      birthdayAnniversaryFamily: false,
-      corporateEvent: false
+      maternity: false,
+      babyShower: false,
+      birthday: false,
+      anniversary: false,
+      corporate: false,
+      product: false,
+      fashion: false,
+      food: false,
+      realEstate: false,
+      travel: false,
+      event: false,
+      other: false
     },
     teamNames: '',
     notes: ''
@@ -113,8 +123,14 @@ const OnsiteForm = () => {
         throw new Error('Please select at least one category');
       }
 
-      console.log('Submitting form data:', formData);
-      const response = await axios.post('http://localhost:5000/onsiteTask', formData, {
+      // Convert shootDate to Date object
+      const submitData = {
+        ...formData,
+        shootDate: new Date(formData.shootDate).toISOString()
+      };
+
+      console.log('Submitting form data:', submitData);
+      const response = await axios.post('http://localhost:5000/onsiteTask', submitData, {
         headers: {
           'Authorization': token,
           'Content-Type': 'application/json'
@@ -134,10 +150,20 @@ const OnsiteForm = () => {
         categories: {
           weddingCeremony: false,
           engagementSangeet: false,
-          haldiGrahShanti: false,
+          reception: false,
           preWedding: false,
-          birthdayAnniversaryFamily: false,
-          corporateEvent: false
+          maternity: false,
+          babyShower: false,
+          birthday: false,
+          anniversary: false,
+          corporate: false,
+          product: false,
+          fashion: false,
+          food: false,
+          realEstate: false,
+          travel: false,
+          event: false,
+          other: false
         },
         teamNames: '',
         notes: ''
@@ -343,12 +369,12 @@ const OnsiteForm = () => {
                 <div className="category-checkbox">
                   <input
                     type="checkbox"
-                    id="haldiGrahShanti"
-                    name="categories.haldiGrahShanti"
-                    checked={formData.categories.haldiGrahShanti}
+                    id="reception"
+                    name="categories.reception"
+                    checked={formData.categories.reception}
                     onChange={handleChange}
                   />
-                  <label htmlFor="haldiGrahShanti">Haldi/Grah Shanti</label>
+                  <label htmlFor="reception">Reception</label>
                 </div>
                 <div className="category-checkbox">
                   <input
@@ -363,22 +389,122 @@ const OnsiteForm = () => {
                 <div className="category-checkbox">
                   <input
                     type="checkbox"
-                    id="birthdayAnniversaryFamily"
-                    name="categories.birthdayAnniversaryFamily"
-                    checked={formData.categories.birthdayAnniversaryFamily}
+                    id="maternity"
+                    name="categories.maternity"
+                    checked={formData.categories.maternity}
                     onChange={handleChange}
                   />
-                  <label htmlFor="birthdayAnniversaryFamily">Birthday/Anniversary/Family</label>
+                  <label htmlFor="maternity">Maternity</label>
                 </div>
                 <div className="category-checkbox">
                   <input
                     type="checkbox"
-                    id="corporateEvent"
-                    name="categories.corporateEvent"
-                    checked={formData.categories.corporateEvent}
+                    id="babyShower"
+                    name="categories.babyShower"
+                    checked={formData.categories.babyShower}
                     onChange={handleChange}
                   />
-                  <label htmlFor="corporateEvent">Corporate Event</label>
+                  <label htmlFor="babyShower">Baby Shower</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="birthday"
+                    name="categories.birthday"
+                    checked={formData.categories.birthday}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="birthday">Birthday</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="anniversary"
+                    name="categories.anniversary"
+                    checked={formData.categories.anniversary}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="anniversary">Anniversary</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="corporate"
+                    name="categories.corporate"
+                    checked={formData.categories.corporate}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="corporate">Corporate</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="product"
+                    name="categories.product"
+                    checked={formData.categories.product}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="product">Product</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="fashion"
+                    name="categories.fashion"
+                    checked={formData.categories.fashion}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="fashion">Fashion</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="food"
+                    name="categories.food"
+                    checked={formData.categories.food}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="food">Food</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="realEstate"
+                    name="categories.realEstate"
+                    checked={formData.categories.realEstate}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="realEstate">Real Estate</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="travel"
+                    name="categories.travel"
+                    checked={formData.categories.travel}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="travel">Travel</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="event"
+                    name="categories.event"
+                    checked={formData.categories.event}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="event">Event</label>
+                </div>
+                <div className="category-checkbox">
+                  <input
+                    type="checkbox"
+                    id="other"
+                    name="categories.other"
+                    checked={formData.categories.other}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="other">Other</label>
                 </div>
               </div>
             </div>

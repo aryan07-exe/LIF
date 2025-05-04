@@ -7,29 +7,14 @@ import Navbar from './Navbar';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
-const formatDate = (dateInput) => {
-  try {
-    // Handle case where dateInput is already in YYYY-MM-DD format
-    if (typeof dateInput === 'string' && dateInput.includes('-')) {
-      const [year, month, day] = dateInput.split('-');
-      return `${day}/${month}/${year}`;
-    }
-
-    const date = new Date(dateInput);
-    if (isNaN(date.getTime())) {
-      console.error('Invalid date input:', dateInput);
-      return 'Invalid date';
-    }
-
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  } catch (error) {
-    console.error('Error formatting date:', error);
-    return 'Invalid date';
-  }
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    weekday: 'short'
+  });
 };
 
 const formatMonthYear = (monthYear) => {
