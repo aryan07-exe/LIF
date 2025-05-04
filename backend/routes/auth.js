@@ -69,14 +69,20 @@ router.get('/me', async (req, res) => {
 // Create a new user (admin only)
 router.post('/register', async (req, res) => {
   try {
-    const { employeeId, password, name, department, role } = req.body;
+    const { employeeId, email, password, name, department, role, formAccess } = req.body;
     
     // Validate required fields
-    if (!employeeId || !password || !name || !department) {
+    if (!employeeId || !email || !password || !name || !department) {
       return res.status(400).json({ message: 'All required fields must be provided' });
     }
 
-    // Validate employee ID format (you can customize this based on your requirements)
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+
+    // Validate employee ID format
     if (!/^[A-Za-z0-9]+$/.test(employeeId)) {
       return res.status(400).json({ message: 'Employee ID must contain only letters and numbers' });
     }
@@ -87,18 +93,25 @@ router.post('/register', async (req, res) => {
     }
     
     // Check if user already exists
-    const existingUser = await User.findOne({ employeeId });
+    const existingUser = await User.findOne({ $or: [{ employeeId }, { email }] });
     if (existingUser) {
-      return res.status(400).json({ message: 'Employee ID already exists' });
+      if (existingUser.employeeId === employeeId) {
+        return res.status(400).json({ message: 'Employee ID already exists' });
+      }
+      if (existingUser.email === email) {
+        return res.status(400).json({ message: 'Email already exists' });
+      }
     }
     
     // Create new user
     const user = new User({
       employeeId,
+      email,
       password,
       name,
       department,
-      role: role || 'employee'
+      role: role || 'employee',
+      formAccess: formAccess || 'both'
     });
     
     await user.save();

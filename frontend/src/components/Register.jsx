@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { UserPlus, Save, X, User, Lock, Building } from 'lucide-react';
+import { UserPlus, Save, X, User, Lock, Building, Mail } from 'lucide-react';
 import './TaskForm.css';
 import Navbar from './Navbar'
+import { useNavigate } from 'react-router-dom';
+import './Register.css';
+
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     employeeId: '',
+    email: '',
     password: '',
     name: '',
     department: '',
-    role: 'employee'
+    role: 'employee',
+    formAccess: 'both'
   });
 
   const [message, setMessage] = useState('');
@@ -41,10 +47,12 @@ const Register = () => {
       // Reset form
       setFormData({
         employeeId: '',
+        email: '',
         password: '',
         name: '',
         department: '',
-        role: 'employee'
+        role: 'employee',
+        formAccess: 'both'
       });
     } catch (err) {
       console.error('Registration error:', err);
@@ -122,6 +130,22 @@ const Register = () => {
             </div>
 
             <div className="form-field">
+              <label htmlFor="email">
+                <Mail size={18} className="field-icon" />
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                placeholder="Enter email address"
+              />
+            </div>
+
+            <div className="form-field">
               <label htmlFor="name">
                 <User size={18} className="field-icon" />
                 Full Name
@@ -183,6 +207,24 @@ const Register = () => {
               >
                 <option value="employee">Employee</option>
                 <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="formAccess">
+                <User size={18} className="field-icon" />
+                Form Access
+              </label>
+              <select
+                id="formAccess"
+                name="formAccess"
+                value={formData.formAccess}
+                onChange={handleChange}
+                required
+              >
+                <option value="postproduction">Post Production Only</option>
+                <option value="onsite">Onsite Only</option>
+                <option value="both">Both Forms</option>
               </select>
             </div>
           </div>

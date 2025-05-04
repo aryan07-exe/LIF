@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Calendar, Award, Clock, User, CheckCircle, Star, Clock as ClockIcon } from 'lucide-react';
+import TaskSubmissionCalendar from './TaskSubmissionCalendar';
 import './EmployeeProfile.css';
 
 const EmployeeProfile = () => {
@@ -72,6 +73,15 @@ const EmployeeProfile = () => {
           <h3>Daily Tasks</h3>
           <p>View and manage your daily tasks</p>
           <button>View Tasks</button>
+        </div>
+
+        <div className="dashboard-card">
+          <div className="card-icon-container">
+            <Award size={40} className="card-icon" />
+          </div>
+          <h3>Task Submission Calendar</h3>
+          <p>Track your task submission history</p>
+          <TaskSubmissionCalendar />
         </div>
 
         <div className="dashboard-card" onClick={() => navigate('/monthly')}>
