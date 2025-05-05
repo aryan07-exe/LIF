@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Calendar, Award, Clock, User, CheckCircle, Star, Clock as ClockIcon } from 'lucide-react';
+import { Plus, Calendar, Award, Clock, User, CheckCircle, Star, Clock as ClockIcon, Camera } from 'lucide-react';
 import TaskSubmissionCalendar from './TaskSubmissionCalendar';
 import './EmployeeProfile.css';
 
@@ -58,10 +58,30 @@ const EmployeeProfile = () => {
           <p className="department">Department: {user?.department}</p>
         </div>
         <div className="quick-actions">
-          <button className="add-task-btn" onClick={() => navigate('/task3')}>
-            <Plus size={20} />
-            <span>Add Today's Task</span>
-          </button>
+          {user?.formAccess === 'postproduction' && (
+            <button className="add-task-btn" onClick={() => navigate('/task3')}>
+              <Plus size={20} />
+              <span>Add Today's Task</span>
+            </button>
+          )}
+          {user?.formAccess === 'onsite' && (
+            <button className="add-task-btn" onClick={() => navigate('/onsite')}>
+              <Camera size={20} />
+              <span>Add Onsite Task</span>
+            </button>
+          )}
+          {user?.formAccess === 'both' && (
+            <>
+              <button className="add-task-btn" onClick={() => navigate('/task3')}>
+                <Plus size={20} />
+                <span>Add Today's Task</span>
+              </button>
+              <button className="add-task-btn" onClick={() => navigate('/onsite')}>
+                <Camera size={20} />
+                <span>Add Onsite Task</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
 

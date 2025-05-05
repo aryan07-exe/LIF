@@ -16,8 +16,10 @@ import AddProject from "./components/AddProject"
 import MonthWiseView from "./components/MonthWiseView"
 import EmployeeProfile from "./components/EmployeeProfile"
 import OnsiteForm from "./components/OnsiteForm"
-import OnsiteTaskView from './components/OnsiteTaskView'; 
 import AddUser from "./components/AddUser"
+import OnsiteAdminPanel from './components/OnsiteAdminPanel';
+import OnsiteMonthlyView from './components/OnsiteMonthlyView';
+
 const App = () => {
   return (
     <Router>
@@ -36,9 +38,12 @@ const App = () => {
         <Route path="/test-connection" element={<TestConnection />} />
         <Route path="/add-project" element={<AddProject />} />
         <Route path="/employee-profile" element={<EmployeeProfile />} />
-        <Route path="/onsite" element={<OnsiteForm />} />
-        <Route path="/onsitedata" element={<OnsiteTaskView/>}/>
+        <Route path="/onsite" element={<OnsiteForm />} /  >
+       
         <Route path="/add-user" element={<AddUser />} />
+        <Route path="/onsite-admin" element={<OnsiteAdminPanel />} />
+        <Route path="/onsite-monthly" element={<OnsiteMonthlyView />} />
+       
       </Routes>
     </Router>
   );
