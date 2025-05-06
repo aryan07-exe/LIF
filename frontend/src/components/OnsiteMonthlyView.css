@@ -4,11 +4,48 @@
   margin: 0 auto;
 }
 
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .dashboard-title {
   color: #333;
-  margin-bottom: 2rem;
-  text-align: center;
+  margin: 0;
   font-size: 2rem;
+}
+
+.total-points {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f8f9fa;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.points-label {
+  color: #666;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.points-value {
+  color: #1976D2;
+  font-size: 1.5rem;
+  font-weight: 600;
+  background: #e3f2fd;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  min-width: 60px;
+  text-align: center;
 }
 
 .filter-form {
@@ -174,6 +211,18 @@ button:hover {
   font-size: 0.9rem;
   color: #999;
   margin-top: 0.5rem;
+}
+
+.points-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  min-width: 40px;
+  text-align: center;
 }
 
 @media (max-width: 768px) {

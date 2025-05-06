@@ -37,6 +37,8 @@ const OnsiteForm = () => {
   });
 
   const [projects, setProjects] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -79,8 +81,39 @@ const OnsiteForm = () => {
     }
   };
 
+  const handleProjectNameChange = (e) => {
+    const value = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      projectname: value
+    }));
+
+    if (value.length >= 2) {
+      const filteredProjects = projects.filter(project => 
+        project.projectname.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filteredProjects.map(project => project.projectname));
+      setShowSuggestions(true);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setFormData(prev => ({
+      ...prev,
+      projectname: suggestion
+    }));
+    setShowSuggestions(false);
+  };
+
   const handleChange = (e) => {
     if (e.target.name === 'eid') return; // Prevent manual EID changes
+    if (e.target.name === 'projectname') {
+      handleProjectNameChange(e);
+      return;
+    }
     
     if (e.target.name.startsWith('categories.')) {
       const categoryName = e.target.name.split('.')[1];
@@ -259,27 +292,35 @@ const OnsiteForm = () => {
                 <FileText size={18} className="field-icon" />
                 Project Name
               </label>
-              <select
-                id="projectname"
-                name="projectname"
-                value={formData.projectname}
-                onChange={handleChange}
-                required
-                disabled={isLoadingProjects}
-              >
-                <option value="">Select Project</option>
-                {isLoadingProjects ? (
-                  <option disabled>Loading projects...</option>
-                ) : projects.length > 0 ? (
-                  projects.map((project) => (
-                    <option key={project._id} value={project.projectname}>
-                      {project.projectname}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>No projects available</option>
+              <div className="suggestion-container">
+                <input
+                  type="text"
+                  id="projectname"
+                  name="projectname"
+                  value={formData.projectname}
+                  onChange={handleProjectNameChange}
+                  required
+                  placeholder="Enter project name"
+                  autoComplete="off"
+                  disabled={isLoadingProjects}
+                />
+                {isLoadingProjects && (
+                  <div className="loading-text">Loading projects...</div>
                 )}
-              </select>
+                {showSuggestions && suggestions.length > 0 && (
+                  <ul className="suggestions-list">
+                    {suggestions.map((suggestion, index) => (
+                      <li
+                        key={index}
+                        onClick={() => handleSuggestionClick(suggestion)}
+                        className="suggestion-item"
+                      >
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
 
             <div className="form-field">

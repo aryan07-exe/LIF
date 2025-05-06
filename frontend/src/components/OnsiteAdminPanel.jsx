@@ -14,6 +14,7 @@ const OnsiteAdminPanel = () => {
   const [dateFilter, setDateFilter] = useState('');
   const [selectedTask, setSelectedTask] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [totalPoints, setTotalPoints] = useState(0);
 
   const formatDateForFilter = (dateString) => {
     if (!dateString) return '';
@@ -63,6 +64,12 @@ const OnsiteAdminPanel = () => {
     return matchesSearch && matchesDate;
   });
 
+  // Calculate total points whenever filtered tasks change
+  useEffect(() => {
+    const total = filteredTasks.reduce((sum, task) => sum + (task.points || 0), 0);
+    setTotalPoints(total);
+  }, [filteredTasks]);
+
   const handleTaskClick = (task) => {
     setSelectedTask(task);
     setShowModal(true);
@@ -86,6 +93,7 @@ const OnsiteAdminPanel = () => {
         .map(([key]) => key.replace(/([A-Z])/g, ' $1').trim())
         .join(', '),
       'Team Members': task.teamNames,
+      'Points': task.points || 0,
       'Notes': task.notes
     })));
     
@@ -113,7 +121,13 @@ const OnsiteAdminPanel = () => {
         transition={{ duration: 0.5 }}
       >
         <div className="header-section">
-          <h1>Onsite Tasks</h1>
+          <div className="header-title">
+            <h1>Onsite Tasks</h1>
+            <div className="total-points">
+              <span className="points-label">Total Points:</span>
+              <span className="points-value">{totalPoints}</span>
+            </div>
+          </div>
           <div className="controls">
             <div className="search-box">
               <Search size={20} />
@@ -152,6 +166,7 @@ const OnsiteAdminPanel = () => {
                 <th>Time</th>
                 <th>Categories</th>
                 <th>Team Members</th>
+                <th>Points</th>
                 <th>Notes</th>
               </tr>
             </thead>
@@ -173,6 +188,11 @@ const OnsiteAdminPanel = () => {
                       ))}
                   </td>
                   <td>{task.teamNames}</td>
+                  <td>
+                    <span className="points-badge">
+                      {task.points || 0}
+                    </span>
+                  </td>
                   <td>{task.notes}</td>
                 </tr>
               ))}
@@ -216,6 +236,10 @@ const OnsiteAdminPanel = () => {
                 <div className="detail-row">
                   <span className="detail-label">Time:</span>
                   <span>{selectedTask.startTime} - {selectedTask.endTime}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Points:</span>
+                  <span className="points-badge">{selectedTask.points || 0}</span>
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">Categories:</span>

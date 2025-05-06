@@ -42,6 +42,7 @@ const exportToExcel = (tasks, month) => {
         .map(([key]) => key.replace(/([A-Z])/g, ' $1').trim())
         .join(', ') || 'N/A',
       'Team Members': task.teamNames || 'N/A',
+      'Points': task.points || 0,
       'Notes': task.notes || 'N/A'
     }));
 
@@ -62,7 +63,8 @@ const exportToExcel = (tasks, month) => {
       'F': 15, // End Time
       'G': 30, // Categories
       'H': 20, // Team Members
-      'I': 30  // Notes
+      'I': 30, // Points
+      'J': 30  // Notes
     };
     
     worksheet['!cols'] = Object.values(columnWidths).map(width => ({ wch: width }));
@@ -101,6 +103,7 @@ const OnsiteMonthlyView = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [totalPoints, setTotalPoints] = useState(0);
 
   const fetchTasks = async () => {
     setIsLoading(true);
@@ -135,6 +138,10 @@ const OnsiteMonthlyView = () => {
       
       setTasks(filteredTasks);
       
+      // Calculate total points
+      const total = filteredTasks.reduce((sum, task) => sum + (task.points || 0), 0);
+      setTotalPoints(total);
+      
       // Extract unique categories
       const uniqueCategories = [...new Set(
         filteredTasks.flatMap(task => 
@@ -149,6 +156,7 @@ const OnsiteMonthlyView = () => {
       console.error('Error fetching tasks:', error);
       setTasks([]);
       setCategories([]);
+      setTotalPoints(0);
     } finally {
       setIsLoading(false);
     }
@@ -193,14 +201,18 @@ const OnsiteMonthlyView = () => {
     <>
       <Navbar />
       <div className="monthly-task-view">
-        <motion.h2 
-          className="dashboard-title"
+        <motion.div 
+          className="dashboard-header"
           initial={{ scale: 0.9 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.3 }}
         >
-          Onsite Monthly Tasks
-        </motion.h2>
+          <h2 className="dashboard-title">Onsite Monthly Tasks</h2>
+          <div className="total-points">
+            <span className="points-label">Total Points:</span>
+            <span className="points-value">{totalPoints}</span>
+          </div>
+        </motion.div>
 
         <form className="filter-form" onSubmit={handleSearch}>
           <div className="input-group">
@@ -300,6 +312,7 @@ const OnsiteMonthlyView = () => {
                     <th>Time</th>
                     <th>Categories</th>
                     <th>Team Members</th>
+                    <th>Points</th>
                     <th>Notes</th>
                   </tr>
                 </thead>
@@ -321,6 +334,11 @@ const OnsiteMonthlyView = () => {
                           ))}
                       </td>
                       <td>{task.teamNames}</td>
+                      <td>
+                        <span className="points-badge">
+                          {task.points || 0}
+                        </span>
+                      </td>
                       <td>{task.notes}</td>
                     </tr>
                   ))}

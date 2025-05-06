@@ -58,9 +58,36 @@ const onsiteTaskSchema = new mongoose.Schema({
   notes: {
     type: String,
     default: ''
+  },
+  points: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: true // Adds createdAt and updatedAt fields
+});
+
+// Method to calculate points based on duration
+onsiteTaskSchema.methods.calculatePoints = function() {
+  const start = new Date(`2000-01-01T${this.startTime}`);
+  const end = new Date(`2000-01-01T${this.endTime}`);
+  const durationInHours = (end - start) / (1000 * 60 * 60);
+
+  // Points calculation based on duration
+  if (durationInHours >= 2 && durationInHours < 3) {
+    return 2;
+  } else if (durationInHours >= 3 && durationInHours < 6) {
+    return 3;
+  } else if (durationInHours >= 6 && durationInHours <= 10) {
+    return 10;
+  }
+  return 0;
+};
+
+// Pre-save middleware to calculate points before saving
+onsiteTaskSchema.pre('save', function(next) {
+  this.points = this.calculatePoints();
+  next();
 });
 
 module.exports = mongoose.model('OnsiteTask', onsiteTaskSchema); 
