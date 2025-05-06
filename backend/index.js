@@ -2,7 +2,7 @@ const express=require('express');
 const mongoose=require('mongoose');
 const cors=require('cors');
 const app=express();
-const port=5000;
+const port=process.env.PORT || 5000;
 require('dotenv').config();
 
 const Task=require('./models/Task');

@@ -109,7 +109,7 @@ const AdminPanel = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/users/eids');
+      const response = await axios.get('https://lif.onrender.com/api/users/eids');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -125,7 +125,7 @@ const AdminPanel = () => {
       if (!filters.eid && !filters.projecttype && !filters.projectstatus && 
           filters.date === getCurrentDate()) {
         console.log("Fetching today's tasks");
-        const response = await axios.get('http://localhost:5000/tasks/today');
+        const response = await axios.get('https://lif.onrender.com/tasks/today');
         console.log("Today's tasks response:", response.data);
         setTasks(response.data.tasks || []);
         setTotalPoints(response.data.totalPoints || 0);
@@ -139,7 +139,7 @@ const AdminPanel = () => {
 
       // Otherwise, fetch filtered tasks
       console.log("Fetching filtered tasks");
-      const response = await axios.get('http://localhost:5000/admin/tasks', {
+      const response = await axios.get('https://lif.onrender.com/admin/tasks', {
         params: {
           ...filters,
           date: filters.date || undefined

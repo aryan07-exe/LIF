@@ -126,7 +126,7 @@ const MonthlyTaskView = () => {
     setIsLoading(true);
     try {
       console.log("Fetching monthly tasks with filters:", filters);
-      const response = await axios.get('http://localhost:5000/monthly/tasks', { 
+      const response = await axios.get('https://lif.onrender.com/monthly/tasks', { 
         params: { 
           eid: filters.eid || undefined,
           month: filters.month,
@@ -177,7 +177,7 @@ const MonthlyTaskView = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/users/eids');
+      const response = await axios.get('https://lif.onrender.com/api/users/eids');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
