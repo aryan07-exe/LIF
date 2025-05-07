@@ -84,8 +84,16 @@ const exportToExcel = (tasks, fileName) => {
   }
 };
 
-const AdminPanel = () => {
+const formatDateForFilter = (dateString) => {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
+const AdminPanel = () => {
   const getCurrentDate = () => {
     const today = new Date();
     return today.toISOString().split('T')[0];
@@ -94,22 +102,15 @@ const AdminPanel = () => {
   const [tasks, setTasks] = useState([]);
   const [filters, setFilters] = useState({
     eid: '',
-    date: getCurrentDate(),
-    projecttype: '',
-    projectstatus: ''
+    date: getCurrentDate()
   });
   const [isLoading, setIsLoading] = useState(true);
   const [totalPoints, setTotalPoints] = useState(0);
-  const [availableFilters, setAvailableFilters] = useState({
-    eids: [],
-    projectTypes: [],
-    projectStatuses: []
-  });
   const [users, setUsers] = useState([]);
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://lif.onrender.com/api/users/eids');
+      const response = await axios.get('http://localhost:5000/api/users/eids');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -119,41 +120,16 @@ const AdminPanel = () => {
   const fetchTasks = async () => {
     setIsLoading(true);
     try {
-      console.log("Fetching tasks with filters:", filters);
-      
-      // If no filters are applied, fetch today's tasks
-      if (!filters.eid && !filters.projecttype && !filters.projectstatus && 
-          filters.date === getCurrentDate()) {
-        console.log("Fetching today's tasks");
-        const response = await axios.get('https://lif.onrender.com/tasks/today');
-        console.log("Today's tasks response:", response.data);
-        setTasks(response.data.tasks || []);
-        setTotalPoints(response.data.totalPoints || 0);
-        setAvailableFilters(response.data.filters || {
-          eids: [],
-          projectTypes: [],
-          projectStatuses: []
+      let response;
+      if (filters.eid) {
+        response = await axios.get('http://localhost:5000/admin/tasks', {
+          params: { eid: filters.eid }
         });
-        return;
+      } else {
+        response = await axios.get('http://localhost:5000/admin/tasks');
       }
-
-      // Otherwise, fetch filtered tasks
-      console.log("Fetching filtered tasks");
-      const response = await axios.get('https://lif.onrender.com/admin/tasks', {
-        params: {
-          ...filters,
-          date: filters.date || undefined
-        }
-      });
-      
-      console.log("Filtered tasks response:", response.data);
       setTasks(response.data.tasks || []);
       setTotalPoints(response.data.totalPoints || 0);
-      setAvailableFilters(response.data.filters || {
-        eids: [],
-        projectTypes: [],
-        projectStatuses: []
-      });
     } catch (error) {
       console.error('Error fetching tasks:', error);
       setTasks([]);
@@ -184,9 +160,7 @@ const AdminPanel = () => {
   const handleClear = () => {
     setFilters({
       eid: '',
-      date: getCurrentDate(),
-      projecttype: '',
-      projectstatus: ''
+      date: getCurrentDate()
     });
   };
 
@@ -200,63 +174,11 @@ const AdminPanel = () => {
     return statusColors[status] || 'var(--text-color)';
   };
 
-  const exportToExcel = () => {
-    try {
-      if (!tasks || tasks.length === 0) {
-        alert('No data to export');
-        return;
-      }
-
-      // Prepare data for Excel
-      const excelData = tasks.map(task => ({
-        'Employee ID': task.eid,
-        'Employee Name': task.ename,
-        'Date': new Date(task.date).toLocaleDateString(),
-        'Project Name': task.projectname,
-        'Project Type': task.projecttype,
-        'Project Status': task.projectstatus,
-        'Category': task.category,
-        'Points': task.points,
-        'Notes': task.note || ''
-      }));
-
-      // Create worksheet
-      const ws = XLSX.utils.json_to_sheet(excelData);
-
-      // Set column widths
-      const wscols = [
-        { wch: 15 }, // Employee ID
-        { wch: 20 }, // Employee Name
-        { wch: 15 }, // Date
-        { wch: 30 }, // Project Name
-        { wch: 20 }, // Project Type
-        { wch: 15 }, // Project Status
-        { wch: 15 }, // Category
-        { wch: 10 }, // Points
-        { wch: 40 }  // Notes
-      ];
-      ws['!cols'] = wscols;
-
-      // Create workbook
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Tasks Data');
-
-      // Generate Excel file
-      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-      const data = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      const url = window.URL.createObjectURL(data);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `Admin-Tasks-${new Date().toISOString().split('T')[0]}.xlsx`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Error exporting to Excel:', error);
-      alert('Error exporting data to Excel');
-    }
-  };
+  const filteredTasks = tasks.filter(task => {
+    // If no date filter, show all
+    if (!filters.date) return true;
+    return formatDateForFilter(task.date) === formatDateForFilter(filters.date);
+  });
 
   return (
     <>
@@ -317,6 +239,7 @@ const AdminPanel = () => {
               name="date"
               value={filters.date}
               onChange={handleFilterChange}
+              max={getCurrentDate()}
             />
           </div>
           <div className="button-group">
@@ -338,17 +261,6 @@ const AdminPanel = () => {
               <Trash2 size={16} style={{ marginRight: '8px' }} />
               Clear
             </motion.button>
-            {tasks.length > 0 && (
-              <motion.button 
-                type="button" 
-                className="download-btn"
-                onClick={exportToExcel}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Download size={16} style={{ marginRight: '8px' }} /> Download Excel
-              </motion.button>
-            )}
           </div>
         </motion.form>
 
@@ -369,7 +281,7 @@ const AdminPanel = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              {tasks.length > 0 ? (
+              {filteredTasks.length > 0 ? (
                 <table className="task-table">
                   <thead>
                     <tr>
@@ -385,7 +297,7 @@ const AdminPanel = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {tasks.map((task, idx) => (
+                    {filteredTasks.map((task, idx) => (
                       <motion.tr
                         key={idx}
                         initial={{ opacity: 0, x: -20 }}

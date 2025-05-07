@@ -10,11 +10,11 @@ const pointsConfig = require('./config/pointsConfig');
 const User = require('./models/User');
 const OnsiteTask = require('./models/OnsiteTask');
 
+
 // Import routes
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects')
 
-const tasks = require('./routes/tasks')
 app.use(cors({
     origin: '*',
   }));
@@ -124,7 +124,14 @@ app.get('/admin/tasks', async (req, res) => {
 
   // Use regex for case-insensitive search with escaped patterns
   if (eid) query.eid = { $regex: new RegExp(escapeRegex(eid), 'i') };
-  if (date) query.date = date; // Keep date as exact match
+  // Robust date filtering: match all tasks for the selected day
+  if (date) {
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(date);
+    end.setHours(23, 59, 59, 999);
+    query.date = { $gte: start, $lte: end };
+  }
   if (projecttype) query.projecttype = { $regex: new RegExp(escapeRegex(projecttype), 'i') };
   if (projectstatus) query.projectstatus = { $regex: new RegExp(escapeRegex(projectstatus), 'i') };
   if (category) query.category = { $regex: new RegExp(escapeRegex(category), 'i') };
@@ -331,6 +338,113 @@ app.get('/onsite/tasks', async (req, res) => {
   } catch (error) {
     console.error('Error fetching onsite tasks:', error);
     res.status(500).json({ message: 'Error fetching onsite tasks' });
+  }
+});
+
+// GET endpoint for Task3 AdminPanel with filters
+app.get('/task3/admin', async (req, res) => {
+  const { eid, date, projecttype, projectstatus, category } = req.query;
+  const query = {};
+
+  // Use regex for case-insensitive search with escaped patterns
+  if (eid) query.eid = { $regex: new RegExp(escapeRegex(eid), 'i') };
+  if (date) query.date = date; // Keep date as exact match
+  if (projecttype) query.projecttype = { $regex: new RegExp(escapeRegex(projecttype), 'i') };
+  if (projectstatus) query.projectstatus = { $regex: new RegExp(escapeRegex(projectstatus), 'i') };
+  if (category) query.category = { $regex: new RegExp(escapeRegex(category), 'i') };
+
+  try {
+    const tasks = await Task3.find(query).sort({ date: -1 });
+    const totalPoints = tasks.reduce((sum, task) => sum + (task.points || 0), 0);
+    
+    // Get unique values for filters
+    const uniqueEids = await Task3.distinct('eid');
+    const uniqueProjectTypes = await Task3.distinct('projecttype');
+    const uniqueProjectStatuses = await Task3.distinct('projectstatus');
+    const uniqueCategories = await Task3.distinct('category');
+
+    res.json({
+      tasks,
+      totalPoints,
+      filters: {
+        eids: uniqueEids,
+        projectTypes: uniqueProjectTypes,
+        projectStatuses: uniqueProjectStatuses,
+        categories: uniqueCategories
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching Task3:', error);
+    res.status(500).json({ message: 'Error fetching Task3' });
+  }
+});
+
+// GET endpoint for Task3 MonthlyTaskView
+app.get('/task3/date-range', async (req, res) => {
+  const { startDate, endDate, eid, category, projectType, projectStatus } = req.query;
+  
+  try {
+    const query = {
+      date: { 
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      }
+    };
+
+    // Add other filters if provided
+    if (eid) query.eid = { $regex: new RegExp(escapeRegex(eid), 'i') };
+    if (category) query.category = { $regex: new RegExp(escapeRegex(category), 'i') };
+    if (projectType) query.projecttype = { $regex: new RegExp(escapeRegex(projectType), 'i') };
+    if (projectStatus) query.projectstatus = { $regex: new RegExp(escapeRegex(projectStatus), 'i') };
+
+    // Get tasks with sorting by date
+    const tasks = await Task3.find(query).sort({ date: 1 });
+    
+    // Calculate total points
+    const totalPoints = tasks.reduce((sum, task) => sum + (task.points || 0), 0);
+    
+    // Return tasks and total points
+    res.json({
+      tasks,
+      totalPoints
+    });
+  } catch (error) {
+    console.error('Error fetching Task3:', error);
+    res.status(500).json({ message: 'Error fetching Task3' });
+  }
+});
+
+// GET endpoint for current day's Task3 (default for AdminPanel)
+app.get('/task3/today', async (req, res) => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    console.log(`Fetching Task3 for today: ${today}`);
+    
+    const tasks = await Task3.find({ date: today }).sort({ date: -1 });
+    console.log(`Found ${tasks.length} Task3 for today`);
+    
+    const totalPoints = tasks.reduce((sum, task) => sum + (task.points || 0), 0);
+    console.log(`Total points for today: ${totalPoints}`);
+    
+    // Get unique values for filters
+    const uniqueEids = await Task3.distinct('eid');
+    const uniqueProjectTypes = await Task3.distinct('projecttype');
+    const uniqueProjectStatuses = await Task3.distinct('projectstatus');
+    const uniqueCategories = await Task3.distinct('category');
+
+    res.json({
+      tasks,
+      totalPoints,
+      filters: {
+        eids: uniqueEids,
+        projectTypes: uniqueProjectTypes,
+        projectStatuses: uniqueProjectStatuses,
+        categories: uniqueCategories
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching today\'s Task3:', error);
+    res.status(500).json({ message: 'Error fetching Task3', error: error.message });
   }
 });
 

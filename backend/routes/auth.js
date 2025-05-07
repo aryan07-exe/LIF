@@ -35,7 +35,9 @@ router.post('/login', async (req, res) => {
         employeeId: user.employeeId,
         name: user.name,
         role: user.role,
-        formAccess: user.formAccess
+        formAccess: user.formAccess,
+        department: user.department,
+        email: user.email
       }
     });
   } catch (error) {

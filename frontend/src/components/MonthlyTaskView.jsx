@@ -97,6 +97,17 @@ const MonthlyTaskView = () => {
     projectType: '',
     projectStatus: ''
   });
+
+  // Helper to get start and end date of a month
+  const getMonthDateRange = (monthStr) => {
+    const [year, month] = monthStr.split('-').map(Number);
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0); // last day of month
+    return {
+      startDate: startDate.toISOString().split('T')[0],
+      endDate: endDate.toISOString().split('T')[0],
+    };
+  };
   const [isLoading, setIsLoading] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
   const [users, setUsers] = useState([]);
@@ -126,10 +137,12 @@ const MonthlyTaskView = () => {
     setIsLoading(true);
     try {
       console.log("Fetching monthly tasks with filters:", filters);
-      const response = await axios.get('https://lif.onrender.com/monthly/tasks', { 
+      const { startDate, endDate } = getMonthDateRange(filters.month);
+      const response = await axios.get('http://localhost:5000/monthly/tasks', { 
         params: { 
           eid: filters.eid || undefined,
-          month: filters.month,
+          startDate, // send as YYYY-MM-DD
+          endDate,
           category: filters.category || undefined,
           projectType: filters.projectType || undefined,
           projectStatus: filters.projectStatus || undefined
@@ -177,7 +190,7 @@ const MonthlyTaskView = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://lif.onrender.com/api/users/eids');
+      const response = await axios.get('http://localhost:5000/api/users/eids');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
