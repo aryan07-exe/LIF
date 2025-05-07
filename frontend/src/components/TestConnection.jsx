@@ -10,7 +10,7 @@ const TestConnection = () => {
     const testConnection = async () => {
       try {
         console.log('Testing connection to backend...');
-        const response = await axios.get('http://localhost:5000/api/projects');
+        const response = await axios.get('https://lif.onrender.com/api/projects');
         console.log('Backend response:', response.data);
         setStatus('Connected successfully!');
         setData(response.data);

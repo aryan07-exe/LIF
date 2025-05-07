@@ -76,6 +76,31 @@ app.post("/task",async(req,res)=>{
     }
 });
 
+app.get('/tasks/date-range', async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    if (!startDate || !endDate) {
+      return res.status(400).json({ error: 'Both startDate and endDate are required' });
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999); // include the full end day
+
+    const tasks = await Task.find({
+      date: { $gte: start, $lte: end }
+    }).sort({ date: -1 });
+
+    res.json(tasks);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
 app.post("/task3",async(req,res)=>{
     try{
         // Validate required fields
@@ -165,42 +190,38 @@ app.get('/admin/tasks', async (req, res) => {
 // GET endpoint for MonthlyTaskView
 app.get('/monthly/tasks', async (req, res) => {
   const { eid, month } = req.query;
-  
+
   try {
-    // If month is provided (YYYY-MM format), filter by that month
     const [year, monthNum] = month.split('-');
-    const startOfMonth = `${year}-${monthNum}-01`;
-    const lastDay = new Date(year, monthNum, 0).getDate();
-    const endOfMonth = `${year}-${monthNum}-${lastDay}`;
-    
+    const lastDay = new Date(year, parseInt(monthNum), 0).getDate();
+
+    const startDate = new Date(`${year}-${monthNum}-01`);
+    const endDate = new Date(`${year}-${monthNum}-${lastDay}T23:59:59.999Z`);
+
     const query = {
-      date: { 
-        $gte: startOfMonth,
-        $lte: endOfMonth
+      date: {
+        $gte: startDate,
+        $lte: endDate
       }
     };
 
-    // Add eid filter only if it's provided
     if (eid) {
       query.eid = { $regex: new RegExp(escapeRegex(eid), 'i') };
     }
 
-    // Get tasks with sorting by date
     const tasks = await Task.find(query).sort({ date: 1 });
-    
-    // Calculate total points
     const totalPoints = tasks.reduce((sum, task) => sum + (task.points || 0), 0);
-    
-    // Return tasks and total points
-    res.json({
-      tasks,
-      totalPoints
-    });
+
+    res.json({ tasks, totalPoints });
   } catch (error) {
     console.error('Error fetching tasks:', error);
     res.status(500).json({ message: 'Error fetching tasks' });
   }
 });
+
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
 
 // GET endpoint for current day's tasks (default for AdminPanel)
 app.get('/tasks/today', async (req, res) => {

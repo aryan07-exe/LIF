@@ -49,7 +49,7 @@ const Taskname = () => {
         throw new Error('No authentication token found');
       }
 
-      const response = await axios.get('http://localhost:5000/api/projects', {
+      const response = await axios.get('https://lif.onrender.com/api/projects', {
         headers: {
           'Authorization': token
         }
@@ -139,7 +139,7 @@ const Taskname = () => {
       }
 
       console.log('Submitting form data:', formData);
-      const response = await axios.post('http://localhost:5000/task', formData, {
+      const response = await axios.post('https://lif.onrender.com/task', formData, {
         headers: {
           'Authorization': token,
           'Content-Type': 'application/json'
