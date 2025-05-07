@@ -138,9 +138,7 @@ app.post("/task3",async(req,res)=>{
 });
 
 // Helper function to escape regex special characters
-const escapeRegex = (string) => {
-  return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-};
+ 
 
 // GET endpoint for AdminPanel with filters
 app.get('/admin/tasks', async (req, res) => {
