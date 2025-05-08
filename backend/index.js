@@ -49,17 +49,17 @@ app.post("/task",async(req,res)=>{
             return res.status(400).json({ message: "All required fields must be provided" });
         }
 
-        // Convert date string to Date object
-        const dateObj = new Date(date);
-        if (isNaN(dateObj.getTime())) {
-            return res.status(400).json({ message: "Invalid date format" });
+        // Validate date format (YYYY-MM-DD)
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dateRegex.test(date)) {
+            return res.status(400).json({ message: "Invalid date format. Please use YYYY-MM-DD format" });
         }
 
         const points = calculatePoints(projecttype);
         const task = new Task({
             eid,
             ename,
-            date: dateObj,
+            date, // Store date as string
             projectname,
             projecttype,
             projectstatus,
@@ -187,14 +187,22 @@ app.get('/admin/tasks', async (req, res) => {
 
 // GET endpoint for MonthlyTaskView
 app.get('/monthly/tasks', async (req, res) => {
-  const { eid, month } = req.query;
+  const { eid, month, category } = req.query;
 
   try {
-    const [year, monthNum] = month.split('-');
-    const lastDay = new Date(year, parseInt(monthNum), 0).getDate();
+    // Parse the month string (format: YYYY-MM)
+    const [year, monthNum] = month.split('-').map(Number);
+    
+    // Create start date (first day of the month)
+    const startDate = new Date(Date.UTC(year, monthNum - 1, 1));
+    
+    // Create end date (last day of the month)
+    const endDate = new Date(Date.UTC(year, monthNum, 0, 23, 59, 59, 999));
 
-    const startDate = new Date(`${year}-${monthNum}-01`);
-    const endDate = new Date(`${year}-${monthNum}-${lastDay}T23:59:59.999Z`);
+    console.log('Date range:', {
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString()
+    });
 
     const query = {
       date: {
@@ -203,14 +211,29 @@ app.get('/monthly/tasks', async (req, res) => {
       }
     };
 
+    // Add filters if provided
     if (eid) {
       query.eid = { $regex: new RegExp(escapeRegex(eid), 'i') };
     }
 
-    const tasks = await Task.find(query).sort({ date: 1 });
-    const totalPoints = tasks.reduce((sum, task) => sum + (task.points || 0), 0);
+    if (category) {
+      query.category = { $regex: new RegExp(escapeRegex(category), 'i') };
+    }
 
-    res.json({ tasks, totalPoints });
+    // Get tasks with sorting by date
+    const tasks = await Task.find(query).sort({ date: 1 });
+    
+    // Calculate total points
+    const totalPoints = tasks.reduce((sum, task) => sum + (task.points || 0), 0);
+    
+    // Get unique categories for filter dropdown
+    const uniqueCategories = await Task.distinct('category', query);
+    
+    res.json({ 
+      tasks, 
+      totalPoints,
+      categories: uniqueCategories
+    });
   } catch (error) {
     console.error('Error fetching tasks:', error);
     res.status(500).json({ message: 'Error fetching tasks' });
@@ -464,6 +487,65 @@ app.get('/task3/today', async (req, res) => {
   } catch (error) {
     console.error('Error fetching today\'s Task3:', error);
     res.status(500).json({ message: 'Error fetching Task3', error: error.message });
+  }
+});
+
+// GET endpoint for Post Production Monthly Tasks
+app.get('/postproduction/monthly', async (req, res) => {
+  const { startDate, endDate, eid, category } = req.query;
+
+  try {
+    console.log('Received date parameters:', {
+      startDate,
+      endDate,
+      startDateType: typeof startDate,
+      endDateType: typeof endDate
+    });
+
+    // Create date range query using string dates
+    const query = {
+      date: {
+        $gte: startDate,
+        $lte: endDate
+      }
+    };
+
+    // Add filters if provided
+    if (eid) {
+      query.eid = { $regex: new RegExp(escapeRegex(eid), 'i') };
+    }
+
+    if (category) {
+      query.category = { $regex: new RegExp(escapeRegex(category), 'i') };
+    }
+
+    console.log('MongoDB query:', JSON.stringify(query, null, 2));
+
+    // Get tasks with sorting by date
+    const tasks = await Task.find(query).sort({ date: 1 });
+    
+    console.log(`Found ${tasks.length} tasks`);
+    if (tasks.length > 0) {
+      console.log('First few tasks dates:', tasks.slice(0, 3).map(task => ({
+        taskId: task._id,
+        date: task.date
+      })));
+    }
+    
+    // Calculate total points
+    const totalPoints = tasks.reduce((sum, task) => sum + (task.points || 0), 0);
+    
+    // Get unique categories for filter dropdown
+    const uniqueCategories = await Task.distinct('category', query);
+    
+    res.json({ 
+      tasks, 
+      totalPoints,
+      categories: uniqueCategories
+    });
+  } catch (error) {
+    console.error('Error fetching post-production tasks:', error);
+    res.status(500).json({ message: 'Error fetching tasks' });
   }
 });
 

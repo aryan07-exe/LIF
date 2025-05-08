@@ -10,8 +10,15 @@ ename:{
         required:true
         },
 date:{
-    type:Date,
-    required:true
+    type:String,
+    required:true,
+    validate: {
+        validator: function(v) {
+            // Validate YYYY-MM-DD format
+            return /^\d{4}-\d{2}-\d{2}$/.test(v);
+        },
+        message: props => `${props.value} is not a valid date in YYYY-MM-DD format!`
+    }
 },
 projectname:{
     type:String,

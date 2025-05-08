@@ -5,7 +5,6 @@ import { Calendar, User, Search, Trash2, Award, Download } from 'lucide-react';
 import './OnsiteMonthlyView.css';
 import Navbar from './Navbar';
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -17,13 +16,7 @@ const formatDate = (dateString) => {
   });
 };
 
-const formatMonthYear = (monthYear) => {
-  const [year, month] = monthYear.split('-');
-  const date = new Date(Date.UTC(year, month - 1));
-  return date.toLocaleString('default', { month: 'long', year: 'numeric' });
-};
-
-const exportToExcel = (tasks, month) => {
+const exportToExcel = (tasks, dateRange) => {
   try {
     if (!tasks || !Array.isArray(tasks)) {
       throw new Error('Invalid tasks data');
@@ -77,7 +70,7 @@ const exportToExcel = (tasks, month) => {
     // Create download link
     const link = document.createElement('a');
     link.href = URL.createObjectURL(data);
-    link.download = `Tasks-${month}.xlsx`;
+    link.download = `Post-Production-Tasks-${dateRange.startDate}-to-${dateRange.endDate}.xlsx`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -88,12 +81,18 @@ const exportToExcel = (tasks, month) => {
   }
 };
 
-const OnsiteMonthlyView = () => {
+const PostProductionMonthlyView = () => {
   const [tasks, setTasks] = useState([]);
-  const [filters, setFilters] = useState({ 
-    eid: '', 
-    month: new Date().toISOString().slice(0, 7), // Format: YYYY-MM
-    category: ''
+  const [filters, setFilters] = useState(() => {
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    return {
+      eid: '',
+      startDate: firstDay.toISOString().slice(0, 10),
+      endDate: lastDay.toISOString().slice(0, 10),
+      category: ''
+    };
   });
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
@@ -104,29 +103,24 @@ const OnsiteMonthlyView = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
+      console.log('Fetching tasks with date range:', {
+        startDate: filters.startDate,
+        endDate: filters.endDate
+      });
       
-      // Parse the month string to ensure it's in UTC
-      const [year, month] = filters.month.split('-').map(Number);
-      const monthQuery = `${year}-${month.toString().padStart(2, '0')}`;
-      
-      const response = await axios.get('http://localhost:5000/monthly/tasks', {
+      const response = await axios.get('http://localhost:5000/postproduction/monthly', {
         headers: { Authorization: token },
         params: {
           eid: filters.eid,
-          month: monthQuery,
+          startDate: filters.startDate,
+          endDate: filters.endDate,
           category: filters.category
         }
       });
       
       setTasks(response.data.tasks || []);
       setTotalPoints(response.data.totalPoints || 0);
-      
-      // Extract unique categories
-      const uniqueCategories = [...new Set(
-        response.data.tasks.map(task => task.category)
-      )].filter(Boolean);
-      
-      setCategories(uniqueCategories);
+      setCategories(response.data.categories || []);
     } catch (error) {
       console.error('Error fetching tasks:', error);
       setTasks([]);
@@ -153,10 +147,20 @@ const OnsiteMonthlyView = () => {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      [name]: value
-    }));
+    if (name === 'startDate' || name === 'endDate') {
+      // Ensure the date is in YYYY-MM-DD format
+      const date = new Date(value);
+      const formattedDate = date.toISOString().slice(0, 10);
+      setFilters(prevFilters => ({
+        ...prevFilters,
+        [name]: formattedDate
+      }));
+    } else {
+      setFilters(prevFilters => ({
+        ...prevFilters,
+        [name]: value
+      }));
+    }
   };
 
   const handleSearch = (e) => {
@@ -165,9 +169,14 @@ const OnsiteMonthlyView = () => {
   };
 
   const handleClear = () => {
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    
     setFilters({ 
       eid: '', 
-      month: new Date().toISOString().slice(0, 7),
+      startDate: firstDay.toISOString().slice(0, 10),
+      endDate: lastDay.toISOString().slice(0, 10),
       category: ''
     });
   };
@@ -182,7 +191,7 @@ const OnsiteMonthlyView = () => {
           animate={{ scale: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <h2 className="dashboard-title">Monthly Tasks</h2>
+          <h2 className="dashboard-title">Post-Production Monthly Tasks</h2>
           <div className="total-points">
             <span className="points-label">Total Points:</span>
             <span className="points-value">{totalPoints}</span>
@@ -212,15 +221,29 @@ const OnsiteMonthlyView = () => {
               </select>
             </div>
             <div className="form-field">
-              <label htmlFor="month">
+              <label htmlFor="startDate">
                 <Calendar size={18} className="field-icon" />
-                Month
+                Start Date
               </label>
               <input
-                type="month"
-                id="month"
-                name="month"
-                value={filters.month}
+                type="date"
+                id="startDate"
+                name="startDate"
+                value={filters.startDate}
+                onChange={handleFilterChange}
+                required
+              />
+            </div>
+            <div className="form-field">
+              <label htmlFor="endDate">
+                <Calendar size={18} className="field-icon" />
+                End Date
+              </label>
+              <input
+                type="date"
+                id="endDate"
+                name="endDate"
+                value={filters.endDate}
                 onChange={handleFilterChange}
                 required
               />
@@ -269,7 +292,10 @@ const OnsiteMonthlyView = () => {
               <div className="export-section">
                 <motion.button
                   className="download-btn"
-                  onClick={() => exportToExcel(tasks, filters.month)}
+                  onClick={() => exportToExcel(tasks, { 
+                    startDate: filters.startDate, 
+                    endDate: filters.endDate 
+                  })}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -318,14 +344,8 @@ const OnsiteMonthlyView = () => {
             </>
           ) : (
             <div className="no-tasks-msg">
-              {filters.eid ? (
-                <>
-                  <p>No tasks found for Employee {filters.eid} in {formatMonthYear(filters.month)}.</p>
-                  <p className="no-tasks-subtitle">Try a different month or employee ID.</p>
-                </>
-              ) : (
-                <p>No tasks found for {formatMonthYear(filters.month)}.</p>
-              )}
+              <p>No tasks found for the selected date range.</p>
+              <p className="no-tasks-subtitle">Try a different date range or employee ID.</p>
             </div>
           )}
         </div>
@@ -334,4 +354,4 @@ const OnsiteMonthlyView = () => {
   );
 };
 
-export default OnsiteMonthlyView; 
+export default PostProductionMonthlyView; 
