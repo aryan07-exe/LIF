@@ -1,0 +1,244 @@
+.pageContainer {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', Arial, sans-serif;
+  color: #fff;
+}
+
+.mainContent {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+  min-height: calc(100vh - 50px);
+}
+
+.profileCard {
+  background: rgba(30, 41, 59, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  padding: 0;
+  width: 100%;
+  max-width: 480px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+.cardHeader {
+  background: linear-gradient(135deg, #4f46e5 0%, #7e22ce 100%);
+  padding: 2.5rem 2rem 2.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.cardHeader::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.2));
+}
+
+.avatarContainer {
+  margin: 0 auto 1.5rem;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  padding: 5px;
+  background: linear-gradient(45deg, #6366f1, #a855f7);
+  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+}
+
+.animatedName {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  min-height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.employeeRole {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  opacity: 0.7;
+  font-weight: 600;
+}
+
+.letter {
+  display: inline-block;
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.cardDivider {
+  height: 2px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+  margin: 0;
+}
+
+.detailsContainer {
+  padding: 2rem;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 0.5rem;
+  position: relative;
+  backdrop-filter: blur(5px);
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.infoRow:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.infoIcon {
+  color: #8b5cf6;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.label {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+}
+
+.value {
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  word-break: break-word;
+}
+
+.buttonRow {
+  padding: 0 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formButton {
+  background: linear-gradient(90deg, #4f46e5 0%, #7e22ce 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.9rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+  letter-spacing: 0.5px;
+  outline: none;
+}
+
+.formButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+  background: linear-gradient(90deg, #4338ca 0%, #6d28d9 100%);
+}
+
+.formButton:active {
+  transform: translateY(1px);
+}
+
+.loadingBg {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.loadingSpinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #6366f1;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeInCard {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .mainContent {
+    padding: 1rem 0.8rem;
+  }
+  
+  .profileCard {
+    border-radius: 16px;
+  }
+  
+  .cardHeader {
+    padding: 2rem 1rem;
+  }
+  
+  .avatarContainer {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1rem;
+  }
+  
+  .avatar {
+    font-size: 2.5rem;
+  }
+  
+  .animatedName {
+    font-size: 1.5rem;
+  }
+  
+  .detailsContainer {
+    padding: 1.5rem 1rem;
+  }
+  
+  .buttonRow {
+    padding: 0 1rem 1.5rem;
+  }
+} 

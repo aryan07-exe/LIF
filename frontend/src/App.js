@@ -20,6 +20,7 @@ import AddUser from "./components/AddUser"
 import OnsiteAdminPanel from './components/OnsiteAdminPanel';
 import OnsiteMonthlyView from './components/OnsiteMonthlyView';
 import PostProductionMonthlyView from './components/PostProductionMonthlyView';
+import AdminProfile from "./components/AdminProfile"
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
         <Route path="/test-connection" element={<TestConnection />} />
         <Route path="/add-project" element={<AddProject />} />
         <Route path="/employee-profile" element={<EmployeeProfile />} />
+        <Route path="/admin-profile" element={<AdminProfile />} />
         <Route path="/onsite" element={<OnsiteForm />} />
         <Route path="/add-user" element={<AddUser />} />
         <Route path="/onsite-admin" element={<OnsiteAdminPanel />} />

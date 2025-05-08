@@ -31,9 +31,9 @@ const LoginPage = () => {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
-      // Redirect to dashboard
+      // Redirect based on user role
       if (user.role === 'admin') {
-        navigate('/admin');
+        navigate('/admin-profile'); // Redirect to new admin profile page
       } else {
         navigate('/employee-profile');
       }

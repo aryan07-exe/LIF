@@ -1,0 +1,98 @@
+/* Admin Navbar Styles */
+.navbar {
+  background-color: #1e293b !important;
+  padding: 0.5rem 0 !important;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  border-bottom: 1px solid #4f46e5 !important;
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px !important;
+}
+
+.navbar-logo {
+  font-size: 1.5rem !important;
+  font-weight: bold;
+  letter-spacing: 1px;
+  background: linear-gradient(45deg, #4f46e5, #9333ea);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.navbar-logo a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.navbar-logo a:hover {
+  transform: translateY(-1px);
+}
+
+.navbar-toggle {
+  padding: 0.4rem !important;
+}
+
+.navbar-menu {
+  gap: 1.2rem !important;
+}
+
+.nav-link,
+.dropdown-btn {
+  padding: 0.5rem 0.75rem !important;
+  font-size: 0.9rem !important;
+}
+
+.dropdown-content {
+  background-color: #1e293b !important;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  margin-top: 0.4rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.dropdown-content a {
+  color: white !important;
+  padding: 0.6rem 1rem !important;
+  font-size: 0.9rem !important;
+}
+
+.dropdown-content a:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.logout-btn {
+  background: linear-gradient(90deg, #4f46e5 0%, #7e22ce 100%) !important;
+  padding: 0.5rem 1.2rem !important;
+  font-size: 0.9rem !important;
+}
+
+.logout-btn:hover {
+  background: linear-gradient(90deg, #6366f1 0%, #9333ea 100%) !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+}
+
+/* Override responsive styles to match */
+@media (max-width: 768px) {
+  .navbar-menu {
+    background-color: #1e293b !important;
+  }
+  
+  .dropdown-content {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+} 

@@ -52,7 +52,7 @@ const Navbar = () => {
             </button>
             <div className={`dropdown-content ${postproductionOpen ? 'show' : ''}`}>
               <Link to="/admin" onClick={() => setIsOpen(false)}>Admin Panel</Link>
-              <Link to="/monthly" onClick={() => setIsOpen(false)}>Monthly Panel</Link>
+              <Link to="/post-production-monthly" onClick={() => setIsOpen(false)}>Monthly Panel</Link>
             </div>
           </div>
 
