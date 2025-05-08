@@ -13,7 +13,7 @@
     "dayjs": "^1.11.13",
     "file-saver": "^2.0.5",
     "framer-motion": "^12.7.3",
-    "gsap": "^3.12.7",
+    "gsap": "^3.13.0",
     "lucide-react": "^0.488.0",
     "react": "^18.2.0",
     "react-calendar": "^4.1.0",

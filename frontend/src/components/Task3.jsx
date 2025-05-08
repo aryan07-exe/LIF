@@ -3,6 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Camera, Film, Save, X, User, Calendar, FileText, AlertCircle } from 'lucide-react';
 import './TaskForm.css';
+import NewNavbar from './NewNavbar';
 
 const Taskname = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -73,7 +74,7 @@ const Taskname = () => {
         throw new Error('No authentication token found');
       }
 
-      const response = await axios.get('http://localhost:5000/api/projects', {
+      const response = await axios.get('https://lif.onrender.com/api/projects', {
         headers: {
           'Authorization': token
         }
@@ -139,7 +140,7 @@ const Taskname = () => {
       }
 
       console.log('Submitting form data:', formData);
-      const response = await axios.post('http://localhost:5000/task', formData, {
+      const response = await axios.post('https://lif.onrender.com/task', formData, {
         headers: {
           'Authorization': token,
           'Content-Type': 'application/json'
@@ -176,232 +177,235 @@ const Taskname = () => {
   };
 
   return (
-    <motion.div 
-      className="task-form-container"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <div className="task3-container">
+      <NewNavbar />
       <motion.div 
-        className="form-header"
-        initial={{ opacity: 0, y: -20 }}
+        className="task-form-container"
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.5 }}
       >
-        <div className="logo-container">
-          <Film size={32} className="logo-icon" />
-          <h2 className="form-title">Life in Frames</h2>
-          <Camera size={32} className="logo-icon" />
-        </div>
-        <div className="header-divider"></div>
-        <div className="header-subtitle">Create New Task</div>
-      </motion.div>
+        <motion.div 
+          className="form-header"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="logo-container">
+            <Film size={32} className="logo-icon" />
+            <h2 className="form-title">Life in Frames</h2>
+            <Camera size={32} className="logo-icon" />
+          </div>
+          <div className="header-divider"></div>
+          <div className="header-subtitle">Create New Task</div>
+        </motion.div>
 
-      {message && <motion.div 
-        className="success-message"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        {message}
-      </motion.div>}
-      {error && <motion.div 
-        className="error-message"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        {error}
-      </motion.div>}
+        {message && <motion.div 
+          className="success-message"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {message}
+        </motion.div>}
+        {error && <motion.div 
+          className="error-message"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {error}
+        </motion.div>}
 
-      <motion.form 
-        className="task-form"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        onSubmit={handleSubmit}
-      >
-        <div className="form-section">
-          <h3>Task Details</h3>
-          <div className="form-grid">
-            <div className="form-field">
-              <label htmlFor="eid">
-                <User size={18} className="field-icon" />
-                Employee ID
-              </label>
-              <input
-                type="text"
-                id="eid"
-                name="eid"
-                value={formData.eid}
-                disabled
-                className="disabled-input"
-              />
-            </div>
-            <div className="form-field">
-              <label htmlFor="ename">
-                <User size={18} className="field-icon" />
-                Employee Name
-              </label>
-              <input
-                type="text"
-                id="ename"
-                name="ename"
-                value={formData.ename}
-                disabled
-                className="disabled-input"
-              />
-            </div>
-
-            <div className="form-field">
-              <label htmlFor="date">
-                <Calendar size={18} className="field-icon" />
-                Date
-              </label>
-              <input
-                type="date"
-                id="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-field">
-              <label htmlFor="projectname">
-                <FileText size={18} className="field-icon" />
-                Project Name
-              </label>
-              <div className="suggestion-container">
+        <motion.form 
+          className="task-form"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          onSubmit={handleSubmit}
+        >
+          <div className="form-section">
+            <h3>Task Details</h3>
+            <div className="form-grid">
+              <div className="form-field">
+                <label htmlFor="eid">
+                  <User size={18} className="field-icon" />
+                  Employee ID
+                </label>
                 <input
                   type="text"
-                  id="projectname"
-                  name="projectname"
-                  value={formData.projectname}
-                  onChange={handleProjectNameChange}
-                  required
-                  placeholder="Enter project name"
-                  autoComplete="off"
-                  disabled={isLoadingProjects}
+                  id="eid"
+                  name="eid"
+                  value={formData.eid}
+                  disabled
+                  className="disabled-input"
                 />
-                {isLoadingProjects && (
-                  <div className="loading-text">Loading projects...</div>
-                )}
-                {showSuggestions && suggestions.length > 0 && (
-                  <ul className="suggestions-list">
-                    {suggestions.map((suggestion, index) => (
-                      <li
-                        key={index}
-                        onClick={() => handleSuggestionClick(suggestion)}
-                        className="suggestion-item"
-                      >
-                        {suggestion}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+              </div>
+              <div className="form-field">
+                <label htmlFor="ename">
+                  <User size={18} className="field-icon" />
+                  Employee Name
+                </label>
+                <input
+                  type="text"
+                  id="ename"
+                  name="ename"
+                  value={formData.ename}
+                  disabled
+                  className="disabled-input"
+                />
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="date">
+                  <Calendar size={18} className="field-icon" />
+                  Date
+                </label>
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="projectname">
+                  <FileText size={18} className="field-icon" />
+                  Project Name
+                </label>
+                <div className="suggestion-container">
+                  <input
+                    type="text"
+                    id="projectname"
+                    name="projectname"
+                    value={formData.projectname}
+                    onChange={handleProjectNameChange}
+                    required
+                    placeholder="Enter project name"
+                    autoComplete="off"
+                    disabled={isLoadingProjects}
+                  />
+                  {isLoadingProjects && (
+                    <div className="loading-text">Loading projects...</div>
+                  )}
+                  {showSuggestions && suggestions.length > 0 && (
+                    <ul className="suggestions-list">
+                      {suggestions.map((suggestion, index) => (
+                        <li
+                          key={index}
+                          onClick={() => handleSuggestionClick(suggestion)}
+                          className="suggestion-item"
+                        >
+                          {suggestion}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="projecttype">
+                  <Film size={18} className="field-icon" />
+                  Project Type
+                </label>
+                <select
+                  id="projecttype"
+                  name="projecttype"
+                  value={formData.projecttype}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select project type</option>
+                  {projectTypes.map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="projectstatus">
+                  <AlertCircle size={18} className="field-icon" />
+                  Project Status
+                </label>
+                <select
+                  id="projectstatus"
+                  name="projectstatus"
+                  value={formData.projectstatus}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select project status</option>
+                  {projectStatuses.map(status => (
+                    <option key={status} value={status}>{status}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="category">
+                  <AlertCircle size={18} className="field-icon" />
+                  Category
+                </label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select category</option>
+                  {categories.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-field full-width">
+                <label htmlFor="notes">
+                  <FileText size={18} className="field-icon" />
+                  Notes
+                </label>
+                <textarea
+                  id="notes"
+                  name="notes"
+                  value={formData.notes}
+                  onChange={handleChange}
+                  placeholder="Enter any additional notes"
+                  rows="3"
+                ></textarea>
               </div>
             </div>
-
-            <div className="form-field">
-              <label htmlFor="projecttype">
-                <Film size={18} className="field-icon" />
-                Project Type
-              </label>
-              <select
-                id="projecttype"
-                name="projecttype"
-                value={formData.projecttype}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select project type</option>
-                {projectTypes.map(type => (
-                  <option key={type} value={type}>{type}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-field">
-              <label htmlFor="projectstatus">
-                <AlertCircle size={18} className="field-icon" />
-                Project Status
-              </label>
-              <select
-                id="projectstatus"
-                name="projectstatus"
-                value={formData.projectstatus}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select project status</option>
-                {projectStatuses.map(status => (
-                  <option key={status} value={status}>{status}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-field">
-              <label htmlFor="category">
-                <AlertCircle size={18} className="field-icon" />
-                Category
-              </label>
-              <select
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select category</option>
-                {categories.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-field full-width">
-              <label htmlFor="notes">
-                <FileText size={18} className="field-icon" />
-                Notes
-              </label>
-              <textarea
-                id="notes"
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-                placeholder="Enter any additional notes"
-                rows="3"
-              ></textarea>
-            </div>
           </div>
-        </div>
 
-        <div className="form-actions">
-          <motion.button
-            type="submit"
-            className="submit-btn"
-            disabled={loading}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Save size={18} />
-            <span>{loading ? 'Submitting...' : 'Submit Task'}</span>
-          </motion.button>
-          <motion.button
-            type="button"
-            className="cancel-btn"
-            onClick={() => window.history.back()}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <X size={18} />
-            <span>Cancel</span>
-          </motion.button>
-        </div>
-      </motion.form>
-    </motion.div>
+          <div className="form-actions">
+            <motion.button
+              type="submit"
+              className="submit-btn"
+              disabled={loading}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Save size={18} />
+              <span>{loading ? 'Submitting...' : 'Submit Task'}</span>
+            </motion.button>
+            <motion.button
+              type="button"
+              className="cancel-btn"
+              onClick={() => window.history.back()}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <X size={18} />
+              <span>Cancel</span>
+            </motion.button>
+          </div>
+        </motion.form>
+      </motion.div>
+    </div>
   );
 };
 

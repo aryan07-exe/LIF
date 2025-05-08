@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Calendar, Award, Clock, User, CheckCircle, Star, ClockIcon, Camera, LogOut, Briefcase } from 'lucide-react';
+import { User, LogOut, Settings, Bell, Home, Globe } from 'lucide-react';
+import gsap from 'gsap';
 import './EmployeeProfile.css';
 
 const EmployeeProfile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const nameRef = useRef(null);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
@@ -16,38 +16,26 @@ const EmployeeProfile = () => {
       return;
     }
     setUser(storedUser);
-    setLoading(false);
-
-    // Update time every minute
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
-
-    return () => clearInterval(timer);
+    // GSAP name animation
+    if (nameRef.current) {
+      const name = storedUser?.name || 'User';
+      const letters = name.split('');
+      nameRef.current.innerHTML = '';
+      letters.forEach((letter) => {
+        const span = document.createElement('span');
+        span.textContent = letter;
+        span.className = 'letter';
+        nameRef.current.appendChild(span);
+      });
+      gsap.fromTo(
+        '.letter',
+        { opacity: 0, y: 20, rotateX: -90, scale: 0.5 },
+        { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 0.5, stagger: 0.08, ease: 'back.out(1.7)' }
+      );
+    }
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/');
-  };
-
-  const formatDate = (date) => {
-    return new Date().toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  if (loading) {
+  if (!user) {
     return (
       <div className="loading-screen">
         <div className="loading-spinner"></div>
@@ -57,182 +45,79 @@ const EmployeeProfile = () => {
   }
 
   return (
-    <div className="employee-dashboard">
-      <header className="dashboard-header">
-        <div className="header-left">
-          <Briefcase className="company-logo" />
-          <h1 className="company-name">LIFE IN FRAMES</h1>
+    <div className="modern-profile dark-theme">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar-icons">
+          <button className="sidebar-icon active"><Home size={22} /></button>
+          <button className="sidebar-icon"><Globe size={22} /></button>
+          <button className="sidebar-icon"><Settings size={22} /></button>
+          <button className="sidebar-icon"><User size={22} /></button>
         </div>
-        <div className="header-right">
-          <div className="date-time-display">
-            <div className="current-date">{formatDate(currentTime)}</div>
-            <div className="current-time">{formatTime(currentTime)}</div>
-          </div>
-          <button className="logout-button" onClick={handleLogout}>
-            <LogOut size={18} />
-            <span>Logout</span>
-          </button>
-        </div>
-      </header>
+      </aside>
 
-      <div className="dashboard-content">
-        <aside className="dashboard-sidebar">
-          <div className="profile-summary">
-            <div className="profile-avatar">
-              {user?.photoUrl ? (
-                <img src={user.photoUrl || "/placeholder.svg"} alt="Profile" className="avatar-image" />
-              ) : (
-                <div className="avatar-placeholder">
-                  <User size={40} />
-                </div>
-              )}
-            </div>
-            <div className="profile-info">
-              <h2 className="profile-name">{user?.name || 'User'}</h2>
-              <p className="profile-role">{user?.role || 'Employee'}</p>
-            </div>
+      {/* Main Content */}
+      <div className="main-content">
+        {/* Top Bar */}
+        <header className="topbar">
+          <div className="search-bar">
+            <input type="text" placeholder="Search" />
+            <span className="search-icon">🔍</span>
           </div>
-          
-          <nav className="dashboard-nav">
-            <button className="nav-item active">
-              <User size={18} />
-              <span>Profile</span>
-            </button>
-            <button className="nav-item">
-              <Calendar size={18} />
-              <span>Calendar</span>
-            </button>
-            <button className="nav-item">
-              <ClockIcon size={18} />
-              <span>Time Tracking</span>
-            </button>
-            <button className="nav-item">
-              <Award size={18} />
-              <span>Achievements</span>
-            </button>
-          </nav>
-        </aside>
-
-        <main className="dashboard-main">
-          <div className="welcome-banner">
-            <div className="welcome-message">
-              <h2>Welcome back, <span className="highlight">{user?.name.split(' ')[0] || 'User'}</span></h2>
-              <p>Here's your professional dashboard</p>
-            </div>
-          </div>
-
-          <section className="profile-card">
-            <div className="card-header">
-              <h3>Employee Profile</h3>
-            </div>
-            <div className="card-content">
-              <div className="profile-details">
-                <div className="detail-group">
-                  <label>Employee ID</label>
-                  <p>{user?.employeeId || 'N/A'}</p>
-                </div>
-                <div className="detail-group">
-                  <label>Department</label>
-                  <p>{user?.department || 'N/A'}</p>
-                </div>
-                <div className="detail-group">
-                  <label>Email</label>
-                  <p>{user?.email || 'N/A'}</p>
-                </div>
-                <div className="detail-group">
-                  <label>Role</label>
-                  <p>{user?.role || 'N/A'}</p>
-                </div>
-                <div className="detail-group">
-                  <label>Joining Date</label>
-                  <p>{user?.joiningDate || 'N/A'}</p>
-                </div>
-                <div className="detail-group">
-                  <label>Status</label>
-                  <p className="status-active">
-                    <CheckCircle size={16} />
-                    <span>Active</span>
-                  </p>
-                </div>
+          <div className="topbar-actions">
+            <button className="icon-btn"><Bell size={20} /></button>
+            <div className="user-info">
+              <img src={user?.photoUrl || 'https://i.pravatar.cc/100'} alt="avatar" className="user-avatar" />
+              <div className="user-meta">
+                <span className="user-name">{user?.name || 'User'}</span>
+                <span className="user-type">{user?.role || 'Employee'}</span>
               </div>
+              <button className="icon-btn logout-btn" onClick={() => { localStorage.removeItem('user'); navigate('/'); }}><LogOut size={18} /></button>
             </div>
-          </section>
+          </div>
+        </header>
 
-          <section className="actions-section">
-            <div className="card-header">
-              <h3>Quick Actions</h3>
+        {/* Profile Section */}
+        <div className="profile-section">
+          {/* Profile Card */}
+          <div className="profile-card-modern">
+            <div className="profile-avatar-modern">
+              <img src={user?.photoUrl || 'https://i.pravatar.cc/200'} alt="Profile" />
             </div>
-            <div className="actions-grid">
-              {user?.formAccess === 'postproduction' && (
-                <button className="action-card" onClick={() => navigate('/task3')}>
-                  <div className="action-icon">
-                    <Plus size={24} />
-                  </div>
-                  <div className="action-text">
-                    <h4>Add Today's Task</h4>
-                    <p>Record your daily activities</p>
-                  </div>
-                </button>
-              )}
-              
-              {user?.formAccess === 'onsite' && (
-                <button className="action-card" onClick={() => navigate('/onsite')}>
-                  <div className="action-icon">
-                    <Camera size={24} />
-                  </div>
-                  <div className="action-text">
-                    <h4>Add Onsite Task</h4>
-                    <p>Document field activities</p>
-                  </div>
-                </button>
-              )}
-              
-              {user?.formAccess === 'both' && (
-                <>
-                  <button className="action-card" onClick={() => navigate('/task3')}>
-                    <div className="action-icon">
-                      <Plus size={24} />
-                    </div>
-                    <div className="action-text">
-                      <h4>Add Today's Task</h4>
-                      <p>Record your daily activities</p>
-                    </div>
-                  </button>
-                  
-                  <button className="action-card" onClick={() => navigate('/onsite')}>
-                    <div className="action-icon">
-                      <Camera size={24} />
-                    </div>
-                    <div className="action-text">
-                      <h4>Add Onsite Task</h4>
-                      <p>Document field activities</p>
-                    </div>
-                  </button>
-                </>
-              )}
-              
-              <button className="action-card">
-                <div className="action-icon">
-                  <Calendar size={24} />
-                </div>
-                <div className="action-text">
-                  <h4>View Schedule</h4>
-                  <p>Check upcoming tasks</p>
-                </div>
-              </button>
-              
-              <button className="action-card">
-                <div className="action-icon">
-                  <ClockIcon size={24} />
-                </div>
-                <div className="action-text">
-                  <h4>Time Reports</h4>
-                  <p>View your time logs</p>
-                </div>
-              </button>
+            <div className="profile-main-info">
+              <h2 ref={nameRef} className="profile-name-modern"></h2>
+              <span className="profile-status">{user?.status || 'Active'}</span>
             </div>
-          </section>
-        </main>
+          </div>
+
+          {/* Employee Details Card */}
+          <div className="details-card">
+            <div className="details-col">
+              <div className="detail-label">Employee ID</div>
+              <div className="detail-value">{user?.employeeId || 'N/A'}</div>
+              <div className="detail-label">Department</div>
+              <div className="detail-value">{user?.department || 'N/A'}</div>
+              <div className="detail-label">Email</div>
+              <div className="detail-value">{user?.email || 'N/A'}</div>
+              <div className="detail-label">Joining Date</div>
+              <div className="detail-value">{user?.joiningDate || 'N/A'}</div>
+              <div className="detail-label">Badges</div>
+              <div className="detail-value"><span className="badge">Top Performer</span></div>
+            </div>
+            <div className="details-col">
+              <div className="detail-label">Current Project</div>
+              <div className="detail-value">{user?.currentProject || 'N/A'}</div>
+              <div className="detail-label">Project Role</div>
+              <div className="detail-value">{user?.projectRole || user?.role || 'N/A'}</div>
+              <div className="detail-label">Points</div>
+              <div className="detail-value">{user?.points || 'N/A'}</div>
+              <div className="detail-label">Availability</div>
+              <div className="detail-value"><span className="availability available">{user?.availability || 'Available'}</span></div>
+              <div className="detail-label">Tags</div>
+              <div className="detail-value">{user?.tags ? user.tags.join(', ') : '#TeamLead, #Remote'}</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

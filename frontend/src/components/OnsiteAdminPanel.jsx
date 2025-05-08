@@ -41,7 +41,7 @@ const OnsiteAdminPanel = () => {
   const fetchTasks = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/onsite/tasks', {
+      const response = await axios.get('https://lif.onrender.com/onsite/tasks', {
         headers: { Authorization: token }
       });
       setTasks(response.data.tasks);
