@@ -110,7 +110,7 @@ const AdminPanel = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/users/eids');
+      const response = await axios.get('https://lif.onrender.com/api/users/eids');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -122,11 +122,11 @@ const AdminPanel = () => {
     try {
       let response;
       if (filters.eid) {
-        response = await axios.get('http://localhost:5000/admin/tasks', {
+        response = await axios.get('https://lif.onrender.com/admin/tasks', {
           params: { eid: filters.eid }
         });
       } else {
-        response = await axios.get('http://localhost:5000/admin/tasks');
+        response = await axios.get('https://lif.onrender.com/admin/tasks');
       }
       setTasks(response.data.tasks || []);
       setTotalPoints(response.data.totalPoints || 0);
