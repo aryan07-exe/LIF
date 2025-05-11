@@ -1,0 +1,102 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    
+  }
+  
+  .invoice-form {
+    max-width: 1000px;
+    margin: auto;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .invoice-form h2 {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 6px;
+  }
+  
+  .form-group input[type='text'],
+  .form-group input[type='date'],
+  .form-group input[type='number'] {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+  
+  .day-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-bottom: 10px;
+  }
+  
+  .day-row input {
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  .add-item-button {
+    display: inline-block;
+    background: none;
+    border: none;
+    color: #007bff;
+    font-weight: bold;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  
+  .add-item-button:hover {
+    text-decoration: underline;
+  }
+  
+  .checkbox-group label {
+    display: block;
+    margin: 5px 0;
+  }
+  
+  .submit-button {
+    display: block;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 25px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 0 auto;
+  }
+  
+  .submit-button:hover {
+    background-color: #0056b3;
+  }
+  .day-row {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .day-row select {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  

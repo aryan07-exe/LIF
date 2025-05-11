@@ -88,16 +88,28 @@ const AdminProfile = () => {
   // Admin routes that the user can navigate to
   const adminActions = [
     { 
-      title: "Manage Users", 
+      title: "AddUsers", 
       icon: <Users size={24} />, 
       description: "Add, edit or remove users from the system", 
-      route: "/add-user"
+      route: "/register"
     },
     { 
-      title: "View Reports", 
+      title: "View Postproduction Reports", 
       icon: <BarChart3 size={24} />, 
       description: "Access analytics and performance reports", 
-      route: "/monthly" 
+      route: "/admin" 
+    },
+    { 
+      title: "View Postproduction Monthly Reports", 
+      icon: <BarChart3 size={24} />, 
+      description: "Access analytics and performance reports", 
+      route: "/post-production-monthly" 
+    },  
+    { 
+      title: "Add Projects", 
+      icon: <Database size={24} />, 
+      description: "Add or edit projects in the system", 
+      route: "/add-project" 
     },
     { 
       title: "Onsite Admin", 
@@ -106,16 +118,10 @@ const AdminProfile = () => {
       route: "/onsite-admin" 
     },
     { 
-      title: "Settings", 
-      icon: <Settings size={24} />, 
-      description: "Configure system settings and permissions", 
-      route: "/admin" 
-    },
-    { 
-      title: "Manage Projects", 
-      icon: <Database size={24} />, 
-      description: "Add or edit projects in the system", 
-      route: "/add-project" 
+      title: "Onsite Monthly", 
+      icon: <FileText size={24} />, 
+      description: "Manage onsite forms and submissions", 
+      route: "/onsite-monthly" 
     }
   ];
 

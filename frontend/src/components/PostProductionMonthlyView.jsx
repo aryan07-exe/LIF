@@ -108,7 +108,7 @@ const PostProductionMonthlyView = () => {
         endDate: filters.endDate
       });
       
-      const response = await axios.get('https://lif.onrender.com/postproduction/monthly', {
+      const response = await axios.get('http://localhost:5000/postproduction/monthly', {
         headers: { Authorization: token },
         params: {
           eid: filters.eid,
@@ -133,7 +133,7 @@ const PostProductionMonthlyView = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://lif.onrender.com/api/users/eids');
+      const response = await axios.get('http://localhost:5000/api/users/eids');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);

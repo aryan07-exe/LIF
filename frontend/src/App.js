@@ -20,7 +20,8 @@ import AddUser from "./components/AddUser"
 import OnsiteAdminPanel from './components/OnsiteAdminPanel';
 import OnsiteMonthlyView from './components/OnsiteMonthlyView';
 import PostProductionMonthlyView from './components/PostProductionMonthlyView';
-import AdminProfile from "./components/AdminProfile"
+import AdminProfile from "./components/AdminProfile";
+import NewProjecr from "./components/NewProjectform";
 
 const App = () => {
   return (
@@ -28,11 +29,12 @@ const App = () => {
       <Routes>
         {/* Define routes here */}
         <Route path="/" element={<Login />} />
+        <Route path="/ne" element={<NewProjecr />} />
         <Route path="/task" element={<Task />} />
         <Route path="/task2" element={<Task2 />} />
         <Route path="/task3" element={<Task3 />} />
         <Route path="/admin" element={<Admin />} />
-        <Route path="/monthly" element={<Monthly />} />
+        <Route p  ath="/monthly" element={<Monthly />} />
         <Route path="/month-wise" element={<MonthWiseView />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/taskname" element={<Taskname />} />

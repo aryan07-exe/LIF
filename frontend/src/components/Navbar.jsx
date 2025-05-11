@@ -35,13 +35,14 @@ const Navbar = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-    >
+    > Hello {isOpen}
       <div className="navbar-container">
         <div className="navbar-logo">
           <Link to="/landing">LIF</Link>
         </div>
 
         <div className="navbar-toggle" onClick={toggleMenu}>
+         
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </div>
 
