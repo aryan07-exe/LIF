@@ -127,7 +127,7 @@ const AdminProfile = () => {
 
   return (
     <div className={styles.pageContainer}>
-      <Navbar />
+       
       <main className={styles.mainContent}>
         <div className={styles.adminDashboard}>
           <div className={styles.profileCard} ref={cardRef}>

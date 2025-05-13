@@ -91,40 +91,45 @@ const PostProductionMonthlyView = () => {
       eid: '',
       startDate: firstDay.toISOString().slice(0, 10),
       endDate: lastDay.toISOString().slice(0, 10),
-      category: ''
+      category: '',
+      projectstatus: ''
     };
   });
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [projectStatuses, setProjectStatuses] = useState([]);
   const [totalPoints, setTotalPoints] = useState(0);
 
   const fetchTasks = async () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      console.log('Fetching tasks with date range:', {
-        startDate: filters.startDate,
-        endDate: filters.endDate
-      });
-      
       const response = await axios.get('https://lif.onrender.com/postproduction/monthly', {
         headers: { Authorization: token },
         params: {
           eid: filters.eid,
           startDate: filters.startDate,
           endDate: filters.endDate,
-          category: filters.category
+          category: filters.category,
+          projectstatus: filters.projectstatus
         }
       });
-      
-      setTasks(response.data.tasks || []);
+      let fetchedTasks = response.data.tasks || [];
+      // Apply frontend filtering for projectstatus if selected
+      if (filters.projectstatus) {
+        fetchedTasks = fetchedTasks.filter(task => task.projectstatus === filters.projectstatus);
+      }
+      setTasks(fetchedTasks);
       setTotalPoints(response.data.totalPoints || 0);
       setCategories(response.data.categories || []);
+      const uniqueStatuses = [...new Set((response.data.tasks || []).map(task => task.projectstatus))].filter(Boolean);
+      setProjectStatuses(uniqueStatuses);
     } catch (error) {
       console.error('Error fetching tasks:', error);
       setTasks([]);
       setCategories([]);
+      setProjectStatuses([]);
       setTotalPoints(0);
     } finally {
       setIsLoading(false);
@@ -172,12 +177,12 @@ const PostProductionMonthlyView = () => {
     const today = new Date();
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
     const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    
     setFilters({ 
       eid: '', 
       startDate: firstDay.toISOString().slice(0, 10),
       endDate: lastDay.toISOString().slice(0, 10),
-      category: ''
+      category: '',
+      projectstatus: ''
     });
   };
 
@@ -268,6 +273,24 @@ const PostProductionMonthlyView = () => {
                 ))}
               </select>
             </div>
+            <div className="form-field">
+              <label htmlFor="projectstatus">
+                <Award size={18} className="field-icon" />
+                Project Status
+              </label>
+              <select
+                id="projectstatus"
+                name="projectstatus"
+                value={filters.projectstatus || ''}
+                onChange={handleFilterChange}
+                className="filter-select"
+              >
+                <option value="">All Statuses</option>
+                {projectStatuses.map((status) => (
+                  <option key={status} value={status}>{status}</option>
+                ))}
+              </select>
+            </div>
           </div>
           <div className="button-group">
             <button type="submit">
@@ -354,4 +377,4 @@ const PostProductionMonthlyView = () => {
   );
 };
 
-export default PostProductionMonthlyView; 
+export default PostProductionMonthlyView;

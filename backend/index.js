@@ -492,7 +492,7 @@ app.get('/task3/today', async (req, res) => {
 
 // GET endpoint for Post Production Monthly Tasks
 app.get('/postproduction/monthly', async (req, res) => {
-  const { startDate, endDate, eid, category } = req.query;
+  const { startDate, endDate, eid, category, projectstatus } = req.query;
 
   try {
     console.log('Received date parameters:', {
@@ -519,6 +519,10 @@ app.get('/postproduction/monthly', async (req, res) => {
       query.category = { $regex: new RegExp(escapeRegex(category), 'i') };
     }
 
+    if (projectstatus) {
+      query.projectstatus = { $regex: new RegExp(escapeRegex(projectstatus), 'i') };
+    }
+
     console.log('MongoDB query:', JSON.stringify(query, null, 2));
 
     // Get tasks with sorting by date
@@ -535,13 +539,15 @@ app.get('/postproduction/monthly', async (req, res) => {
     // Calculate total points
     const totalPoints = tasks.reduce((sum, task) => sum + (task.points || 0), 0);
     
-    // Get unique categories for filter dropdown
+    // Get unique categories and project statuses for filter dropdowns
     const uniqueCategories = await Task.distinct('category', query);
+    const uniqueProjectStatuses = await Task.distinct('projectstatus', query);
     
     res.json({ 
       tasks, 
       totalPoints,
-      categories: uniqueCategories
+      categories: uniqueCategories,
+      projectStatuses: uniqueProjectStatuses
     });
   } catch (error) {
     console.error('Error fetching post-production tasks:', error);
