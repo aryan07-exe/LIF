@@ -102,6 +102,18 @@ const OnsiteAdminPanel = () => {
     XLSX.writeFile(workbook, 'onsite_tasks.xlsx');
   };
 
+  // Helper to calculate hours worked from start and end time (format: 'HH:mm')
+  const getHoursWorked = (start, end) => {
+    if (!start || !end) return '-';
+    const [sh, sm] = start.split(':').map(Number);
+    const [eh, em] = end.split(':').map(Number);
+    let startDate = new Date(0, 0, 0, sh, sm);
+    let endDate = new Date(0, 0, 0, eh, em);
+    let diff = (endDate - startDate) / (1000 * 60 * 60);
+    if (diff < 0) diff += 24; // handle overnight
+    return diff.toFixed(2);
+  };
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -164,6 +176,7 @@ const OnsiteAdminPanel = () => {
                 <th>Project Name</th>
                 <th>Shoot Date</th>
                 <th>Time</th>
+                <th>Hours Worked</th>
                 <th>Categories</th>
                 <th>Team Members</th>
                 <th>Points</th>
@@ -178,6 +191,7 @@ const OnsiteAdminPanel = () => {
                   <td>{task.projectname}</td>
                   <td>{formatDateForDisplay(task.shootDate)}</td>
                   <td>{task.startTime} - {task.endTime}</td>
+                  <td>{getHoursWorked(task.startTime, task.endTime)}</td>
                   <td>
                     {Object.entries(task.categories)
                       .filter(([_, value]) => value)
@@ -238,6 +252,10 @@ const OnsiteAdminPanel = () => {
                   <span>{selectedTask.startTime} - {selectedTask.endTime}</span>
                 </div>
                 <div className="detail-row">
+                  <span className="detail-label">Hours Worked:</span>
+                  <span>{getHoursWorked(selectedTask.startTime, selectedTask.endTime)}</span>
+                </div>
+                <div className="detail-row">
                   <span className="detail-label">Points:</span>
                   <span className="points-badge">{selectedTask.points || 0}</span>
                 </div>
@@ -273,4 +291,4 @@ const OnsiteAdminPanel = () => {
   );
 };
 
-export default OnsiteAdminPanel; 
+export default OnsiteAdminPanel;

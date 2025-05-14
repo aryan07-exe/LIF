@@ -4,7 +4,7 @@
   margin: 0 auto;
   background-color: #f5f5f5;
   min-height: 100vh;
-  margin-top: 72px; /* Add top margin for sticky/fixed navbar */
+  /* Remove margin-top: 72px; to fix extra gap, navbar offset handled by body */
 }
 
 .header-section {

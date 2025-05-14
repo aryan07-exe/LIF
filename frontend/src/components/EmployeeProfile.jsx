@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
-import NewNavbar from "./NewNavbar";
+
 import { User, Mail, Phone, Award, IdCard, ChevronRight } from "lucide-react";
 import styles from "./EmployeeProfile.module.css";
 
@@ -90,47 +90,46 @@ const EmployeeProfile = () => {
 
   return (
     <div className={styles.pageContainer}>
-      <NewNavbar />
+
       <main className={styles.mainContent}>
         <div className={styles.profileCard} ref={cardRef}>
           <div className={styles.cardHeader}>
             <div className={styles.avatarContainer}>
               <div className={styles.avatar}>
-                {user.name?.charAt(0) || "U"}
+                {/* Optionally, add a profile image here if available in user.profileImage */}
+                {user.profileImage ? (
+                  <img src={user.profileImage} alt="Profile" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
+                ) : (
+                  user.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2) || "U"
+                )}
               </div>
             </div>
             <h2 className={styles.animatedName} ref={nameRef}></h2>
             <div className={styles.employeeRole}>{user.role}</div>
           </div>
-          
           <div className={styles.cardDivider}></div>
-          
           <div className={styles.detailsContainer}>
             <div className={styles.infoRow}>
               <Mail className={styles.infoIcon} size={20} />
               <span className={styles.label}>Email:</span> 
               <span className={styles.value}>{user.email}</span>
             </div>
-            
             <div className={styles.infoRow}>
               <Phone className={styles.infoIcon} size={20} />
               <span className={styles.label}>Phone:</span> 
               <span className={styles.value}>{user.phone}</span>
             </div>
-            
             <div className={styles.infoRow}>
               <Award className={styles.infoIcon} size={20} />
               <span className={styles.label}>Role:</span> 
               <span className={styles.value}>{user.role}</span>
             </div>
-            
             <div className={styles.infoRow}>
               <IdCard className={styles.infoIcon} size={20} />
               <span className={styles.label}>Employee ID:</span> 
               <span className={styles.value}>{user.employeeId}</span>
             </div>
           </div>
-          
           {renderFormButtons()}
         </div>
       </main>

@@ -27,8 +27,8 @@ const Navbar = () => {
       </div>
 
       <ul className={`nav-links ${mobileOpen ? 'active' : ''}`}>
-        <li><a href="#"><FaUserPlus /> Add User</a></li>
-        <li><a href="#"><FaProjectDiagram /> Add Project</a></li>
+        <li><a href="/register"><FaUserPlus /> Add User</a></li>
+        <li><a href="/add-project"><FaProjectDiagram /> Add Project</a></li>
 
         <li className="dropdown">
           <button onClick={() => toggleDropdown('post')}>
@@ -36,8 +36,8 @@ const Navbar = () => {
           </button>
           {dropdown === 'post' && (
             <ul className="dropdown-menu">
-              <li><a href="#">Admin Panel</a></li>
-              <li><a href="#">Monthly Pane</a></li>
+              <li><a href="/admin">Admin Panel</a></li>
+              <li><a href="/post-production-monthly">Monthly Panel</a></li>
             </ul>
           )}
         </li>
@@ -48,8 +48,8 @@ const Navbar = () => {
           </button>
           {dropdown === 'onsite' && (
             <ul className="dropdown-menu">
-              <li><a href="#">Admin Panel</a></li>
-              <li><a href="#">Monthly Pane</a></li>
+              <li><a href="/onsite-admin">Admin Panel</a></li>
+              <li><a href="/onsite-monthly">Monthly Panel</a></li>
             </ul>
           )}
         </li>

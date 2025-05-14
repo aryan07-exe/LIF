@@ -11,12 +11,12 @@ body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  padding-top: 90px; /* Ensures content is not hidden behind navbar and adds extra space */
+  padding-top: 56px; /* Reduced navbar height, adjust offset accordingly */
 }
 
 .navbar {
   background-color: var(--dark);
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem; /* Reduce navbar vertical padding */
   color: var(--white);
   display: flex;
   justify-content: space-between;

@@ -6,7 +6,7 @@ import './TaskForm.css';
 import Navbar from './NewNavbar'
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
-
+  
 
 const Register = () => {
   const navigate = useNavigate();

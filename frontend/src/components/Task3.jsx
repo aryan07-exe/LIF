@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Camera, Film, Save, X, User, Calendar, FileText, AlertCircle } from 'lucide-react';
 import './TaskForm.css';
-import NewNavbar from './NewNavbar';
+
 
 const Taskname = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -177,8 +177,10 @@ const Taskname = () => {
   };
 
   return (
+    <>
+
     <div className="task3-container">
-      <NewNavbar />
+     
       <motion.div 
         className="task-form-container"
         initial={{ opacity: 0, y: 20 }}
@@ -405,7 +407,7 @@ const Taskname = () => {
           </div>
         </motion.form>
       </motion.div>
-    </div>
+    </div></> 
   );
 };
 
