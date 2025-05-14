@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './AddUser.css';
-
+import Navbar from './NewNavbar';
 const AddUser = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -55,6 +55,7 @@ const AddUser = () => {
   };
 
   return (
+    <><Navbar />
     <div className="add-user-container">
       <h2>Add New User</h2>
       {error && <div className="error-message">{error}</div>}
@@ -128,7 +129,7 @@ const AddUser = () => {
 
         <button type="submit" className="submit-button">Add User</button>
       </form>
-    </div>
+    </div></>
   );
 };
 

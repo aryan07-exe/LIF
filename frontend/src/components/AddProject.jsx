@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Save, X, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './AddProject.css';
-import Navbar from './Navbar';
+import Navbar from './NewNavbar';
 
 const AddProject = () => {
   const [projectName, setProjectName] = useState('');
@@ -57,7 +57,7 @@ const AddProject = () => {
 
   return (
     <>
-      <Navbar />
+    <Navbar />
       <motion.div 
         className="add-project-container"
         initial={{ opacity: 0, y: 20 }}

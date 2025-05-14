@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
-import Navbar from "./Navbar";
+//yimport Navbar from "./Navbar";
 import { User, Mail, Phone, Award, IdCard, ChevronRight, Users, BarChart3, Settings, FileText, Database } from "lucide-react";
-import './AdminNavbar.css';
+//import './AdminNavbar.css';
 import styles from "./AdminProfile.module.css";
 
 const AdminProfile = () => {

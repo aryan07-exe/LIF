@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Film, Award, Search, Trash2, Download } from 'lucide-react';
 import './AdminPanel.css';
-import Navbar from './Navbar';
+import Navbar   from './NewNavbar';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { useNavigate } from 'react-router-dom';
@@ -182,7 +182,7 @@ const AdminPanel = () => {
 
   return (
     <>
-     
+      <Navbar/>
       <motion.div 
         className="admin-panel"
         initial={{ opacity: 0, y: 20 }}

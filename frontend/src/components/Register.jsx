@@ -3,9 +3,10 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { UserPlus, Save, X, User, Lock, Building, Mail } from 'lucide-react';
 import './TaskForm.css';
-import Navbar from './Navbar'
+import Navbar from './NewNavbar'
 import { useNavigate } from 'react-router-dom';
 import './Register.css';
+
 
 const Register = () => {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ const Register = () => {
 
   return (
     <>
-    <Navbar/>
+    <Navbar />
     <motion.div 
       className="task-form-container"
       initial={{ opacity: 0, y: 20 }}

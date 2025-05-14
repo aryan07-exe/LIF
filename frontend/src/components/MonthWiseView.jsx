@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Calendar, User, Search, Trash2, Award, Download } from 'lucide-react';
 import './OnsiteMonthlyView.css';
-import Navbar from './Navbar';
+//import Navbar from './Navbar';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
@@ -174,7 +174,7 @@ const OnsiteMonthlyView = () => {
 
   return (
     <>
-      <Navbar />
+ 
       <div className="monthly-task-view">
         <motion.div 
           className="dashboard-header"

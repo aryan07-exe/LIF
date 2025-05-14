@@ -42,7 +42,7 @@ body {
 }
 
 .admin-panel {
-  padding: rem;
+  padding: 4.5rem 1rem 1rem 1rem; /* Add top padding for fixed navbar (70px = 4.5rem) */
   max-width: 1400px;
   margin: 0 auto;
   background-color: #f8f9fa;
@@ -302,7 +302,7 @@ body {
 /* Responsive Design */
 @media (max-width: 768px) {
   .admin-panel {
-    padding: 1rem;
+    padding: 4.5rem 1rem 1rem 1rem; /* Ensure top padding for mobile too */
   }
 
   .header-section {
@@ -342,6 +342,24 @@ body {
   .detail-row {
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .points-summary {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+    margin-top: 0; /* Remove extra margin, navbar is fixed */
+    z-index: 1;
+    position: relative;
+    transition: margin-top 0.3s;
+  }
+}
+
+@media (max-width: 480px) {
+  .points-summary {
+    margin-top: 0; /* Remove extra margin for very small screens */
   }
 }
 

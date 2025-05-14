@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Calendar, User, Search, Trash2, Award, Download } from 'lucide-react';
 import './OnsiteMonthlyView.css';
-import Navbar from './Navbar';
+import Navbar from './NewNavbar';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
@@ -135,7 +135,6 @@ const OnsiteMonthlyView = () => {
             .some(([key, value]) => key === filters.category && value)
         );
       }
-      
       setTasks(filteredTasks);
       
       // Calculate total points
@@ -199,7 +198,8 @@ const OnsiteMonthlyView = () => {
 
   return (
     <>
-      <Navbar />
+    <Navbar />
+  
       <div className="monthly-task-view">
         <motion.div 
           className="dashboard-header"
@@ -363,4 +363,4 @@ const OnsiteMonthlyView = () => {
   );
 };
 
-export default OnsiteMonthlyView; 
+export default OnsiteMonthlyView;

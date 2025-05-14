@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Search, Download, Calendar, User, Clock, Film } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import Navbar from './Navbar';
+import Navbar from './NewNavbar';
 import './AdminPanel.css';
 
 const OnsiteAdminPanel = () => {
@@ -113,7 +113,7 @@ const OnsiteAdminPanel = () => {
 
   return (
     <>
-      <Navbar />
+<Navbar />
       <motion.div 
         className="admin-panel"
         initial={{ opacity: 0 }}

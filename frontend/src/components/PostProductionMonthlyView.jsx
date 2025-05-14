@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Calendar, User, Search, Trash2, Award, Download } from 'lucide-react';
 import './OnsiteMonthlyView.css';
-import Navbar from './Navbar';
+import Navbar from './NewNavbar';
 import * as XLSX from 'xlsx';
 
 const formatDate = (dateString) => {
@@ -115,6 +115,7 @@ const PostProductionMonthlyView = () => {
           projectstatus: filters.projectstatus
         }
       });
+
       let fetchedTasks = response.data.tasks || [];
       // Apply frontend filtering for projectstatus if selected
       if (filters.projectstatus) {
@@ -188,7 +189,7 @@ const PostProductionMonthlyView = () => {
 
   return (
     <>
-      <Navbar />
+    <Navbar />
       <div className="monthly-task-view">
         <motion.div 
           className="dashboard-header"

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Calendar, User, Search, Trash2, Award, Download } from 'lucide-react';
 import './MonthlyTaskView.css';
-import Navbar from './Navbar';
+import Navbar from './NewNavbar';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
