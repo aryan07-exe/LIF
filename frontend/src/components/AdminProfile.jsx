@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 
 import { User, Mail, Phone, Award, IdCard, ChevronRight, Users, BarChart3, Settings, FileText, Database } from "lucide-react";
+import Navbar from "./NewNavbar";
 
 import styles from "./AdminProfile.module.css";
 
@@ -97,36 +98,27 @@ const AdminProfile = () => {
       title: "View Postproduction Reports", 
       icon: <BarChart3 size={24} />, 
       description: "Access analytics and performance reports", 
-      route: "/admin" 
-    },
-    { 
-      title: "View Postproduction Monthly Reports", 
-      icon: <BarChart3 size={24} />, 
-      description: "Access analytics and performance reports", 
       route: "/post-production-monthly" 
-    },  
+    },
+ 
     { 
       title: "Add Projects", 
       icon: <Database size={24} />, 
       description: "Add or edit projects in the system", 
       route: "/add-project" 
     },
+     
     { 
-      title: "Onsite Admin", 
+      title: "Onsite Reports", 
       icon: <FileText size={24} />, 
       description: "Manage onsite forms and submissions", 
       route: "/onsite-admin" 
-    },
-    { 
-      title: "Onsite Monthly", 
-      icon: <FileText size={24} />, 
-      description: "Manage onsite forms and submissions", 
-      route: "/onsite-monthly" 
     }
   ];
 
   return (
     <>
+    <Navbar />
     <div className={styles.pageContainer}>
        
       <main className={styles.mainContent}>

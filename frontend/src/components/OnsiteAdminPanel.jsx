@@ -4,17 +4,29 @@ import { motion } from 'framer-motion';
 import { Search, Download, Calendar, User, Clock, Film } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import Navbar from './NewNavbar';
-import './AdminPanel.css';
+import './OnsiteAdminPanel.css';
 
 const OnsiteAdminPanel = () => {
   const [tasks, setTasks] = useState([]);
+  const [filters, setFilters] = useState(() => {
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    return {
+      eid: '',
+      startDate: firstDay.toISOString().slice(0, 10),
+      endDate: lastDay.toISOString().slice(0, 10),
+      category: ''
+    };
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [dateFilter, setDateFilter] = useState('');
   const [selectedTask, setSelectedTask] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
+  const [users, setUsers] = useState([]);
+  const [categories, setCategories] = useState([]);
+
 
   const formatDateForFilter = (dateString) => {
     if (!dateString) return '';
@@ -25,6 +37,7 @@ const OnsiteAdminPanel = () => {
     return `${day}-${month}-${year}`;
   };
 
+  // Add missing function for display
   const formatDateForDisplay = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
@@ -35,16 +48,57 @@ const OnsiteAdminPanel = () => {
   };
 
   useEffect(() => {
+    fetchUsers();
     fetchTasks();
-  }, []);
+  }, [filters]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('https://lif.onrender.com/api/users/eids');
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
   const fetchTasks = async () => {
+    setLoading(true);
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get('https://lif.onrender.com/onsite/tasks', {
         headers: { Authorization: token }
       });
-      setTasks(response.data.tasks);
+      let fetchedTasks = response.data.tasks || [];
+      // Filter by eid
+      if (filters.eid) {
+        fetchedTasks = fetchedTasks.filter(task => task.eid === filters.eid);
+      }
+      // Filter by date range
+      if (filters.startDate && filters.endDate) {
+        const start = new Date(filters.startDate);
+        const end = new Date(filters.endDate);
+        fetchedTasks = fetchedTasks.filter(task => {
+          const taskDate = new Date(task.shootDate);
+          return taskDate >= start && taskDate <= end;
+        });
+      }
+      // Filter by category
+      if (filters.category) {
+        fetchedTasks = fetchedTasks.filter(task => {
+          return task.categories && task.categories[filters.category];
+        });
+      }
+
+      setTasks(fetchedTasks);
+      setTotalPoints(fetchedTasks.reduce((sum, t) => sum + (t.points || 0), 0));
+      // Gather unique categories
+      const allCategories = new Set();
+      fetchedTasks.forEach(task => {
+        if (task.categories) {
+          Object.keys(task.categories).forEach(cat => allCategories.add(cat));
+        }
+      });
+      setCategories(Array.from(allCategories));
       setLoading(false);
     } catch (err) {
       setError('Failed to fetch onsite tasks');
@@ -52,23 +106,23 @@ const OnsiteAdminPanel = () => {
     }
   };
 
-  const filteredTasks = tasks.filter(task => {
-    const matchesSearch = 
-      task.ename?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.projectname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.eid?.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesDate = !dateFilter || 
-      formatDateForFilter(task.shootDate) === formatDateForFilter(dateFilter);
-    
-    return matchesSearch && matchesDate;
-  });
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
 
-  // Calculate total points whenever filtered tasks change
-  useEffect(() => {
-    const total = filteredTasks.reduce((sum, task) => sum + (task.points || 0), 0);
-    setTotalPoints(total);
-  }, [filteredTasks]);
+  const handleClear = () => {
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    setFilters({
+      eid: '',
+      startDate: firstDay.toISOString().slice(0, 10),
+      endDate: lastDay.toISOString().slice(0, 10),
+      category: '',
+      projectstatus: ''
+    });
+  };
 
   const handleTaskClick = (task) => {
     setSelectedTask(task);
@@ -81,11 +135,11 @@ const OnsiteAdminPanel = () => {
   };
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(filteredTasks.map(task => ({
+    const worksheet = XLSX.utils.json_to_sheet(tasks.map(task => ({
       'Employee Name': task.ename,
       'Employee ID': task.eid,
       'Project Name': task.projectname,
-      'Shoot Date': formatDateForDisplay(task.shootDate),
+      'Shoot Date': formatDateForFilter(task.shootDate),
       'Start Time': task.startTime,
       'End Time': task.endTime,
       'Categories': Object.entries(task.categories)
@@ -125,38 +179,94 @@ const OnsiteAdminPanel = () => {
 
   return (
     <>
-<Navbar />
-      <motion.div 
-        className="admin-panel"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="header-section">
-          <div className="header-title">
-            <h1>Onsite Tasks</h1>
+      <Navbar />
+      <motion.div className="admin-panel" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <h1 className="admin-title">Onsite Admin Panel</h1>
+
+        <div className="admin-panel-header">
+          <form className="filter-bar" onSubmit={e => { e.preventDefault(); fetchTasks(); }}>
+            <div className="filter-fields">
+              <div className="form-field">
+                <label htmlFor="eid">
+                  <User size={18} className="field-icon" />
+                  Employee ID
+                </label>
+                <select
+                  id="eid"
+                  name="eid"
+                  value={filters.eid}
+                  onChange={handleFilterChange}
+                  className="filter-select"
+                >
+                  <option value="">Select Employee ID</option>
+                  {users.map(user => (
+                    <option key={user.employeeId || user.eid} value={user.employeeId || user.eid}>
+                      {(user.employeeId || user.eid)} - {(user.name || user.ename)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-field">
+                <label htmlFor="startDate">
+                  <Calendar size={18} className="field-icon" />
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  value={filters.startDate}
+                  onChange={handleFilterChange}
+                  className="filter-input"
+                />
+              </div>
+              <div className="form-field">
+                <label htmlFor="endDate">
+                  <Calendar size={18} className="field-icon" />
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                  value={filters.endDate}
+                  onChange={handleFilterChange}
+                  className="filter-input"
+                />
+              </div>
+              <div className="form-field">
+                <label htmlFor="category">
+                  <Film size={18} className="field-icon" />
+                  Category
+                </label>
+                <select
+                  id="category"
+                  name="category"
+                  value={filters.category}
+                  onChange={handleFilterChange}
+                  className="filter-select"
+                >
+                  <option value="">All Categories</option>
+                  {categories.map(category => (
+                    <option key={category} value={category}>{category}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="button-group">
+              <button type="submit">
+                <Search size={16} style={{ marginRight: '8px' }} />
+                Search
+              </button>
+              <button type="button" className="clear-btn" onClick={handleClear}>
+                Clear
+              </button>
+            </div>
+          </form>
+          <div className="points-export-group">
             <div className="total-points">
               <span className="points-label">Total Points:</span>
               <span className="points-value">{totalPoints}</span>
-            </div>
-          </div>
-          <div className="controls">
-            <div className="search-box">
-              <Search size={20} />
-              <input
-                type="text"
-                placeholder="Search by name, project, or ID..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="filter-box">
-              <Calendar size={20} />
-              <input
-                type="date"
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
-              />
             </div>
             <button className="export-btn" onClick={exportToExcel}>
               <Download size={20} />
@@ -184,7 +294,7 @@ const OnsiteAdminPanel = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredTasks.map(task => (
+              {tasks.map(task => (
                 <tr key={task._id} onClick={() => handleTaskClick(task)}>
                   <td>{task.ename}</td>
                   <td>{task.eid}</td>

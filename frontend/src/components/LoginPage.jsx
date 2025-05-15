@@ -45,50 +45,65 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-page">
+    <div className="login-page modern-bg">
       <div className="login-container">
-        <div className="login-form-container">
-          <div className="logo-container">
-            <h1>EMPLOYEE LOGIN</h1>
+        <div className="login-card modern-glass fade-in">
+          <div className="login-header" style={{textAlign:'center'}}>
+            <div className="modern-logo-circle">
+              <span className="modern-logo-text">LF</span>
+            </div>
+            <div className="login-title modern-title">Life in Frames</div>
+            <div className="login-subtitle modern-subtitle">Employee Portal Login</div>
+            <div className="login-divider modern-divider"></div>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} autoComplete="off">
             {error && <div className="error-message">{error}</div>}
-            
-            <div className="input-group">
-              <label htmlFor="employeeId">Employee ID</label>
+
+            <div className="form-group modern-form-group">
               <input
                 type="text"
                 id="employeeId"
                 name="employeeId"
                 value={formData.employeeId}
                 onChange={handleChange}
-                placeholder="Enter your employee ID"
                 required
+                className="modern-input"
+                autoComplete="username"
               />
+              <label htmlFor="employeeId" className={`modern-label${formData.employeeId ? ' filled' : ''}`}>Employee ID</label>
             </div>
 
-            <div className="input-group">
-              <label htmlFor="password">Password</label>
+            <div className="form-group modern-form-group">
               <input
                 type="password"
                 id="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Enter your password"
                 required
+                className="modern-input"
+                autoComplete="current-password"
               />
+              <label htmlFor="password" className={`modern-label${formData.password ? ' filled' : ''}`}>Password</label>
             </div>
 
             <button 
               type="submit" 
-              className="login-button"
+              className={`login-button modern-btn${loading ? ' loading' : ''}`}
               disabled={loading}
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? (
+                <span className="loading-spinner-container">
+                  <span className="loading-spinner" /> Signing in...
+                </span>
+              ) : 'Sign In'}
             </button>
           </form>
+
+          <div className="login-footer modern-footer">
+            &copy; {new Date().getFullYear()} Life in Frames. For authorized personnel only.
+          </div>
         </div>
       </div>
     </div>

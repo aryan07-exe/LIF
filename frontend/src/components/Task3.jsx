@@ -195,7 +195,7 @@ const Taskname = () => {
         >
           <div className="logo-container">
             <Film size={32} className="logo-icon" />
-            <h2 className="form-title">Life in Frames</h2>
+            <h2 className="form-title">Life In Frames</h2>
             <Camera size={32} className="logo-icon" />
           </div>
           <div className="header-divider"></div>
@@ -291,7 +291,7 @@ const Taskname = () => {
                     disabled={isLoadingProjects}
                   />
                   {isLoadingProjects && (
-                    <div className="loading-text">Loading projects...</div>
+                    <div className="loading-text">Loading Projects...</div>
                   )}
                   {showSuggestions && suggestions.length > 0 && (
                     <ul className="suggestions-list">
@@ -321,7 +321,7 @@ const Taskname = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select project type</option>
+                  <option value="">Select Project Type</option>
                   {projectTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
                   ))}
@@ -340,7 +340,7 @@ const Taskname = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select project status</option>
+                  <option value="">Select Project Status</option>
                   {projectStatuses.map(status => (
                     <option key={status} value={status}>{status}</option>
                   ))}
@@ -359,7 +359,7 @@ const Taskname = () => {
                   onChange={handleChange}
                   required
                 >
-                  <option value="">Select category</option>
+                  <option value="">Select Category</option>
                   {categories.map(category => (
                     <option key={category} value={category}>{category}</option>
                   ))}
@@ -376,7 +376,7 @@ const Taskname = () => {
                   name="notes"
                   value={formData.notes}
                   onChange={handleChange}
-                  placeholder="Enter any additional notes"
+                  placeholder="Enter Any Additional Notes"
                   rows="3"
                 ></textarea>
               </div>

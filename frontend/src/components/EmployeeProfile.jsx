@@ -1,12 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
+import EmployeeNavbar from "./EmployeeNavbar";
 
 import { User, Mail, Phone, Award, IdCard, ChevronRight } from "lucide-react";
 import styles from "./EmployeeProfile.module.css";
 
 const EmployeeProfile = () => {
   const [user, setUser] = useState(null);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/');
+  };
   const nameRef = useRef(null);
   const cardRef = useRef(null);
   const navigate = useNavigate();
@@ -89,20 +95,21 @@ const EmployeeProfile = () => {
   };
 
   return (
-    <div className={styles.pageContainer}>
-
-      <main className={styles.mainContent}>
-        <div className={styles.profileCard} ref={cardRef}>
-          <div className={styles.cardHeader}>
-            <div className={styles.avatarContainer}>
-              <div className={styles.avatar}>
-                {/* Optionally, add a profile image here if available in user.profileImage */}
-                {user.profileImage ? (
-                  <img src={user.profileImage} alt="Profile" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
-                ) : (
-                  user.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2) || "U"
-                )}
-              </div>
+    <>
+      <EmployeeNavbar onLogout={handleLogout} />
+      <div className={styles.pageContainer}>
+        <main className={styles.mainContent}>
+          <div className={styles.profileCard} ref={cardRef}>
+            <div className={styles.cardHeader}>
+              <div className={styles.avatarContainer}>
+                <div className={styles.avatar}>
+  {/* Optionally, add a profile image here if available in user.profileImage */}
+  {user.profileImage ? (
+    <img src={user.profileImage} alt="Profile" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
+  ) : (
+    user.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2) || "U"
+  )}
+</div>
             </div>
             <h2 className={styles.animatedName} ref={nameRef}></h2>
             <div className={styles.employeeRole}>{user.role}</div>
@@ -134,6 +141,7 @@ const EmployeeProfile = () => {
         </div>
       </main>
     </div>
+    </>
   );
 };
 

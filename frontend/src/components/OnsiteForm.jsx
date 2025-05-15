@@ -3,7 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Camera, Film, Save, X, User, Calendar, Clock, Users, FileText } from 'lucide-react';
 import './TaskForm.css';
-
+import Navbar from './EmployeeNavbar'; 
 
 const OnsiteForm = () => {
   const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -211,6 +211,8 @@ const OnsiteForm = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="onsite-form-container">
 
       <motion.div 
@@ -227,7 +229,7 @@ const OnsiteForm = () => {
         >
           <div className="logo-container">
             <Film size={32} className="logo-icon" />
-            <h2 className="form-title">Life in Frames</h2>
+            <h2 className="form-title">Life In Frames</h2>
             <Camera size={32} className="logo-icon" />
           </div>
           <div className="header-divider"></div>
@@ -303,12 +305,12 @@ const OnsiteForm = () => {
                     value={formData.projectname}
                     onChange={handleProjectNameChange}
                     required
-                    placeholder="Enter project name"
+                    placeholder="Enter Project Name"
                     autoComplete="off"
                     disabled={isLoadingProjects}
                   />
                   {isLoadingProjects && (
-                    <div className="loading-text">Loading projects...</div>
+                    <div className="loading-text">Loading Projects...</div>
                   )}
                   {showSuggestions && suggestions.length > 0 && (
                     <ul className="suggestions-list">
@@ -383,7 +385,7 @@ const OnsiteForm = () => {
                   value={formData.teamNames}
                   onChange={handleChange}
                   required
-                  placeholder="Enter team members' names"
+                  placeholder="Enter Team Members' Names"
                 />
               </div>
 
@@ -594,7 +596,7 @@ const OnsiteForm = () => {
           </div>
         </motion.form>
       </motion.div>
-    </div>
+    </div> </>
   );
 };
 

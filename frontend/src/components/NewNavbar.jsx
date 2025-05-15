@@ -18,7 +18,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <div className="brand-logo">🎬📸</div>
+        <div className="brand-logo">🎬</div>
         <span className="brand-text">Life in Frames</span>
       </div>
 

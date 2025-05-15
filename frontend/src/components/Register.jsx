@@ -79,12 +79,12 @@ const Register = () => {
         transition={{ duration: 0.3 }}
       >
         <div className="logo-container">
-          <UserPlus size={32} className="logo-icon" />
+        
           <h2 className="form-title">Register New User</h2>
           <UserPlus size={32} className="logo-icon" />
         </div>
         <div className="header-divider"></div>
-        <div className="header-subtitle">Add New Employee</div>
+    
       </motion.div>
 
       {message && <motion.div 
