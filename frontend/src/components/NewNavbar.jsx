@@ -29,30 +29,8 @@ const Navbar = () => {
       <ul className={`nav-links ${mobileOpen ? 'active' : ''}`}>
         <li><a href="/register"><FaUserPlus /> Add User</a></li>
         <li><a href="/add-project"><FaProjectDiagram /> Add Project</a></li>
-
-        <li className="dropdown">
-          <button onClick={() => toggleDropdown('post')}>
-            Postproduction <FaChevronDown />
-          </button>
-          {dropdown === 'post' && (
-            <ul className="dropdown-menu">
-              <li><a href="/admin">Admin Panel</a></li>
-              <li><a href="/post-production-monthly">Monthly Panel</a></li>
-            </ul>
-          )}
-        </li>
-
-        <li className="dropdown">
-          <button onClick={() => toggleDropdown('onsite')}>
-            Onsite <FaChevronDown />
-          </button>
-          {dropdown === 'onsite' && (
-            <ul className="dropdown-menu">
-              <li><a href="/onsite-admin">Admin Panel</a></li>
-              <li><a href="/onsite-monthly">Monthly Panel</a></li>
-            </ul>
-          )}
-        </li>
+        <li><a href="/post-production-monthly"><FaProjectDiagram /> Post Production Report</a></li>
+        <li><a href="/onsite-admin"><FaProjectDiagram /> Onsite Report</a></li>
       </ul>
     </nav>
   );
