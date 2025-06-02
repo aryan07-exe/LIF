@@ -27,42 +27,14 @@ const TaskCalendar = () => {
   };
 
   return (
-    <div style={{ width: '100%' }}>
-      <h2 style={{
-        textAlign: 'center',
-        color: '#fff',
-        marginBottom: '1.5rem',
-        fontSize: '1.4rem',
-        fontWeight: 600,
-        letterSpacing: '0.5px',
-        textShadow: '0 2px 8px #6366f1cc'
-      }}>
-        Last 7 Days Task Submission
-      </h2>
+    <div style={{ textAlign: 'center', padding: '20px' }}>
+      <h2>Last 7 Days Task Submission</h2>
       {eid ? (
-        <table style={{
-          width: '100%',
-          borderCollapse: 'separate',
-          borderSpacing: '0',
-          marginTop: '10px',
-          background: 'rgba(99,102,241,0.07)',
-          borderRadius: '12px',
-          overflow: 'hidden',
-          boxShadow: '0 2px 8px #6366f133',
-        }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
           <thead>
             <tr>
               {calendar.map((day, idx) => (
-                <th key={idx} style={{
-                  border: 'none',
-                  padding: '12px 8px',
-                  color: '#a855f7',
-                  background: 'rgba(99,102,241,0.13)',
-                  fontWeight: 600,
-                  fontSize: '1rem',
-                  textAlign: 'center',
-                  letterSpacing: '0.5px',
-                }}>
+                <th key={idx} style={{ border: '1px solid #ccc', padding: '10px' }}>
                   {day.date}
                 </th>
               ))}
@@ -74,15 +46,12 @@ const TaskCalendar = () => {
                 <td
                   key={idx}
                   style={{
-                    padding: '16px 8px',
-                    background: day.status === '✅' ? 'rgba(34,197,94,0.18)' : 'rgba(239,68,68,0.13)',
-                    color: day.status === '✅' ? '#22c55e' : '#ef4444',
+                    border: '1px solid #ccc',
+                    padding: '10px',
+                    backgroundColor: day.status === '✅' ? '#d4edda' : '#f8d7da',
+                    color: day.status === '✅' ? '#155724' : '#721c24',
                     fontWeight: 'bold',
-                    fontSize: '1.2rem',
-                    border: 'none',
-                    borderRadius: '8px',
-                    textAlign: 'center',
-                    transition: 'background 0.2s',
+                    fontSize: '1.2rem'
                   }}
                 >
                   {day.status}
@@ -92,9 +61,7 @@ const TaskCalendar = () => {
           </tbody>
         </table>
       ) : (
-        <p style={{ color: '#fff', textAlign: 'center', marginTop: '1.5rem' }}>
-          Please log in or make sure 'user' is set in localStorage.
-        </p>
+        <p>Please log in or make sure 'user' is set in localStorage.</p>
       )}
     </div>
   );

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
 import './LoginPage.css';
+import logoImg from '../images/4.png';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -48,9 +50,10 @@ const LoginPage = () => {
     <div className="login-page modern-bg">
       <div className="login-container">
         <div className="login-card modern-glass fade-in">
-          <div className="login-header" style={{textAlign:'center'}}>
-            <div className="modern-logo-circle">
-              <span className="modern-logo-text">LF</span>
+
+          <div className="login-header login-header-centered">
+            <div className="login-logo-wrapper">
+              <img src={logoImg} alt="Life in Frames Logo" className="login-logo-img" />
             </div>
             <div className="login-title modern-title">Life in Frames</div>
             <div className="login-subtitle modern-subtitle">User Login</div>

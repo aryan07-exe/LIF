@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './NewNavbar.css';
+import logoImg from '../images/5.png';
 
 const EmployeeNavbar = () => {
   const navigate = useNavigate();
@@ -11,8 +12,7 @@ const EmployeeNavbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <div className="brand-logo">🎬</div>
-        <span className="brand-text">Life in Frames</span>
+        <img src={logoImg} alt="Life in Frames Logo" className="navbar-logo-img" />
       </div>
       <ul className="nav-links" style={{ marginRight: 0 }}>
         <li>

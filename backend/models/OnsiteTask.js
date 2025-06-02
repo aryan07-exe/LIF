@@ -77,7 +77,7 @@ onsiteTaskSchema.methods.calculatePoints = function() {
   if (durationInHours >= 2 && durationInHours < 3) {
     return 2;
   } else if (durationInHours >= 3 && durationInHours < 6) {
-    return 3;
+    return 4  ;
   } else if (durationInHours >= 6 && durationInHours <= 10) {
     return 10;
   }

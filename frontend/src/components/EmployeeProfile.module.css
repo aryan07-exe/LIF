@@ -1,3 +1,85 @@
+/* Employee Calendar Enhanced Styles */
+.employee-calendar-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0 0 0;
+}
+.calendar-header h2 {
+  color: #fff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 1.2rem;
+  text-align: center;
+  text-shadow: 0 2px 8px #6366f1cc;
+  background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
+  padding: 0.7rem 1.5rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 8px #6366f133;
+  display: inline-block;
+}
+.calendar-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  background: none;
+}
+.calendar-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: rgba(99,102,241,0.07);
+  border-radius: 14px;
+  box-shadow: 0 2px 8px #6366f133;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.calendar-table th {
+  border: none;
+  padding: 14px 10px;
+  color: #a855f7;
+  background: rgba(99,102,241,0.13);
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+.calendar-table td {
+  padding: 18px 10px;
+  font-weight: 600;
+  font-size: 1.15rem;
+  border: none;
+  border-radius: 8px;
+  text-align: center;
+  transition: background 0.2s;
+}
+.calendar-status-success {
+  background: rgba(34,197,94,0.18);
+  color: #22c55e;
+}
+.calendar-status-fail {
+  background: rgba(239,68,68,0.13);
+  color: #ef4444;
+}
+.calendar-empty-msg {
+  color: #fff;
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 1.05rem;
+  opacity: 0.85;
+}
+
+@media (max-width: 700px) {
+  .calendar-header h2 {
+    font-size: 1.05rem;
+    padding: 0.5rem 0.7rem;
+  }
+  .calendar-table th, .calendar-table td {
+    padding: 10px 4px;
+    font-size: 0.98rem;
+  }
+}
 .calendarCard {
   background: rgba(30, 41, 59, 0.7);
   border-radius: 20px;
