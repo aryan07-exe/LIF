@@ -155,7 +155,8 @@ const AdminPanel = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     fetchTasks();
-  };
+  }; 
+
 
   const handleClear = () => {
     setFilters({

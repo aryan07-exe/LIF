@@ -4,7 +4,7 @@ import gsap from "gsap";
 
 import { User, Mail, Phone, Award, IdCard, ChevronRight, Users, BarChart3, Settings, FileText, Database } from "lucide-react";
 import Navbar from "./NewNavbar";
-
+import Calendar from "./EmployeeCalendar";
 import styles from "./AdminProfile.module.css";
 
 const AdminProfile = () => {
@@ -186,7 +186,11 @@ const AdminProfile = () => {
           </div>
         </div>
       </main>
-    </div></>
+    </div>
+    <div className={styles.calendarContainer}>
+      <Calendar />
+    </div>
+    </>
   );
 };
 

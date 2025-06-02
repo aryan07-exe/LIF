@@ -2,6 +2,8 @@ const express=require('express');
 const mongoose=require('mongoose');
 const cors=require('cors');
 const app=express();
+const moment = require('moment');
+
 const port=process.env.PORT || 5000;
 require('dotenv').config();
 
@@ -98,7 +100,40 @@ app.get('/tasks/date-range', async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+app.get('/api/tasks/last7days/:eid', async (req, res) => {
+    const { eid } = req.params;
+    const today = moment();
+    const startDate = moment().subtract(6, 'days');
 
+    try {
+        // Fetch tasks submitted by the employee in the last 7 days
+        const tasks = await Task.find({
+            eid,
+            date: {
+                $gte: startDate.format('YYYY-MM-DD'),
+                $lte: today.format('YYYY-MM-DD')
+            }
+        });
+
+        // Build a set of submitted dates
+        const submittedDates = new Set(tasks.map(task => task.date));
+
+        // Generate status for each of the last 7 days
+        const calendar = [];
+        for (let i = 0; i < 7; i++) {
+            const currentDate = startDate.clone().add(i, 'days').format('YYYY-MM-DD');
+            calendar.push({
+                date: currentDate,
+                status: submittedDates.has(currentDate) ? '✅' : '❌'
+            });
+        }
+
+        res.json(calendar);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 
 
 app.post("/task3",async(req,res)=>{

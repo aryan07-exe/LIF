@@ -113,7 +113,7 @@ const AddProject = () => {
             id="projectName"
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
-            placeholder="Enter project name"
+            placeholder="Enter Project Name"
             required
           />
         </div>

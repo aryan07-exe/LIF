@@ -21,6 +21,7 @@ import OnsiteAdminPanel from './components/OnsiteAdminPanel';
 import OnsiteMonthlyView from './components/OnsiteMonthlyView';
 import PostProductionMonthlyView from './components/PostProductionMonthlyView';
 import AdminProfile from "./components/AdminProfile";
+import EmployeeCalendar from "./components/EmployeeCalendar";
 import NewProjecr from "./components/NewProjectform";
 
 const App = () => {
@@ -48,6 +49,7 @@ const App = () => {
         <Route path="/onsite-admin" element={<OnsiteAdminPanel />} />
         <Route path="/onsite-monthly" element={<OnsiteMonthlyView />} />
         <Route path="/post-production-monthly" element={<PostProductionMonthlyView />} />
+        <Route path="/ecd" element={<EmployeeCalendar />} />
       </Routes>
     </Router>
   );

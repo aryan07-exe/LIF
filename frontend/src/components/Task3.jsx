@@ -286,7 +286,7 @@ const Taskname = () => {
                     value={formData.projectname}
                     onChange={handleProjectNameChange}
                     required
-                    placeholder="Enter project name"
+                    placeholder="Enter Project name"
                     autoComplete="off"
                     disabled={isLoadingProjects}
                   />

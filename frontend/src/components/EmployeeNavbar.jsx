@@ -18,6 +18,7 @@ const EmployeeNavbar = () => {
         <li>
           <button className="logout-btn" onClick={handleLogout} style={{background:'none',border:'none',color:'var(--white)',fontSize:'1rem',cursor:'pointer',padding:'0.5rem 1rem'}}>Logout</button>
         </li>
+         <li><a href="/employee-profile"> Dashboard</a></li>
       </ul>
     </nav>
   );

@@ -126,7 +126,7 @@ const Register = () => {
                 value={formData.employeeId}
                 onChange={handleChange}
                 required
-                placeholder="Enter employee ID"
+                placeholder="Enter Employee ID"
               />
             </div>
 
@@ -142,7 +142,7 @@ const Register = () => {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                placeholder="Enter email address"
+                placeholder="Enter Email Address"
               />
             </div>
 
@@ -158,7 +158,7 @@ const Register = () => {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                placeholder="Enter full name"
+                placeholder="Enter Full Name"
               />
             </div>
 
@@ -174,7 +174,7 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 required
-                placeholder="Enter password"
+                placeholder="Enter Password"
               />
             </div>
 
@@ -190,7 +190,7 @@ const Register = () => {
                 value={formData.department}
                 onChange={handleChange}
                 required
-                placeholder="Enter department"
+                placeholder="Enter Department"
               />
             </div>
 

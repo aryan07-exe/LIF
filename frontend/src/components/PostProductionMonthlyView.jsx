@@ -286,7 +286,7 @@ const PostProductionMonthlyView = () => {
                 onChange={handleFilterChange}
                 className="filter-select"
               >
-                <option value="">All Statuses</option>
+                <option value="">All Status</option>
                 {projectStatuses.map((status) => (
                   <option key={status} value={status}>{status}</option>
                 ))}
@@ -309,7 +309,7 @@ const PostProductionMonthlyView = () => {
           {isLoading ? (
             <div className="loading-spinner">
               <div className="spinner"></div>
-              <p>Loading tasks...</p>
+            
             </div>
           ) : tasks.length > 0 ? (
             <>
@@ -368,8 +368,8 @@ const PostProductionMonthlyView = () => {
             </>
           ) : (
             <div className="no-tasks-msg">
-              <p>No tasks found for the selected date range.</p>
-              <p className="no-tasks-subtitle">Try a different date range or employee ID.</p>
+              <p>No Tasks Found For The Selected Date Range.</p>
+              <p className="no-tasks-subtitle">Try A Different Date Range Or Employee ID.</p>
             </div>
           )}
         </div>

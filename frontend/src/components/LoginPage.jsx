@@ -53,7 +53,7 @@ const LoginPage = () => {
               <span className="modern-logo-text">LF</span>
             </div>
             <div className="login-title modern-title">Life in Frames</div>
-            <div className="login-subtitle modern-subtitle">Employee Portal Login</div>
+            <div className="login-subtitle modern-subtitle">User Login</div>
             <div className="login-divider modern-divider"></div>
           </div>
 
