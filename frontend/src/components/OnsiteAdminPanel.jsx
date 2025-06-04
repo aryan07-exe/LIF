@@ -12,10 +12,11 @@ const OnsiteAdminPanel = () => {
     const today = new Date();
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
     const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const currentdate=today.toISOString().slice(0, 10);
     return {
       eid: '',
-      startDate: firstDay.toISOString().slice(0, 10),
-      endDate: lastDay.toISOString().slice(0, 10),
+      startDate: currentdate,
+      endDate:currentdate,
       category: ''
     };
   });
