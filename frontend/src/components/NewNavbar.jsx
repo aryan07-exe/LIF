@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './NewNavbar.css';
 import logoImg from '../images/5.png';
 import { FaUserPlus, FaProjectDiagram, FaChevronDown, FaBars, FaTimes, FaDashcube, FaHome } from 'react-icons/fa';
+import { LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -14,6 +16,11 @@ const Navbar = () => {
 
   const toggleDropdown = (menu) => {
     setDropdown(dropdown === menu ? '' : menu);
+  };
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/');
   };
 
   return (
@@ -32,6 +39,7 @@ const Navbar = () => {
         <li><a href="/add-project"><FaProjectDiagram /> Add Project</a></li>
         <li><a href="/post-production-monthly"><FaProjectDiagram /> Post Production Report</a></li>
         <li><a href="/onsite-admin"><FaProjectDiagram /> Onsite Report</a></li>
+        <li><a  onClick={handleLogout}><LogOut /> Log Out</a></li>
       </ul>
     </nav>
   );
