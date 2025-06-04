@@ -85,7 +85,7 @@ const EmployeeProfile = () => {
         )}
         {(access === "postproduction" || access === "both") && (
           <button
-            onClick={() => navigate("/postproduction")}
+            onClick={() => navigate("/task3")}
             className={styles.formButton}
           >
             <span>Post Production Form</span>
