@@ -149,11 +149,7 @@ const AdminProfile = () => {
                 <span className={styles.value}>{user.phone}</span>
               </div>
               
-              <div className={styles.infoRow}>
-                <Award className={styles.infoIcon} size={20} />
-                <span className={styles.label}>Role:</span> 
-                <span className={styles.value}>{user.role}</span>
-              </div>
+            
               
               <div className={styles.infoRow}>
                 <IdCard className={styles.infoIcon} size={20} />
@@ -188,7 +184,7 @@ const AdminProfile = () => {
       </main>
     </div>
     <div className={styles.calendarContainer}>
-      <Calendar />
+     
     </div>
     </>
   );
