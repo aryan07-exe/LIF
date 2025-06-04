@@ -115,7 +115,7 @@ const EmployeeProfile = () => {
                 </div>
               </div>
               <h2 className={styles.animatedName} ref={nameRef}></h2>
-              <div className={styles.employeeRole}>{user.role}</div>
+              
             </div>
             <div className={styles.cardDivider}></div>
             <div className={styles.detailsContainer}>
@@ -129,11 +129,7 @@ const EmployeeProfile = () => {
                 <span className={styles.label}>Phone:</span> 
                 <span className={styles.value}>{user.phone}</span>
               </div>
-              <div className={styles.infoRow}>
-                <Award className={styles.infoIcon} size={20} />
-                <span className={styles.label}>Role:</span> 
-                <span className={styles.value}>{user.role}</span>
-              </div>
+             
               <div className={styles.infoRow}>
                 <IdCard className={styles.infoIcon} size={20} />
                 <span className={styles.label}>Employee ID:</span> 
