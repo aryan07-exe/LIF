@@ -135,6 +135,40 @@ app.get('/api/tasks/last7days/:eid', async (req, res) => {
     }
 });
 
+app.get('/api/onsite/last7days/:eid', async (req, res) => {
+    const { eid } = req.params;
+    const today = moment();
+    const startDate = moment().subtract(6, 'days');
+
+    try {
+        // Fetch onsite entries submitted by the employee in the last 7 days
+        const onsiteEntries = await OnsiteTask.find({
+            eid,
+            date: {
+                $gte: startDate.format('YYYY-MM-DD'),
+                $lte: today.format('YYYY-MM-DD')
+            }
+        });
+
+        // Build a set of submitted dates
+        const submittedDates = new Set(onsiteEntries.map(entry => entry.date));
+
+        // Generate status for each of the last 7 days
+        const calendar = [];
+        for (let i = 0; i < 7; i++) {
+            const currentDate = startDate.clone().add(i, 'days').format('YYYY-MM-DD');
+            calendar.push({
+                date: currentDate,
+                status: submittedDates.has(currentDate) ? '✅' : '❌'
+            });
+        }
+
+        res.json(calendar);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
 
 app.post("/task3",async(req,res)=>{
     try{

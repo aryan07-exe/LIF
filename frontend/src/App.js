@@ -23,7 +23,7 @@ import PostProductionMonthlyView from './components/PostProductionMonthlyView';
 import AdminProfile from "./components/AdminProfile";
 import EmployeeCalendar from "./components/EmployeeCalendar";
 import NewProjecr from "./components/NewProjectform";
-
+import OnsiteCalender from "./components/OnsiteCalender";
 const App = () => {
   return (
     <Router>
@@ -35,7 +35,7 @@ const App = () => {
         <Route path="/task2" element={<Task2 />} />
         <Route path="/task3" element={<Task3 />} />
         <Route path="/admin" element={<Admin />} />
-        <Route p  ath="/monthly" element={<Monthly />} />
+        <Route path="/monthly" element={<Monthly />} />
         <Route path="/month-wise" element={<MonthWiseView />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/taskname" element={<Taskname />} />
@@ -50,7 +50,9 @@ const App = () => {
         <Route path="/onsite-monthly" element={<OnsiteMonthlyView />} />
         <Route path="/post-production-monthly" element={<PostProductionMonthlyView />} />
         <Route path="/ecd" element={<EmployeeCalendar />} />
-      </Routes>
+
+        <Route path="/onsite-calendar" element={<OnsiteCalender />} />
+         </Routes>
     </Router>
   );
 };

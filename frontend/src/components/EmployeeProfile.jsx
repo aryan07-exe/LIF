@@ -7,6 +7,7 @@ import { User, Mail, Phone, Award, IdCard, ChevronRight } from "lucide-react";
 
 import styles from "./EmployeeProfile.module.css";
 import TaskCalendar from "./EmployeeCalendar";
+import OnsiteCalendar from "./OnsiteCalender";
 
 const EmployeeProfile = () => {
   const [user, setUser] = useState(null);
@@ -143,6 +144,11 @@ const EmployeeProfile = () => {
           <div className={styles.calendarCard}>
             <TaskCalendar />
           </div>
+         <div className={styles.calendarCard}>
+            <OnsiteCalendar />
+          </div>
+           
+       
         </main>
       </div>
     </>
