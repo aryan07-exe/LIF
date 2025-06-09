@@ -97,6 +97,37 @@ const EmployeeProfile = () => {
     );
   };
 
+  // Render calendar cards based on form access
+  const renderCalendarCards = () => {
+    const access = user?.formAccess;
+    if (access === 'postproduction') {
+      return (
+        <div className={styles.calendarCard}>
+          <TaskCalendar />
+        </div>
+      );
+    } else if (access === 'onsite') {
+      return (
+        <div className={styles.calendarCard}>
+          <OnsiteCalendar />
+        </div>
+      );
+    } else if (access === 'both') {
+      return (
+        <>
+          <div className={styles.calendarCard}>
+            <TaskCalendar />
+          </div>
+          <div className={styles.calendarCard}>
+            <OnsiteCalendar />
+          </div>
+        </>
+      );
+    } else {
+      return null;
+    }
+  };
+
   return (
     <>
       <EmployeeNavbar onLogout={handleLogout} />
@@ -141,14 +172,7 @@ const EmployeeProfile = () => {
           </div>
 
           {/* Calendar Section - styled to match profile card */}
-          <div className={styles.calendarCard}>
-            <TaskCalendar />
-          </div>
-         <div className={styles.calendarCard}>
-            <OnsiteCalendar />
-          </div>
-           
-       
+          {renderCalendarCards()}
         </main>
       </div>
     </>
