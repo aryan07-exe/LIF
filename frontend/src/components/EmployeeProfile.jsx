@@ -102,23 +102,23 @@ const EmployeeProfile = () => {
     const access = user?.formAccess;
     if (access === 'postproduction') {
       return (
-        <div className={styles.calendarCard}>
+        <div>
           <TaskCalendar />
         </div>
       );
     } else if (access === 'onsite') {
       return (
-        <div className={styles.calendarCard}>
+        <div>
           <OnsiteCalendar />
         </div>
       );
     } else if (access === 'both') {
       return (
         <>
-          <div className={styles.calendarCard}>
+          <div>
             <TaskCalendar />
           </div>
-          <div className={styles.calendarCard}>
+          <div>
             <OnsiteCalendar />
           </div>
         </>

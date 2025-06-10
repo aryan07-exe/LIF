@@ -35,7 +35,7 @@ const OnsiteCalendar = () => {
     <div className="calendarCard">
       <div className="employee-calendar-container">
         <div className="calendar-header">
-          <h2>Onsite Attendance - Last 7 Days</h2>
+          <h2>Onsite Attendance - Last 7 Days </h2>
         </div>
         {loading ? (
           <p className="calendar-empty-msg">Loading...</p>

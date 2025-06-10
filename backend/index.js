@@ -139,32 +139,27 @@ app.get('/api/tasks/last7days/:eid', async (req, res) => {
 
 app.get('/api/onsite/last7days/:eid', async (req, res) => {
     const { eid } = req.params;
-    const today = moment();
-    const startDate = moment().subtract(6, 'days');
-
+    const today = new Date();
+    const last7 = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      last7.push(d.toISOString().slice(0, 10));
+    }
     try {
-        // Fetch onsite entries submitted by the employee in the last 7 days
+        // Fetch onsite tasks for eid in last 7 days using shootDate
         const onsiteEntries = await OnsiteTask.find({
             eid,
-            date: {
-                $gte: startDate.format('YYYY-MM-DD'),
-                $lte: today.format('YYYY-MM-DD')
+            shootDate: {
+                $gte: new Date(last7[0]),
+                $lte: new Date(last7[6] + 'T23:59:59.999Z')
             }
         });
-
-        // Build a set of submitted dates
-        const submittedDates = new Set(onsiteEntries.map(entry => entry.date));
-
-        // Generate status for each of the last 7 days
-        const calendar = [];
-        for (let i = 0; i < 7; i++) {
-            const currentDate = startDate.clone().add(i, 'days').format('YYYY-MM-DD');
-            calendar.push({
-                date: currentDate,
-                status: submittedDates.has(currentDate) ? '✅' : '❌'
-            });
-        }
-
+        // Map to status per day
+        const calendar = last7.map(date => {
+          const found = onsiteEntries.some(t => t.shootDate.toISOString().slice(0, 10) === date);
+          return { date, status: found ? '✅' : '❌' };
+        });
         res.json(calendar);
     } catch (err) {
         console.error(err);
