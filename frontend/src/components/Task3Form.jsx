@@ -46,7 +46,7 @@ const Task3Form = () => {
       });
       
       console.log('Server response:', response.data);
-      setMessage('Task3 submitted successfully!');
+      alert('Task3 submitted successfully!');
       
       // Reset form except EID and ename
       setFormData(prev => ({
@@ -69,6 +69,36 @@ const Task3Form = () => {
   return (
     <div>
       {/* Render your form components here */}
+      {message && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            background: 'rgba(0,0,0,0.25)'
+          }}
+        >
+          <div style={{
+            background: '#fff',
+            color: '#059669',
+            padding: '2rem 2.5rem',
+            borderRadius: '1.2rem',
+            fontSize: '1.25rem',
+            fontWeight: 600,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+            textAlign: 'center',
+            minWidth: '250px'
+          }}>
+            {message}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

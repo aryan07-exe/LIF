@@ -172,7 +172,7 @@ const OnsiteForm = () => {
       });
       
       console.log('Server response:', response.data);
-      setMessage('Onsite task submitted successfully!');
+      alert('Onsite task submitted successfully!');
       
       // Reset form except EID and ename
       setFormData(prev => ({
@@ -236,14 +236,40 @@ const OnsiteForm = () => {
           <div className="header-subtitle">Create New Onsite Task</div>
         </motion.div>
 
-        {message && <motion.div 
-          className="success-message"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          {message}
-        </motion.div>}
+        {message && (
+          <motion.div 
+            className="centered-success-message"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100vw',
+              height: '100vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 9999,
+              background: 'rgba(0,0,0,0.25)'
+            }}
+          >
+            <div style={{
+              background: '#fff',
+              color: '#059669',
+              padding: '2rem 2.5rem',
+              borderRadius: '1.2rem',
+              fontSize: '1.25rem',
+              fontWeight: 600,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.18)',
+              textAlign: 'center',
+              minWidth: '250px'
+            }}>
+              {message}
+            </div>
+          </motion.div>
+        )}
         {error && <motion.div 
           className="error-message"
           initial={{ opacity: 0, y: -10 }}

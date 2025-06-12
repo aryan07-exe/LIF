@@ -148,7 +148,7 @@ const Taskname = () => {
       });
       
       console.log('Server response:', response.data);
-      setMessage('Task submitted successfully!');
+      alert('Task submitted successfully!');
       // Reset form except EID and date
       setFormData(prev => ({
         ...prev,
