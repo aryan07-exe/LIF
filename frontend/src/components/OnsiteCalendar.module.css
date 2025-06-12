@@ -1,3 +1,51 @@
+/* Vertical table style for Onsite Calendar */
+.onsite-vertical-table {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto;
+  border-collapse: collapse;
+  background: #f8fafc;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px #06b6d433;
+  overflow: hidden;
+  table-layout: fixed;
+}
+.onsite-vertical-table th {
+  border: 1px solid #ccc;
+  padding: 12px 8px;
+  color: #06b6d4;
+  background: #e0f2fe;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-align: center;
+}
+.onsite-vertical-table td {
+  border: 1px solid #ccc;
+  padding: 12px 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  background: #fff;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.onsite-vertical-table td.status-success {
+  background: #d4edda;
+  color: #155724;
+}
+.onsite-vertical-table td.status-fail {
+  background: #f8d7da;
+  color: #721c24;
+}
+@media (max-width: 600px) {
+  .onsite-vertical-table {
+    max-width: 98vw;
+    font-size: 0.95rem;
+  }
+  .onsite-vertical-table th, .onsite-vertical-table td {
+    padding: 8px 2px;
+    font-size: 0.95rem;
+  }
+}
 /* Responsive Onsite Calendar Styles */
 .calendarContainer {
   width: 100%;

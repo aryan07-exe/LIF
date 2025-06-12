@@ -30,34 +30,32 @@ const TaskCalendar = () => {
     <div style={{ textAlign: 'center', padding: '20px' }}>
       <h2>Post Production Task Submission</h2>
       {eid ? (
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+        <table className="employee-vertical-table" style={{ width: '100%', maxWidth: 400, margin: '20px auto', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
-              {calendar.map((day, idx) => (
-                <th key={idx} style={{ border: '1px solid #ccc', padding: '10px' }}>
-                  {day.date}
-                </th>
-              ))}
+              <th style={{ border: '1px solid #ccc', padding: '10px', background: '#f1f5f9', color: '#6366f1', fontWeight: 700 }}>Date</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px', background: '#f1f5f9', color: '#6366f1', fontWeight: 700 }}>Status</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              {calendar.map((day, idx) => (
+            {calendar.map((day, idx) => (
+              <tr key={idx}>
+                <td style={{ border: '1px solid #ccc', padding: '10px', fontWeight: 600 }}>{day.date}</td>
                 <td
-                  key={idx}
                   style={{
                     border: '1px solid #ccc',
                     padding: '10px',
                     backgroundColor: day.status === '✅' ? '#d4edda' : '#f8d7da',
                     color: day.status === '✅' ? '#155724' : '#721c24',
                     fontWeight: 'bold',
-                    fontSize: '1.2rem'
+                    fontSize: '1.2rem',
+                    textAlign: 'center'
                   }}
                 >
                   {day.status}
                 </td>
-              ))}
-            </tr>
+              </tr>
+            ))}
           </tbody>
         </table>
       ) : (
