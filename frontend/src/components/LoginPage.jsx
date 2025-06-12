@@ -55,7 +55,7 @@ const LoginPage = () => {
             <div className="login-logo-wrapper">
               <img src={logoImg} alt="Life in Frames Logo" className="login-logo-img" />
             </div>
-            <div className="login-title modern-title">Life in Frames</div>
+            <div className="login-title modern-title">Life In Frames</div>
             <div className="login-subtitle modern-subtitle">User Login</div>
             <div className="login-divider modern-divider"></div>
           </div>
@@ -105,7 +105,7 @@ const LoginPage = () => {
           </form>
 
           <div className="login-footer modern-footer">
-            &copy; {new Date().getFullYear()} Life in Frames. For authorized personnel only.
+            &copy; {new Date().getFullYear()} Life In Frames. For Authorized Personnel Only.
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './EmployeeProfile.module.css';
+// ...existing code...
 
 const OnsiteCalendar = () => {
   const [calendar, setCalendar] = useState([]);
@@ -32,41 +32,44 @@ const OnsiteCalendar = () => {
   };
 
   return (
-    <div className="calendarCard">
-      <div className="employee-calendar-container">
-        <div className="calendar-header">
-          <h2>Onsite Attendance - Last 7 Days </h2>
-        </div>
-        {loading ? (
-          <p className="calendar-empty-msg">Loading...</p>
-        ) : eid ? (
-          <div className="calendar-table-wrapper">
-            <table className="calendar-table">
-              <thead>
-                <tr>
-                  {calendar.map((day, idx) => (
-                    <th key={idx}>{day.date}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  {calendar.map((day, idx) => (
-                    <td
-                      key={idx}
-                      className={day.status === '✅' ? 'calendar-status-success' : 'calendar-status-fail'}
-                    >
-                      {day.status}
-                    </td>
-                  ))}
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="calendar-empty-msg">Please log in or ensure the 'user' object exists in localStorage.</p>
-        )}
-      </div>
+    <div style={{ textAlign: 'center', padding: '20px' }}>
+      <h2>Onsite Attendance - Last 7 Days</h2>
+      {loading ? (
+        <p>Loading...</p>
+      ) : eid ? (
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+          <thead>
+            <tr>
+              {calendar.map((day, idx) => (
+                <th key={idx} style={{ border: '1px solid #ccc', padding: '10px' }}>
+                  {day.date}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {calendar.map((day, idx) => (
+                <td
+                  key={idx}
+                  style={{
+                    border: '1px solid #ccc',
+                    padding: '10px',
+                    backgroundColor: day.status === '✅' ? '#d4edda' : '#f8d7da',
+                    color: day.status === '✅' ? '#155724' : '#721c24',
+                    fontWeight: 'bold',
+                    fontSize: '1.2rem'
+                  }}
+                >
+                  {day.status}
+                </td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      ) : (
+        <p>Please log in or ensure the 'user' object exists in localStorage.</p>
+      )}
     </div>
   );
 };
