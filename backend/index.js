@@ -6,6 +6,7 @@ const moment = require('moment');
 
 const port=process.env.PORT || 5000;
 require('dotenv').config();
+const ProjectDetails = require('./models/ProjectDetails');
 
 const Task=require('./models/Task');
 const pointsConfig = require('./config/pointsConfig');
@@ -26,6 +27,9 @@ app.use(express.json());
 // Mount routes
 app.use('/api/projects', projectRoutes);
 app.use('/api/auth', authRoutes);
+const projectDetailsRouter = require('./routes/projectDetails');
+app.use('/api/projectdetails', projectDetailsRouter);
+
 
 mongoose.connect(process.env.Mongo_URL)
   .then(() => {

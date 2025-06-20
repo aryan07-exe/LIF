@@ -2,6 +2,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import ProjectForm  from "./components/ProjectForm"
 import Login from "./components/LoginPage"
 import Landing from "./components/Landing"
 import Admin from "./components/AdminPanel"
@@ -51,6 +52,7 @@ const App = () => {
         <Route path="/post-production-monthly" element={<PostProductionMonthlyView />} />
         <Route path="/ecd" element={<EmployeeCalendar />} />
 
+        <Route path="project-formr" element={<ProjectForm />} />
         <Route path="/onsite-calendar" element={<OnsiteCalender />} />
          </Routes>
     </Router>

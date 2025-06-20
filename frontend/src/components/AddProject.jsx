@@ -40,7 +40,7 @@ const AddProject = () => {
         setProjectName('');
         // Redirect to task page after 2 seconds
         setTimeout(() => {
-          navigate('/task3');
+          navigate('');
         }, 2000);
       }
     } catch (err) {
@@ -132,7 +132,7 @@ const AddProject = () => {
           <motion.button
             type="button"
             className="cancel-btn"
-            onClick={() => navigate('/task3')}
+            onClick={() => navigate('')}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
