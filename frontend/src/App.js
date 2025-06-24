@@ -44,19 +44,19 @@ const App = () => {
         <Route path="/month-wise" element={<PrivateRoute><MonthWiseView /></PrivateRoute>} />
         <Route path="/landing" element={<PrivateRoute><Landing /></PrivateRoute>} />
         <Route path="/taskname" element={<PrivateRoute><Taskname /></PrivateRoute>} />
-        <Route path="/register" element={<PrivateRoute><Register /></PrivateRoute>} />
+        <Route path="/register" element={<AdminRoute><Register /></AdminRoute>} />
         <Route path="/test-connection" element={<PrivateRoute><TestConnection /></PrivateRoute>} />
-        <Route path="/add-project" element={<PrivateRoute><AddProject /></PrivateRoute>} />
+        <Route path="/add-project" element={<AdminRoute><AddProject /></AdminRoute>} />
         <Route path="/employee-profile" element={<PrivateRoute><EmployeeProfile /></PrivateRoute>} />
         <Route path="/admin-profile" element={<AdminRoute><AdminProfile /></AdminRoute>} />
         <Route path="/onsite" element={<PrivateRoute><OnsiteForm /></PrivateRoute>} />
         <Route path="/add-user" element={<AdminRoute><AddUser /></AdminRoute>} />
-        <Route path="/onsite-admin" element={<PrivateRoute><OnsiteAdminPanel /></PrivateRoute>} />
+        <Route path="/onsite-admin" element={<AdminRoute><OnsiteAdminPanel /></AdminRoute>} />
         <Route path="/onsite-monthly" element={<PrivateRoute><OnsiteMonthlyView /></PrivateRoute>} />
-        <Route path="/post-production-monthly" element={<PrivateRoute><PostProductionMonthlyView /></PrivateRoute>} />
+        <Route path="/post-production-monthly" element={<AdminRoute><PostProductionMonthlyView /></AdminRoute>} />
         <Route path="/ecd" element={<PrivateRoute><EmployeeCalendar /></PrivateRoute>} />
         <Route path="/maintain" element={<PrivateRoute><Maintain /></PrivateRoute>} />
-        <Route path="project-formr" element={<PrivateRoute><ProjectForm /></PrivateRoute>} />
+        <Route path="/project-form" element={<AdminRoute><ProjectForm /></AdminRoute>} />
         <Route path="/onsite-calendar" element={<PrivateRoute><OnsiteCalender /></PrivateRoute>} />
         <Route path="/view-users" element={<AdminRoute><ViewUsers /></AdminRoute>} />
          </Routes>
