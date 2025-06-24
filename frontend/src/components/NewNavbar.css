@@ -1,42 +1,41 @@
-.navbar-logo-img {
-  
-  height: 44px;
-  object-fit: contain;
-  
-  box-shadow: 0 2px 8px rgba(99,102,241,0.10);
-  
-  margin-right: 0.7rem;
-}
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 :root {
-  --dark: #1e293b; 
-  --primary: #8b5cf6;
-  --white: #ffffff;
-  --hover: #4f46e5;
+  --navbar-black: #211b1b;
+  --navbar-maroon: #6c0428;
+  --navbar-maroon-dark: #4a0216;
+  --navbar-white: #fff;
 }
 
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  padding-top: 56px; /* Reduced navbar height, adjust offset accordingly */
+    
 }
 
 .navbar {
-  background-color: var(--dark);
-  padding: 0.5rem 2rem; /* Reduce navbar vertical padding */
-  color: var(--white);
+  background-color: var(--navbar-black);
+  padding: 0.5rem 2rem; 
+  color: var(--navbar-white);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 3000; /* Increased to ensure it overlays all content */
-  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 16px rgba(108,4,40,0.10);
   margin-bottom: 20px; /* Adds space below the navbar */
+  border-bottom: 3px solid var(--navbar-maroon);
+}
+
+.navbar-logo-img {
+  height: 35px;
+  object-fit: contain;
+  box-shadow: 0 2px 8px rgba(108,4,40,0.10);
+  margin-right: 0.7rem;
 }
 
 .navbar-brand {
@@ -51,11 +50,12 @@ body {
 
 .brand-text {
   font-size: 1.2rem;
-  font-weight: 600;
-  background: linear-gradient(45deg, #8b5cf6, #ec4899);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  color: var(--navbar-maroon);
+  background: none;
+  background-clip: unset;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
 }
 
 .hamburger {
@@ -73,7 +73,7 @@ body {
 
 .nav-links li a,
 .dropdown > button {
-  color: var(--white);
+  color: var(--navbar-white);
   text-decoration: none;
   padding: 0.5rem 1rem;
   background: none;
@@ -83,12 +83,13 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: background 0.3s;
+  transition: background 0.3s, color 0.2s;
 }
 
 .nav-links li a:hover,
 .dropdown > button:hover {
-  background-color: var(--hover);
+  background-color: var(--navbar-maroon);
+  color: var(--navbar-white);
   border-radius: 5px;
 }
 
@@ -99,11 +100,11 @@ body {
 .dropdown-menu {
   position: absolute;
   top: 100%;
-  background-color: var(--dark);
+  background-color: var(--navbar-black);
   list-style: none;
   padding: 0;
   margin: 0;
-  border: 1px solid var(--hover);
+  border: 1px solid var(--navbar-maroon-dark);
   border-radius: 5px;
   min-width: 150px;
   z-index: 10;
@@ -112,12 +113,29 @@ body {
 .dropdown-menu li a {
   display: block;
   padding: 0.6rem 1rem;
-  color: var(--white);
+  color: var(--navbar-white);
   text-decoration: none;
 }
 
 .dropdown-menu li a:hover {
-  background-color: var(--hover);
+  background-color: var(--navbar-maroon-dark);
+  color: var(--navbar-white);
+}
+
+.logout-btn {
+  color: var(--navbar-white);
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: background 0.2s, color 0.2s;
+  border-radius: 5px;
+}
+
+.logout-btn:hover {
+  background-color: var(--navbar-maroon);
+  color: var(--navbar-white);
 }
 
 /* ---------- Responsive ---------- */
@@ -126,9 +144,7 @@ body {
     display: block;
   }
 
-  body {
-    padding-top: 70px; /* Adjust if navbar height changes */
-  }
+  
 
   .nav-links {
     position: absolute;
@@ -136,7 +152,7 @@ body {
     left: 0;
     right: 0;
     flex-direction: column;
-    background-color: var(--dark);
+    background-color: var(--navbar-black);
     display: none;
   }
 

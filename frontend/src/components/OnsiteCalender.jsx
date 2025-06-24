@@ -22,7 +22,7 @@ const OnsiteCalendar = () => {
 
   const fetchCalendar = async (eid) => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/onsite/last7days/${eid}`);
+      const res = await axios.get(`https://lif.onrender.com/api/onsite/last7days/${eid}`);
       setCalendar(res.data);
     } catch (error) {
       console.error("Error fetching onsite calendar data", error);
@@ -33,15 +33,15 @@ const OnsiteCalendar = () => {
 
   return (
     <div style={{ textAlign: 'center', padding: '20px' }}>
-      <h2>Onsite Task Submission - Last 7 Days</h2>
+      <h2>SHOOT REPORT SUBMISSION</h2>
       {loading ? (
         <p>Loading...</p>
       ) : eid ? (
         <table className="onsite-vertical-table" style={{ width: '100%', maxWidth: 400, margin: '20px auto', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
-              <th style={{ border: '1px solid #ccc', padding: '10px', background: '#f1f5f9', color: '#6366f1', fontWeight: 700 }}>Date</th>
-              <th style={{ border: '1px solid #ccc', padding: '10px', background: '#f1f5f9', color: '#6366f1', fontWeight: 700 }}>Status</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px', background: '#f1f5f9', color: '#000000ff', fontWeight: 700 }}>Date</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px', background: '#f1f5f9', color: 'rgba(4, 4, 4, 1)ff', fontWeight: 700 }}>Status</th>
             </tr>
           </thead>
           <tbody>

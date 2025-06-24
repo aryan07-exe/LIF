@@ -3,6 +3,7 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Calendar, User, Search, Trash2, Award, Download } from 'lucide-react';
 import './OnsiteMonthlyView.css';
+import './PostProductionMonthlyView.css';
 import Navbar from './NewNavbar';
 import * as XLSX from 'xlsx';
 
@@ -85,12 +86,11 @@ const PostProductionMonthlyView = () => {
   const [tasks, setTasks] = useState([]);
   const [filters, setFilters] = useState(() => {
     const today = new Date();
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const currentDate = today.toISOString().slice(0, 10);
     return {
       eid: '',
-      startDate: firstDay.toISOString().slice(0, 10),
-      endDate: lastDay.toISOString().slice(0, 10),
+      startDate: currentDate,
+      endDate: currentDate,
       category: '',
       projectstatus: ''
     };
@@ -176,8 +176,9 @@ const PostProductionMonthlyView = () => {
 
   const handleClear = () => {
     const today = new Date();
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
     const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    const currentdate=today.toISOString().slice(0, 10);
     setFilters({ 
       eid: '', 
       startDate: firstDay.toISOString().slice(0, 10),
@@ -197,7 +198,7 @@ const PostProductionMonthlyView = () => {
           animate={{ scale: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <h2 className="dashboard-title">Post-Production Monthly Tasks</h2>
+          <h2 className="dashboard-title">Post-Production Reports</h2>
           <div className="total-points">
             <span className="points-label">Total Points:</span>
             <span className="points-value">{totalPoints}</span>
@@ -307,9 +308,17 @@ const PostProductionMonthlyView = () => {
 
         <div className="table-container">
           {isLoading ? (
-            <div className="loading-spinner">
-              <div className="spinner"></div>
-            
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80px' }}>
+              <div className="dot-spinner">
+                <div className="dot-spinner__dot"></div>
+                <div className="dot-spinner__dot"></div>
+                <div className="dot-spinner__dot"></div>
+                <div className="dot-spinner__dot"></div>
+                <div className="dot-spinner__dot"></div>
+                <div className="dot-spinner__dot"></div>
+                <div className="dot-spinner__dot"></div>
+                <div className="dot-spinner__dot"></div>
+              </div>
             </div>
           ) : tasks.length > 0 ? (
             <>

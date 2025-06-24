@@ -22,38 +22,43 @@ import OnsiteAdminPanel from './components/OnsiteAdminPanel';
 import OnsiteMonthlyView from './components/OnsiteMonthlyView';
 import PostProductionMonthlyView from './components/PostProductionMonthlyView';
 import AdminProfile from "./components/AdminProfile";
+import AdminRoute from "./components/AdminRoute";
+import ViewUsers from "./components/ViewUsers";
 import EmployeeCalendar from "./components/EmployeeCalendar";
 import NewProjecr from "./components/NewProjectform";
 import OnsiteCalender from "./components/OnsiteCalender";
+import Maintain from "./components/Maintainpage";
+import PrivateRoute from "./components/PrivateRoute";
 const App = () => {
   return (
     <Router>
       <Routes>
         {/* Define routes here */}
         <Route path="/" element={<Login />} />
-        <Route path="/ne" element={<NewProjecr />} />
-        <Route path="/task" element={<Task />} />
-        <Route path="/task2" element={<Task2 />} />
-        <Route path="/task3" element={<Task3 />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/monthly" element={<Monthly />} />
-        <Route path="/month-wise" element={<MonthWiseView />} />
-        <Route path="/landing" element={<Landing />} />
-        <Route path="/taskname" element={<Taskname />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/test-connection" element={<TestConnection />} />
-        <Route path="/add-project" element={<AddProject />} />
-        <Route path="/employee-profile" element={<EmployeeProfile />} />
-        <Route path="/admin-profile" element={<AdminProfile />} />
-        <Route path="/onsite" element={<OnsiteForm />} />
-        <Route path="/add-user" element={<AddUser />} />
-        <Route path="/onsite-admin" element={<OnsiteAdminPanel />} />
-        <Route path="/onsite-monthly" element={<OnsiteMonthlyView />} />
-        <Route path="/post-production-monthly" element={<PostProductionMonthlyView />} />
-        <Route path="/ecd" element={<EmployeeCalendar />} />
-
-        <Route path="project-formr" element={<ProjectForm />} />
-        <Route path="/onsite-calendar" element={<OnsiteCalender />} />
+        <Route path="/ne" element={<PrivateRoute><NewProjecr /></PrivateRoute>} />
+        <Route path="/task" element={<PrivateRoute><Task /></PrivateRoute>} />
+        <Route path="/task2" element={<PrivateRoute><Task2 /></PrivateRoute>} />
+        <Route path="/task3" element={<PrivateRoute><Task3 /></PrivateRoute>} />
+        <Route path="/admin" element={<PrivateRoute><Admin /></PrivateRoute>} />
+        <Route path="/monthly" element={<PrivateRoute><Monthly /></PrivateRoute>} />
+        <Route path="/month-wise" element={<PrivateRoute><MonthWiseView /></PrivateRoute>} />
+        <Route path="/landing" element={<PrivateRoute><Landing /></PrivateRoute>} />
+        <Route path="/taskname" element={<PrivateRoute><Taskname /></PrivateRoute>} />
+        <Route path="/register" element={<PrivateRoute><Register /></PrivateRoute>} />
+        <Route path="/test-connection" element={<PrivateRoute><TestConnection /></PrivateRoute>} />
+        <Route path="/add-project" element={<PrivateRoute><AddProject /></PrivateRoute>} />
+        <Route path="/employee-profile" element={<PrivateRoute><EmployeeProfile /></PrivateRoute>} />
+        <Route path="/admin-profile" element={<AdminRoute><AdminProfile /></AdminRoute>} />
+        <Route path="/onsite" element={<PrivateRoute><OnsiteForm /></PrivateRoute>} />
+        <Route path="/add-user" element={<AdminRoute><AddUser /></AdminRoute>} />
+        <Route path="/onsite-admin" element={<PrivateRoute><OnsiteAdminPanel /></PrivateRoute>} />
+        <Route path="/onsite-monthly" element={<PrivateRoute><OnsiteMonthlyView /></PrivateRoute>} />
+        <Route path="/post-production-monthly" element={<PrivateRoute><PostProductionMonthlyView /></PrivateRoute>} />
+        <Route path="/ecd" element={<PrivateRoute><EmployeeCalendar /></PrivateRoute>} />
+        <Route path="/maintain" element={<PrivateRoute><Maintain /></PrivateRoute>} />
+        <Route path="project-formr" element={<PrivateRoute><ProjectForm /></PrivateRoute>} />
+        <Route path="/onsite-calendar" element={<PrivateRoute><OnsiteCalender /></PrivateRoute>} />
+        <Route path="/view-users" element={<AdminRoute><ViewUsers /></AdminRoute>} />
          </Routes>
     </Router>
   );

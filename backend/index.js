@@ -17,6 +17,9 @@ const OnsiteTask = require('./models/OnsiteTask');
 // Import routes
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects')
+// Import users route
+const usersRouter = require('./routes/users');
+app.use('/api/users', usersRouter);
 
 app.use(cors({
     origin: '*',

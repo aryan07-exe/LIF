@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 
 import { User, Mail, Phone, Award, IdCard, ChevronRight, Users, BarChart3, Settings, FileText, Database } from "lucide-react";
+import { UserCircle, Pencil } from "lucide-react";
 import Navbar from "./NewNavbar";
 import Calendar from "./EmployeeCalendar";
 import styles from "./AdminProfile.module.css";
@@ -124,14 +125,17 @@ const AdminProfile = () => {
       <main className={styles.mainContent}>
         <div className={styles.adminDashboard}>
           <div className={styles.profileCard} ref={cardRef}>
+            <div className={styles.floatingBadge}>Administrator</div>
             <div className={styles.cardHeader}>
               <div className={styles.avatarContainer}>
-                <div className={styles.avatar}>
-                  {user.name?.charAt(0) || "A"}
+                <div className={styles.avatarModern}>
+                  <span className={styles.avatarInitials}>
+                    {user.name ? user.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase() : 'AD'}
+                  </span>
+                  <UserCircle className={styles.avatarIcon} size={38} />
                 </div>
               </div>
               <h2 className={styles.animatedName} ref={nameRef}></h2>
-              <div className={styles.adminBadge}>Administrator</div>
             </div>
             
             <div className={styles.cardDivider}></div>
@@ -144,12 +148,10 @@ const AdminProfile = () => {
               </div>
               
               <div className={styles.infoRow}>
-                <Phone className={styles.infoIcon} size={20} />
-                <span className={styles.label}>Phone:</span> 
-                <span className={styles.value}>{user.phone}</span>
+                <Award className={styles.infoIcon} size={20} />
+                <span className={styles.label}>Department:</span> 
+                <span className={styles.value}>{user.department}</span>
               </div>
-              
-            
               
               <div className={styles.infoRow}>
                 <IdCard className={styles.infoIcon} size={20} />
@@ -186,8 +188,11 @@ const AdminProfile = () => {
     <div className={styles.calendarContainer}>
      
     </div>
+    <button className={styles.fabEditProfile} title="Edit Profile" onClick={() => alert('Edit profile coming soon!')}>
+      <Pencil size={24} />
+    </button>
     </>
   );
 };
 
-export default AdminProfile; 
+export default AdminProfile;

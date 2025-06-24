@@ -28,13 +28,13 @@ const TaskCalendar = () => {
 
   return (
     <div style={{ textAlign: 'center', padding: '20px' }}>
-      <h2>Post Production Task Submission</h2>
+      <h2>DAILY REPORT SUBMISSION</h2>
       {eid ? (
         <table className="employee-vertical-table" style={{ width: '100%', maxWidth: 400, margin: '20px auto', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
-              <th style={{ border: '1px solid #ccc', padding: '10px', background: '#f1f5f9', color: '#6366f1', fontWeight: 700 }}>Date</th>
-              <th style={{ border: '1px solid #ccc', padding: '10px', background: '#f1f5f9', color: '#6366f1', fontWeight: 700 }}>Status</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px', background: '#f1f5f9', color: '#000000ff', fontWeight: 700 }}>Date</th>
+              <th style={{ border: '1px solid #ccc', padding: '10px', background: '#f1f5f9', color: '#000000ff', fontWeight: 700 }}>Status</th>
             </tr>
           </thead>
           <tbody>

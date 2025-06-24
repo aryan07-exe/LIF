@@ -81,7 +81,7 @@ const EmployeeProfile = () => {
             className={styles.formButton}
           >
             <span>Onsite Form</span>
-            <ChevronRight size={18} />
+            <ChevronRight size={14} />
           </button>
         )}
         {(access === "postproduction" || access === "both") && (
@@ -90,7 +90,7 @@ const EmployeeProfile = () => {
             className={styles.formButton}
           >
             <span>Post Production Form</span>
-            <ChevronRight size={18} />
+            <ChevronRight size={14} />
           </button>
         )}
       </div>
@@ -146,8 +146,7 @@ const EmployeeProfile = () => {
                   )}
                 </div>
               </div>
-              <h2 className={styles.animatedName} ref={nameRef}></h2>
-              
+              <div className={styles.profileName}>{user.name}</div>
             </div>
             <div className={styles.cardDivider}></div>
             <div className={styles.detailsContainer}>

@@ -1,3 +1,5 @@
+
+ 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -6,6 +8,23 @@ import * as XLSX from 'xlsx';
 import Navbar from './NewNavbar';
 import './OnsiteAdminPanel.css';
 
+const toIST = (dateStringOrTime) => {
+  if (!dateStringOrTime) return '';
+  let date;
+  if (/^\d{2}:\d{2}/.test(dateStringOrTime)) {
+    const today = new Date();
+    const [h, m] = dateStringOrTime.split(':');
+    date = new Date(today.getFullYear(), today.getMonth(), today.getDate(), h, m);
+  } else {
+    date = new Date(dateStringOrTime);
+  }
+  return date.toLocaleTimeString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+};
 const OnsiteAdminPanel = () => {
   const [tasks, setTasks] = useState([]);
   const [filters, setFilters] = useState(() => {
@@ -182,7 +201,7 @@ const OnsiteAdminPanel = () => {
     <>
       <Navbar />
       <motion.div className="admin-panel" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-        <h1 className="admin-title">Onsite Admin Panel</h1>
+        <h1 className="admin-title">Shoot Records</h1>
 
         <div className="admin-panel-header">
           <form className="filter-bar" onSubmit={e => { e.preventDefault(); fetchTasks(); }}>
@@ -301,7 +320,7 @@ const OnsiteAdminPanel = () => {
                   <td>{task.eid}</td>
                   <td>{task.projectname}</td>
                   <td>{formatDateForDisplay(task.shootDate)}</td>
-                  <td>{task.startTime} - {task.endTime}</td>
+                  <td>{toIST(task.startTime)} - {toIST(task.endTime)}</td>
                   <td>{getHoursWorked(task.startTime, task.endTime)}</td>
                   <td>
                     {Object.entries(task.categories)
@@ -360,7 +379,7 @@ const OnsiteAdminPanel = () => {
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">Time:</span>
-                  <span>{selectedTask.startTime} - {selectedTask.endTime}</span>
+                  <span>{toIST(selectedTask.startTime)} - {toIST(selectedTask.endTime)}</span>
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">Hours Worked:</span>

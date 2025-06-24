@@ -194,12 +194,12 @@ const Taskname = () => {
           transition={{ duration: 0.3 }}
         >
           <div className="logo-container">
-            <Film size={32} className="logo-icon" />
-            <h2 className="form-title">Life In Frames</h2>
-            <Camera size={32} className="logo-icon" />
+            {/* <Film size={32} className="logo-icon" /> */}
+           <div className="header-subtitle"><h2>DAILY WORK</h2></div>
+            {/* <Camera size={32} className="logo-icon" /> */}
           </div>
           <div className="header-divider"></div>
-          <div className="header-subtitle">Create New Task</div>
+          {/* <div className="header-subtitle">Create New Task</div> */}
         </motion.div>
 
         {message && <motion.div 
@@ -286,7 +286,7 @@ const Taskname = () => {
                     value={formData.projectname}
                     onChange={handleProjectNameChange}
                     required
-                    placeholder="Enter Project name"
+                    placeholder="Enter Project Name"
                     autoComplete="off"
                     disabled={isLoadingProjects}
                   />
