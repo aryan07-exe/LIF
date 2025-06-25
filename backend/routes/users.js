@@ -3,13 +3,9 @@ const router = express.Router();
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 
-// Get all users (admin only)
-router.get('/', auth, async (req, res) => {
+// Get all users (public)
+router.get('/', async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Access denied' });
-    }
-
     const users = await User.find({}, '-password');
     res.json(users);
   } catch (error) {
@@ -17,6 +13,7 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+ 
 // Create new user (admin only)
 router.post('/', auth, async (req, res) => {
   try {

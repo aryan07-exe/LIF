@@ -23,7 +23,9 @@ import OnsiteMonthlyView from './components/OnsiteMonthlyView';
 import PostProductionMonthlyView from './components/PostProductionMonthlyView';
 import AdminProfile from "./components/AdminProfile";
 import AdminRoute from "./components/AdminRoute";
-import ViewUsers from "./components/ViewUsers";
+import AddUserFull from "./components/AddUserFull";
+import ViewUsersFull from "./components/ViewUsersFull";
+
 import EmployeeCalendar from "./components/EmployeeCalendar";
 import NewProjecr from "./components/NewProjectform";
 import OnsiteCalender from "./components/OnsiteCalender";
@@ -58,7 +60,9 @@ const App = () => {
         <Route path="/maintain" element={<PrivateRoute><Maintain /></PrivateRoute>} />
         <Route path="/project-form" element={<AdminRoute><ProjectForm /></AdminRoute>} />
         <Route path="/onsite-calendar" element={<PrivateRoute><OnsiteCalender /></PrivateRoute>} />
-        <Route path="/view-users" element={<AdminRoute><ViewUsers /></AdminRoute>} />
+        <Route path="/add-user-full" element={<AdminRoute><AddUserFull /></AdminRoute>} />
+        <Route path="/view-users-full" element={<AdminRoute><ViewUsersFull /></AdminRoute>} />
+
          </Routes>
     </Router>
   );

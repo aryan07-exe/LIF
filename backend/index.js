@@ -2,6 +2,7 @@ const express=require('express');
 const mongoose=require('mongoose');
 const cors=require('cors');
 const app=express();
+app.use(cors());
 const moment = require('moment');
 
 const port=process.env.PORT || 5000;
@@ -17,15 +18,17 @@ const OnsiteTask = require('./models/OnsiteTask');
 // Import routes
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects')
+app.use(express.json());
+
+  
 // Import users route
 const usersRouter = require('./routes/users');
 app.use('/api/users', usersRouter);
 
-app.use(cors({
-    origin: '*',
-  }));
-  
-app.use(express.json());
+const userManagementRoutes = require('./routes/userManagement');
+app.use('/api/user-management', userManagementRoutes);
+
+
 
 // Mount routes
 app.use('/api/projects', projectRoutes);
@@ -351,7 +354,7 @@ app.get('/tasks/today', async (req, res) => {
   }
 });
 
-// GET endpoint for all users' EIDs
+
 app.get('/api/users/eids', async (req, res) => {
   try {
     const users = await User.find({}, 'employeeId name');
@@ -361,6 +364,8 @@ app.get('/api/users/eids', async (req, res) => {
     res.status(500).json({ message: 'Error fetching users' });
   }
 });
+
+ 
 
 // Onsite task submission
 app.post('/onsiteTask', async (req, res) => {
