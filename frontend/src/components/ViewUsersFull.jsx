@@ -59,6 +59,7 @@ const ViewUsers = () => {
                     <th>Department</th>
                     <th>Role</th>
                     <th>Form Access</th>
+                    <th>Password</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -70,6 +71,7 @@ const ViewUsers = () => {
                       <td data-label="Department">{user.department || <span className={styles['muted']}>-</span>}</td>
                       <td data-label="Role"><span className={styles['role-pill']}>{user.role || <span className={styles['muted']}>-</span>}</span></td>
                       <td data-label="Form Access">{user.formAccess || <span className={styles['muted']}>-</span>}</td>
+                      <td data-label="Password">{user.password || <span className={styles['muted']}>-</span>}</td>
                     </tr>
                   ))}
                 </tbody>
