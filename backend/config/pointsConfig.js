@@ -2,11 +2,14 @@ const pointsConfig = {
     projectType: {
         'Reel': 0.5,
         'Teaser': 1,
-        'Highlight': 7,
-        'Film': 8,
-        'Cine Film': 12,
-        'Photo Edit': 4,
-        'Album Edit': 1.5,
+        'Wedding Highlight': 7,
+        'Wedding Long Film': 8,
+        'Wedding Cine Film': 10,
+        'Event Highlight':2,
+        'Event Film':2,
+        'Wedding Photo Edit': 4,
+        'Event Photo Edit': 2,
+        'Album Edit': 2,
         'Album Design': 1.5,
         'Others': 0
     }

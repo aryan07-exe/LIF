@@ -15,7 +15,7 @@ const OnsiteForm = () => {
     shootDate: new Date().toISOString().split('T')[0],
     startTime: '',
     endTime: '',
-    categories: {
+    event: {
       weddingCeremony: false,
       engagementSangeet: false,
       haldiGrahShanti: false,
@@ -24,7 +24,8 @@ const OnsiteForm = () => {
       corporateEvent: false
     },
     teamNames: '',
-    notes: ''
+    notes: '',
+    category: ''
   });
 
   const [projects, setProjects] = useState([]);
@@ -106,13 +107,13 @@ const OnsiteForm = () => {
       return;
     }
     
-    if (e.target.name.startsWith('categories.')) {
-      const categoryName = e.target.name.split('.')[1];
+    if (e.target.name.startsWith('event.')) {
+      const eventName = e.target.name.split('.')[1];
       setFormData(prev => ({
         ...prev,
-        categories: {
-          ...prev.categories,
-          [categoryName]: e.target.checked
+        event: {
+          ...prev.event,
+          [eventName]: e.target.checked
         }
       }));
     } else {
@@ -141,10 +142,13 @@ const OnsiteForm = () => {
         throw new Error('Please fill in all required fields');
       }
 
-      // Validate at least one category is selected
-      const hasSelectedCategory = Object.values(formData.categories).some(value => value);
-      if (!hasSelectedCategory) {
-        throw new Error('Please select at least one category');
+      // Validate category and at least one event
+      if (!formData.category) {
+        throw new Error('Please select a category');
+      }
+      const hasSelectedEvent = Object.values(formData.event).some(value => value);
+      if (!hasSelectedEvent) {
+        throw new Error('Please select at least one event');
       }
 
       // Convert shootDate to Date object
@@ -171,7 +175,7 @@ const OnsiteForm = () => {
         shootDate: new Date().toISOString().split('T')[0],
         startTime: '',
         endTime: '',
-        categories: {
+        event: {
           weddingCeremony: false,
           engagementSangeet: false,
           haldiGrahShanti: false,
@@ -180,7 +184,8 @@ const OnsiteForm = () => {
           corporateEvent: false
         },
         teamNames: '',
-        notes: ''
+        notes: '',
+        category: ''
       }));
     } catch (err) {
       console.error('Submission error:', err);
@@ -379,6 +384,7 @@ const OnsiteForm = () => {
                 />
               </div>
 
+
               <div className="form-field">
                 <label htmlFor="teamNames">
                   <Users size={18} className="field-icon" />
@@ -395,15 +401,33 @@ const OnsiteForm = () => {
                 />
               </div>
 
+              <div className="form-field">
+                <label htmlFor="category">Category (Single Select)</label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Category</option>
+                  <option value="Micro">Micro</option>
+                  <option value="Small">Small</option>
+                  <option value="Wedding Half Day">Wedding Half Day</option>
+                  <option value="Wedding Full Day">Wedding Full Day</option>
+                  <option value="Commercial">Commercial</option>
+                </select>
+              </div>
+
               <div className="form-field full-width">
-                <label>Categories</label>
-                <div className="categories-grid">
+                <label>Event</label>
+                                <div className="categories-grid">
                   <div className="category-checkbox">
                     <input
                       type="checkbox"
                       id="weddingCeremony"
-                      name="categories.weddingCeremony"
-                      checked={formData.categories.weddingCeremony}
+                      name="event.weddingCeremony"
+                      checked={formData.event.weddingCeremony}
                       onChange={handleChange}
                     />
                     <label htmlFor="weddingCeremony">Wedding Ceremony</label>
@@ -412,8 +436,8 @@ const OnsiteForm = () => {
                     <input
                       type="checkbox"
                       id="engagementSangeet"
-                      name="categories.engagementSangeet"
-                      checked={formData.categories.engagementSangeet}
+                      name="event.engagementSangeet"
+                      checked={formData.event.engagementSangeet}
                       onChange={handleChange}
                     />
                     <label htmlFor="engagementSangeet">Engagement/Sangeet</label>
@@ -422,8 +446,8 @@ const OnsiteForm = () => {
                     <input
                       type="checkbox"
                       id="haldiGrahShanti"
-                      name="categories.haldiGrahShanti"
-                      checked={formData.categories.haldiGrahShanti}
+                      name="event.haldiGrahShanti"
+                      checked={formData.event.haldiGrahShanti}
                       onChange={handleChange}
                     />
                     <label htmlFor="haldiGrahShanti">Haldi/Grah Shanti</label>
@@ -432,8 +456,8 @@ const OnsiteForm = () => {
                     <input
                       type="checkbox"
                       id="preWedding"
-                      name="categories.preWedding"
-                      checked={formData.categories.preWedding}
+                      name="event.preWedding"
+                      checked={formData.event.preWedding}
                       onChange={handleChange}
                     />
                     <label htmlFor="preWedding">Pre-Wedding</label>
@@ -442,8 +466,8 @@ const OnsiteForm = () => {
                     <input
                       type="checkbox"
                       id="birthdayAnniversaryFamily"
-                      name="categories.birthdayAnniversaryFamily"
-                      checked={formData.categories.birthdayAnniversaryFamily}
+                      name="event.birthdayAnniversaryFamily"
+                      checked={formData.event.birthdayAnniversaryFamily}
                       onChange={handleChange}
                     />
                     <label htmlFor="birthdayAnniversaryFamily">Birthday/Anniversary/Family</label>
@@ -452,8 +476,8 @@ const OnsiteForm = () => {
                     <input
                       type="checkbox"
                       id="corporateEvent"
-                      name="categories.corporateEvent"
-                      checked={formData.categories.corporateEvent}
+                      name="event.corporateEvent"
+                      checked={formData.event.corporateEvent}
                       onChange={handleChange}
                     />
                     <label htmlFor="corporateEvent">Corporate Event</label>

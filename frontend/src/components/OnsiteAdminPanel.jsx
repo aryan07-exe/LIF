@@ -27,17 +27,11 @@ const toIST = (dateStringOrTime) => {
 };
 const OnsiteAdminPanel = () => {
   const [tasks, setTasks] = useState([]);
-  const [filters, setFilters] = useState(() => {
-    const today = new Date();
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    const currentdate=today.toISOString().slice(0, 10);
-    return {
-      eid: '',
-      startDate: currentdate,
-      endDate:currentdate,
-      category: ''
-    };
+  const [filters, setFilters] = useState({
+    eid: '',
+    startDate: '',
+    endDate: '',
+    category: ''
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -45,7 +39,7 @@ const OnsiteAdminPanel = () => {
   const [showModal, setShowModal] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
   const [users, setUsers] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(['Micro', 'Small', 'Wedding Half Day', 'Wedding Full Day', 'Commercial']);
 
 
   const formatDateForFilter = (dateString) => {
@@ -104,21 +98,11 @@ const OnsiteAdminPanel = () => {
       }
       // Filter by category
       if (filters.category) {
-        fetchedTasks = fetchedTasks.filter(task => {
-          return task.categories && task.categories[filters.category];
-        });
+        fetchedTasks = fetchedTasks.filter(task => task.category === filters.category);
       }
 
       setTasks(fetchedTasks);
       setTotalPoints(fetchedTasks.reduce((sum, t) => sum + (t.points || 0), 0));
-      // Gather unique categories
-      const allCategories = new Set();
-      fetchedTasks.forEach(task => {
-        if (task.categories) {
-          Object.keys(task.categories).forEach(cat => allCategories.add(cat));
-        }
-      });
-      setCategories(Array.from(allCategories));
       setLoading(false);
     } catch (err) {
       setError('Failed to fetch onsite tasks');
@@ -132,15 +116,11 @@ const OnsiteAdminPanel = () => {
   };
 
   const handleClear = () => {
-    const today = new Date();
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
     setFilters({
       eid: '',
-      startDate: firstDay.toISOString().slice(0, 10),
-      endDate: lastDay.toISOString().slice(0, 10),
-      category: '',
-      projectstatus: ''
+      startDate: '',
+      endDate: '',
+      category: ''
     });
   };
 
@@ -162,7 +142,8 @@ const OnsiteAdminPanel = () => {
       'Shoot Date': formatDateForFilter(task.shootDate),
       'Start Time': task.startTime,
       'End Time': task.endTime,
-      'Categories': Object.entries(task.categories)
+      'Category': task.category,
+      'Event': Object.entries(task.event || {})
         .filter(([_, value]) => value)
         .map(([key]) => key.replace(/([A-Z])/g, ' $1').trim())
         .join(', '),
@@ -307,7 +288,8 @@ const OnsiteAdminPanel = () => {
                 <th>Shoot Date</th>
                 <th>Time</th>
                 <th>Hours Worked</th>
-                <th>Categories</th>
+                <th>Category</th>
+                <th>Event</th>
                 <th>Team Members</th>
                 <th>Points</th>
                 <th>Notes</th>
@@ -322,14 +304,17 @@ const OnsiteAdminPanel = () => {
                   <td>{formatDateForDisplay(task.shootDate)}</td>
                   <td>{toIST(task.startTime)} - {toIST(task.endTime)}</td>
                   <td>{getHoursWorked(task.startTime, task.endTime)}</td>
+                  <td><span className="category-tag">{task.category}</span></td>
                   <td>
-                    {Object.entries(task.categories)
-                      .filter(([_, value]) => value)
-                      .map(([key]) => (
-                        <span key={key} className="category-tag">
-                          {key.replace(/([A-Z])/g, ' $1').trim()}
-                        </span>
-                      ))}
+                    <div className="event-tags">
+                      {Object.entries(task.event || {})
+                        .filter(([_, value]) => value)
+                        .map(([key]) => (
+                          <span key={key} className="event-tag-small">
+                            {key.replace(/([A-Z])/g, ' $1').trim()}
+                          </span>
+                        ))}
+                    </div>
                   </td>
                   <td>{task.teamNames}</td>
                   <td>
@@ -390,9 +375,13 @@ const OnsiteAdminPanel = () => {
                   <span className="points-badge">{selectedTask.points || 0}</span>
                 </div>
                 <div className="detail-row">
-                  <span className="detail-label">Categories:</span>
+                  <span className="detail-label">Category:</span>
+                  <span className="category-tag">{selectedTask.category}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Event:</span>
                   <div className="categories-list">
-                    {Object.entries(selectedTask.categories)
+                    {Object.entries(selectedTask.event || {})
                       .filter(([_, value]) => value)
                       .map(([key]) => (
                         <span key={key} className="category-tag">

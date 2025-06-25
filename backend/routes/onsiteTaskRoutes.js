@@ -20,7 +20,8 @@ router.post('/', auth, async (req, res) => {
       endTime,
       categories,
       teamNames,
-      notes
+      notes,
+      category
     } = req.body;
 
     // Validate required fields
@@ -35,7 +36,7 @@ router.post('/', auth, async (req, res) => {
       shootDate,
       startTime,
       endTime,
-      categories: {
+      event: {
         weddingCeremony: categories.includes('weddingCeremony'),
         engagementSangeet: categories.includes('engagementSangeet'),
         haldiGrahShanti: categories.includes('haldiGrahShanti'),
@@ -44,7 +45,8 @@ router.post('/', auth, async (req, res) => {
         corporateEvent: categories.includes('corporateEvent')
       },
       teamNames,
-      notes: notes || ''
+      notes: notes || '',
+      category
     });
 
     await onsiteTask.save();
@@ -104,7 +106,8 @@ router.put('/:id', auth, async (req, res) => {
       endTime,
       categories,
       teamNames,
-      notes
+      notes,
+      category
     } = req.body;
 
     const updatedTask = await OnsiteTask.findByIdAndUpdate(
@@ -122,7 +125,8 @@ router.put('/:id', auth, async (req, res) => {
           'categories.birthdayAnniversaryFamily': categories.includes('birthdayAnniversaryFamily'),
           'categories.corporateEvent': categories.includes('corporateEvent'),
           teamNames,
-          notes
+          notes,
+          category
         }
       },
       { new: true }

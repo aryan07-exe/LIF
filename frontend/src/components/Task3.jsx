@@ -30,10 +30,13 @@ const Taskname = () => {
   const projectTypes = [
     'Reel',
     'Teaser',
-    'Highlight',
-    'Film',
-    'Cine Film',
-    'Photo Edit',
+    'Wedding Highlight',
+    'Wedding Long Film',
+    'Wedding Cine Film',
+    'Event Highlight',
+    'Event Film',
+    'Wedding Photo Edit',
+    'Event Photo Edit',
     'Album Edit',
     'Album Design',
     'Others'
