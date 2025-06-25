@@ -376,7 +376,7 @@ const Taskname = () => {
                   name="notes"
                   value={formData.notes}
                   onChange={handleChange}
-                  placeholder="Enter Any Additional Notes"
+                  placeholder="Enter Project Status/Notes"
                   rows="3"
                 ></textarea>
               </div>

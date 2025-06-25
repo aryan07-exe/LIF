@@ -130,7 +130,7 @@ const EmployeeProfile = () => {
 
   return (
     <>
-      <EmployeeNavbar onLogout={handleLogout} />
+      <EmployeeNavbar onLogout={handleLogout} formAccess={user?.formAccess} />
       <div className={styles.pageContainer}>
         <main className={styles.mainContent}>
           {/* Profile Card Section */}

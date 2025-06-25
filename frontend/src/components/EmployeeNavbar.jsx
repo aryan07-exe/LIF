@@ -3,16 +3,34 @@ import { useNavigate } from 'react-router-dom';
 import './NewNavbar.css';
 import logoImg from '../images/5.png';
 
-const EmployeeNavbar = () => {
+const EmployeeNavbar = ({ formAccess, onLogout }) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
+    if (onLogout) return onLogout();
     localStorage.removeItem('token');
     navigate('/');
   };
 
   const handleHamburger = () => setMenuOpen((open) => !open);
+
+  // Render form buttons according to formAccess
+  const renderFormButtons = () => {
+    if (formAccess === 'both') {
+      return (
+        <>
+          <li><button className="logout-btn" onClick={() => navigate('/onsite')}>SHOOT REPORT</button></li>
+          <li><button className="logout-btn" onClick={() => navigate('/task3')}>DAILY REPORT</button></li>
+        </>
+      );
+    } else if (formAccess === 'onsite') {
+      return <li><button className="logout-btn" onClick={() => navigate('/onsite')}>SHOOT REPORT</button></li>;
+    } else if (formAccess === 'postproduction') {
+      return <li><button className="logout-btn" onClick={() => navigate('/task3')}>DAILY REPORT</button></li>;
+    }
+    return null;
+  };
 
   return (
     <nav className="navbar">
@@ -24,8 +42,7 @@ const EmployeeNavbar = () => {
       </div>
       <ul className={`nav-links${menuOpen ? ' active' : ''}`} style={{ marginRight: 0 }}>
         <li><a href="/employee-profile">DASHBOARD</a></li>
-        <li><a href="/onsite">SUBMIT SHOOT REPORT</a></li>
-        <li><a href="/task3">SUBMIT DAILY REPORT</a></li>
+        {renderFormButtons()}
         <li>
           <button className="logout-btn" onClick={handleLogout}>LOGOUT</button>
         </li>
