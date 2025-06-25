@@ -67,7 +67,11 @@ app.post("/task",async(req,res)=>{
             return res.status(400).json({ message: "Invalid date format. Please use YYYY-MM-DD format" });
         }
 
-        const points = calculatePoints(projecttype);
+        // Only assign points if projectstatus is 'Complete'
+        let points = 0;
+        if (projectstatus && projectstatus.toLowerCase() === 'complete') {
+            points = calculatePoints(projecttype);
+        }
         const task = new Task({
             eid,
             ename,
@@ -192,7 +196,11 @@ app.post("/task3",async(req,res)=>{
             return res.status(400).json({ message: "Invalid date format" });
         }
 
-        const points = calculatePoints(projecttype);
+        // Only assign points if projectstatus is 'Complete'
+        let points = 0;
+        if (projectstatus && projectstatus.toLowerCase() === 'complete') {
+            points = calculatePoints(projecttype);
+        }
         const task3 = new Task3({
             eid,
             ename,
