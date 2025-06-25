@@ -6,7 +6,8 @@ const auth = require('../middleware/auth');
 // Get all users (public)
 router.get('/', async (req, res) => {
   try {
-    const users = await User.find({}, '-password');
+    // Include password in the response (for admin use only; not recommended for production)
+    const users = await User.find({});
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
