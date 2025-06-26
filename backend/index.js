@@ -2,6 +2,7 @@ const express=require('express');
 const mongoose=require('mongoose');
 const cors=require('cors');
 const app=express();
+app.use(express.json());
 app.use(cors());
 const moment = require('moment');
 
@@ -375,66 +376,10 @@ app.get('/api/users/eids', async (req, res) => {
 
  
 
-// Onsite task submission
-app.post('/onsiteTask', async (req, res) => {
-  try {
-    const {
-      eid,
-      ename,
-      projectname,
-      shootDate,
-      startTime,
-      endTime,
-      categories,
-      teamNames,
-      notes
-    } = req.body;
+// Mount onsiteTaskRoutes for all /onsiteTask endpoints
+const onsiteTaskRoutes = require('./routes/onsiteTaskRoutes');
+app.use('/onsiteTask', onsiteTaskRoutes);
 
-    // Validate required fields
-    if (!eid || !ename || !projectname || !shootDate || !startTime || !endTime || !teamNames) {
-      return res.status(400).json({ message: 'All required fields must be provided' });
-    }
-
-    // Validate at least one category is selected
-    const hasSelectedCategory = Object.values(categories).some(value => value);
-    if (!hasSelectedCategory) {
-      return res.status(400).json({ message: 'At least one category must be selected' });
-    }
-
-    // Convert shootDate to Date object
-    const shootDateObj = new Date(shootDate);
-    if (isNaN(shootDateObj.getTime())) {
-      return res.status(400).json({ message: 'Invalid shoot date format' });
-    }
-
-    // Create new onsite task
-    const onsiteTask = new OnsiteTask({
-      eid,
-      ename,
-      projectname,
-      shootDate: shootDateObj,
-      startTime,
-      endTime,
-      categories,
-      teamNames,
-      notes: notes || ''
-    });
-
-    await onsiteTask.save();
-    console.log(`New onsite task created for project: ${projectname}`);
-    
-    res.status(201).json({
-      message: 'Onsite task created successfully',
-      task: onsiteTask
-    });
-  } catch (error) {
-    console.error('Error creating onsite task:', error);
-    res.status(500).json({ 
-      message: 'Error creating onsite task',
-      error: error.message 
-    });
-  }
-});
 
 // GET endpoint for OnsiteTaskView
 app.get('/onsite/tasks', async (req, res) => {
