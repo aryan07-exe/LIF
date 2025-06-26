@@ -80,7 +80,7 @@ const EmployeeProfile = () => {
             onClick={() => navigate("/onsite")}
             className={styles.formButton}
           >
-            <span>Onsite Form</span>
+            <span>Shoot Report</span>
             <ChevronRight size={14} />
           </button>
         )}
@@ -89,7 +89,7 @@ const EmployeeProfile = () => {
             onClick={() => navigate("/task3")}
             className={styles.formButton}
           >
-            <span>Post Production Form</span>
+            <span>Daily Report</span>
             <ChevronRight size={14} />
           </button>
         )}

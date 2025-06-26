@@ -36,7 +36,7 @@ const Navbar = () => {
 
       <ul className={`nav-links ${mobileOpen ? 'active' : ''}`}> 
         <li><a href="/admin-profile"><FaHome/> Dashboard</a></li>
-        <li><a href="/register"><FaUserPlus /> Add User</a></li>
+
         <li><a href="/add-project"><FaProjectDiagram /> Add Project</a></li>
         <li><a href="/post-production-monthly"><FaProjectDiagram /> Daily Work Report</a></li>
         <li><a href="/onsite-admin"><FaProjectDiagram /> Shoot Report</a></li>

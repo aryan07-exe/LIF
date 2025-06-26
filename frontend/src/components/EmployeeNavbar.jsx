@@ -59,7 +59,23 @@ const EmployeeNavbar = ({ formAccess, onLogout }) => {
             DASHBOARD
           </a>
         </li>
-        {renderFormButtons()}
+        <li>
+          <a
+            href="/employee-profile"
+            className={location.pathname === '/onsite' ? 'active-nav-link' : ''}
+          >
+            SHOOT REPORT
+          </a>
+        </li>
+        <li>
+          <a
+            href="/employee-profile"
+            className={location.pathname === '/task3' ? 'active-nav-link' : ''}
+          >
+            DAILY REPORT
+          </a>
+        </li>
+        {/* {renderFormButtons()} */}
         <li>
           <button className="logout-btn" onClick={handleLogout} style={{ width: '100%' }}>LOGOUT</button>
         </li>
