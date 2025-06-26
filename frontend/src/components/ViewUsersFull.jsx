@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './ViewUsersFull.module.css';
 import Navbar from './NewNavbar';
-
+import { useNavigate } from 'react-router-dom';
 const ViewUsers = () => {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
@@ -45,8 +46,8 @@ const ViewUsers = () => {
               />
             </div>
             <div className={styles.userActionGroup}>
-              <button className={styles.userActionBtn} type="button">Add User</button>
-              <button className={styles.userActionBtn + ' ' + styles.removeBtn} type="button">Remove User</button>
+              <button className={styles.userActionBtn} type="button" onClick={() => navigate('/register')}>Add User</button>
+              <button className={styles.userActionBtn + ' ' + styles.removeBtn} type="button" onClick={() => navigate('/remove-user')}>Remove User</button>
             </div>
           </div>
           {error && <div className={styles['error-message']}>{error}</div>}
