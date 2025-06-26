@@ -20,11 +20,12 @@ router.post('/', auth, async (req, res) => {
       endTime,
       categories,
       teamNames,
-      notes
+      notes,
+      eventType
     } = req.body;
 
     // Validate required fields
-    if (!eid || !ename || !projectname || !shootDate || !startTime || !endTime || !teamNames) {
+    if (!eid || !ename || !projectname || !shootDate || !startTime || !endTime || !teamNames || !eventType) {
       return res.status(400).json({ message: 'Please fill all required fields' });
     }
 
@@ -44,7 +45,8 @@ router.post('/', auth, async (req, res) => {
         corporateEvent: categories.includes('corporateEvent')
       },
       teamNames,
-      notes: notes || ''
+      notes: notes || '',
+      eventType
     });
 
     await onsiteTask.save();
