@@ -25,31 +25,10 @@ const onsiteTaskSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  categories: {
-    weddingCeremony: {
-      type: Boolean,
-      default: false
-    },
-    engagementSangeet: {
-      type: Boolean,
-      default: false
-    },
-    haldiGrahShanti: {
-      type: Boolean,
-      default: false
-    },
-    preWedding: {
-      type: Boolean,
-      default: false
-    },
-    birthdayAnniversaryFamily: {
-      type: Boolean,
-      default: false
-    },
-    corporateEvent: {
-      type: Boolean,
-      default: false
-    }
+  // Category is now a free-form string provided by user input
+  category: {
+    type: String,
+    required: true
   },
   teamNames: {
     type: String,

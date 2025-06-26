@@ -48,11 +48,7 @@ const Taskname = () => {
     'In House Correction',
     'Client\'s Correction'
   ];
-  const categories = [
-    'Haldi',
-    'Mehendi',
-    'Wedding'
-  ];
+
 
   // Add useEffect to update form data when user data changes
   useEffect(() => {
@@ -353,20 +349,17 @@ const Taskname = () => {
               <div className="form-field">
                 <label htmlFor="category">
                   <AlertCircle size={18} className="field-icon" />
-                  Category
+                  Category-Enter the event.
                 </label>
-                <select
+                <input
+                  type="text"
                   id="category"
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
+                  placeholder="Enter category"
                   required
-                >
-                  <option value="">Select Category</option>
-                  {categories.map(category => (
-                    <option key={category} value={category}>{category}</option>
-                  ))}
-                </select>
+                />
               </div>
 
               <div className="form-field full-width">

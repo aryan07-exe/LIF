@@ -15,17 +15,11 @@ const OnsiteForm = () => {
     shootDate: new Date().toISOString().split('T')[0],
     startTime: '',
     endTime: '',
-    categories: {
-      weddingCeremony: false,
-      engagementSangeet: false,
-      haldiGrahShanti: false,
-      preWedding: false,
-      birthdayAnniversaryFamily: false,
-      corporateEvent: false
-    },
+    category: '',
     teamNames: '',
     notes: '',
     eventType: '', // new field (micro, small, wedding half day, wedding full day, commercial)
+    // shootDate is stored as ISO string (YYYY-MM-DD format) for backend compatibility
   });
 
   const [projects, setProjects] = useState([]);
@@ -114,14 +108,10 @@ const OnsiteForm = () => {
     });
     return;
   }
-  if (e.target.name.startsWith('categories.')) {
-      const categoryName = e.target.name.split('.')[1];
+  if (e.target.name === 'category') {
       setFormData(prev => ({
         ...prev,
-        categories: {
-          ...prev.categories,
-          [categoryName]: e.target.checked
-        }
+        category: e.target.value
       }));
     } else {
       setFormData({
@@ -152,22 +142,15 @@ const OnsiteForm = () => {
         throw new Error('Please select an event type');
       }
 
-      // Validate at least one category is selected
-      const hasSelectedCategory = Object.values(formData.categories).some(value => value);
-      if (!hasSelectedCategory) {
-        throw new Error('Please select at least one category');
+      // Validate category (must not be empty)
+      if (!formData.category || formData.category.trim() === '') {
+        throw new Error('Please enter a category');
       }
 
-      // Convert categories object to array of selected category names
-      const selectedCategories = Object.entries(formData.categories)
-        .filter(([_, value]) => value)
-        .map(([key]) => key);
-
-      // Convert shootDate to Date object
+      // Prepare data for submission
       const submitData = {
         ...formData,
         shootDate: new Date(formData.shootDate).toISOString(),
-        categories: selectedCategories
       };
 
       // Debug: Log payload before sending
@@ -188,19 +171,12 @@ const OnsiteForm = () => {
       setFormData(prev => ({
         ...prev,
         projectname: '',
-        shootDate: new Date().toISOString().split('T')[0],
+        shootDate: new Date().toISOString().split('T')[0], // reset to today (YYYY-MM-DD)
         startTime: '',
         endTime: '',
-        categories: {
-          weddingCeremony: false,
-          engagementSangeet: false,
-          haldiGrahShanti: false,
-          preWedding: false,
-          birthdayAnniversaryFamily: false,
-          corporateEvent: false
-        },
+        category: '',
         teamNames: '',
-        notes: ''
+        notes: '' // reset notes field
       }));
     } catch (err) {
       console.error('Submission error:', err);
@@ -433,70 +409,20 @@ const OnsiteForm = () => {
                 />
               </div>
 
-              <div className="form-field full-width">
-                <label>Categories</label>
-                <div className="categories-grid">
-                  <div className="category-checkbox">
-                    <input
-                      type="checkbox"
-                      id="weddingCeremony"
-                      name="categories.weddingCeremony"
-                      checked={formData.categories.weddingCeremony}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="weddingCeremony">Wedding Ceremony</label>
-                  </div>
-                  <div className="category-checkbox">
-                    <input
-                      type="checkbox"
-                      id="engagementSangeet"
-                      name="categories.engagementSangeet"
-                      checked={formData.categories.engagementSangeet}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="engagementSangeet">Engagement/Sangeet</label>
-                  </div>
-                  <div className="category-checkbox">
-                    <input
-                      type="checkbox"
-                      id="haldiGrahShanti"
-                      name="categories.haldiGrahShanti"
-                      checked={formData.categories.haldiGrahShanti}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="haldiGrahShanti">Haldi/Grah Shanti</label>
-                  </div>
-                  <div className="category-checkbox">
-                    <input
-                      type="checkbox"
-                      id="preWedding"
-                      name="categories.preWedding"
-                      checked={formData.categories.preWedding}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="preWedding">Pre-Wedding</label>
-                  </div>
-                  <div className="category-checkbox">
-                    <input
-                      type="checkbox"
-                      id="birthdayAnniversaryFamily"
-                      name="categories.birthdayAnniversaryFamily"
-                      checked={formData.categories.birthdayAnniversaryFamily}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="birthdayAnniversaryFamily">Birthday/Anniversary/Family</label>
-                  </div>
-                  <div className="category-checkbox">
-                    <input
-                      type="checkbox"
-                      id="corporateEvent"
-                      name="categories.corporateEvent"
-                      checked={formData.categories.corporateEvent}
-                      onChange={handleChange}
-                    />
-                    <label htmlFor="corporateEvent">Corporate Event</label>
-                  </div>
-                </div>
+              <div className="form-field">
+                <label htmlFor="category" className="form-label">
+                  <Camera size={18} className="field-icon" />
+                  Category-Enter the event.
+                </label>
+                <input
+                  type="text"
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  placeholder="Enter category"
+                  required
+                />
               </div>
 
               <div className="form-field full-width">

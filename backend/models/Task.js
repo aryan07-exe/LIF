@@ -32,6 +32,7 @@ projectstatus:{
     type:String,
     required:true 
 },
+// Category is now a free-form string provided by user input
 category:{
     type:String,
     required:true 
@@ -41,7 +42,8 @@ points: {
     required: true,
     default: 0
 },
-note:{
+// Use 'notes' for consistency with OnsiteTask.js
+notes:{
     type:String,
     required:false
 }
