@@ -24,7 +24,8 @@ const OnsiteForm = () => {
       corporateEvent: false
     },
     teamNames: '',
-    notes: ''
+    notes: '',
+    eventType: '', // new field (micro, small, wedding half day, wedding full day, commercial)
   });
 
   const [projects, setProjects] = useState([]);
@@ -106,7 +107,14 @@ const OnsiteForm = () => {
       return;
     }
     
-    if (e.target.name.startsWith('categories.')) {
+    if (e.target.name === 'eventType') {
+    setFormData({
+      ...formData,
+      eventType: e.target.value
+    });
+    return;
+  }
+  if (e.target.name.startsWith('categories.')) {
       const categoryName = e.target.name.split('.')[1];
       setFormData(prev => ({
         ...prev,
@@ -137,7 +145,7 @@ const OnsiteForm = () => {
 
       // Validate required fields
       if (!formData.projectname || !formData.shootDate || !formData.startTime || 
-          !formData.endTime || !formData.teamNames) {
+          !formData.endTime || !formData.teamNames || !formData.eventType) {
         throw new Error('Please fill in all required fields');
       }
 
@@ -377,6 +385,24 @@ const OnsiteForm = () => {
                   onChange={handleChange}
                   required
                 />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="eventType">Event Type<span className="required">*</span></label>
+                <select
+                  id="eventType"
+                  name="eventType"
+                  value={formData.eventType}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select event type</option>
+                  <option value="micro">Micro</option>
+                  <option value="small">Small</option>
+                  <option value="wedding half day">Wedding Half Day</option>
+                  <option value="wedding full day">Wedding Full Day</option>
+                  <option value="commercial">Commercial</option>
+                </select>
               </div>
 
               <div className="form-field">

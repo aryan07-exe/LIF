@@ -168,9 +168,18 @@ const OnsiteAdminPanel = () => {
         .join(', '),
       'Team Members': task.teamNames,
       'Points': task.points || 0,
+      'Event Type': (() => {
+        switch (task.eventType) {
+          case 'micro': return 'Micro';
+          case 'small': return 'Small';
+          case 'wedding half day': return 'Wedding Half Day';
+          case 'wedding full day': return 'Wedding Full Day';
+          case 'commercial': return 'Commercial';
+          default: return '-';
+        }
+      })(),
       'Notes': task.notes
     })));
-    
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Onsite Tasks');
     XLSX.writeFile(workbook, 'onsite_tasks.xlsx');
@@ -308,6 +317,7 @@ const OnsiteAdminPanel = () => {
                 <th>Time</th>
                 <th>Hours Worked</th>
                 <th>Categories</th>
+                <th>Event Type</th>
                 <th>Team Members</th>
                 <th>Points</th>
                 <th>Notes</th>
@@ -322,21 +332,26 @@ const OnsiteAdminPanel = () => {
                   <td>{formatDateForDisplay(task.shootDate)}</td>
                   <td>{toIST(task.startTime)} - {toIST(task.endTime)}</td>
                   <td>{getHoursWorked(task.startTime, task.endTime)}</td>
-                  <td>
-                    {Object.entries(task.categories)
-                      .filter(([_, value]) => value)
-                      .map(([key]) => (
-                        <span key={key} className="category-tag">
-                          {key.replace(/([A-Z])/g, ' $1').trim()}
-                        </span>
-                      ))}
+                  <td>{Object.entries(task.categories)
+                    .filter(([_, value]) => value)
+                    .map(([key]) => (
+                      <span key={key} className="category-tag">
+                        {key.replace(/([A-Z])/g, ' $1').trim()}
+                      </span>
+                    ))}
                   </td>
+                  <td>{(() => {
+                    switch (task.eventType) {
+                      case 'micro': return 'Micro';
+                      case 'small': return 'Small';
+                      case 'wedding half day': return 'Wedding Half Day';
+                      case 'wedding full day': return 'Wedding Full Day';
+                      case 'commercial': return 'Commercial';
+                      default: return '-';
+                    }
+                  })()}</td>
                   <td>{task.teamNames}</td>
-                  <td>
-                    <span className="points-badge">
-                      {task.points || 0}
-                    </span>
-                  </td>
+                  <td><span className="points-badge">{task.points || 0}</span></td>
                   <td>{task.notes}</td>
                 </tr>
               ))}

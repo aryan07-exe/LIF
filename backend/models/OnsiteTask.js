@@ -62,22 +62,37 @@ const onsiteTaskSchema = new mongoose.Schema({
   points: {
     type: Number,
     default: 0
+  },
+  eventType: {
+    type: String,
+    required: true,
+    enum: ['micro', 'small', 'wedding', 'half day wedding', 'full day', 'commercial']
   }
 }, {
   timestamps: true // Adds createdAt and updatedAt fields
 });
 
-// Method to calculate points based on duration
+// Method to calculate points based on eventType or duration
 onsiteTaskSchema.methods.calculatePoints = function() {
+  // Prefer eventType-based logic
+  if (this.eventType) {
+    switch (this.eventType) {
+      case 'micro': return 2;
+      case 'small': return 3.5;
+      case 'wedding half day': return 4;
+      case 'wedding full day': return 10;
+      case 'commercial': return 0;
+      default: break;
+    }
+  }
+  // Fallback to duration-based logic
   const start = new Date(`2000-01-01T${this.startTime}`);
   const end = new Date(`2000-01-01T${this.endTime}`);
   const durationInHours = (end - start) / (1000 * 60 * 60);
-
-  // Points calculation based on duration
   if (durationInHours >= 2 && durationInHours < 3) {
     return 2;
   } else if (durationInHours >= 3 && durationInHours < 6) {
-    return 4  ;
+    return 4;
   } else if (durationInHours >= 6 && durationInHours <= 10) {
     return 10;
   }
