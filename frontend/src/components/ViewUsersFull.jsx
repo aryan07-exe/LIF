@@ -44,6 +44,10 @@ const ViewUsers = () => {
                 onChange={e => setSearch(e.target.value)}
               />
             </div>
+            <div className={styles.userActionGroup}>
+              <button className={styles.userActionBtn} type="button">Add User</button>
+              <button className={styles.userActionBtn + ' ' + styles.removeBtn} type="button">Remove User</button>
+            </div>
           </div>
           {error && <div className={styles['error-message']}>{error}</div>}
           {filteredUsers.length === 0 && !error && <div className={styles['noUsers']}>No users found.</div>}
