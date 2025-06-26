@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './NewNavbar.css';
 import logoImg from '../images/5.png';
 
 const EmployeeNavbar = ({ formAccess, onLogout }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
@@ -15,21 +16,30 @@ const EmployeeNavbar = ({ formAccess, onLogout }) => {
 
   const handleHamburger = () => setMenuOpen((open) => !open);
 
-  // Render form buttons according to formAccess
+  // Always show both buttons, highlight if active
   const renderFormButtons = () => {
-    if (formAccess === 'both') {
-      return (
-        <>
-          <li><button className="logout-btn" onClick={() => navigate('/onsite')}>SHOOT REPORT</button></li>
-          <li><button className="logout-btn" onClick={() => navigate('/task3')}>DAILY REPORT</button></li>
-        </>
-      );
-    } else if (formAccess === 'onsite') {
-      return <li><button className="logout-btn" onClick={() => navigate('/onsite')}>SHOOT REPORT</button></li>;
-    } else if (formAccess === 'postproduction') {
-      return <li><button className="logout-btn" onClick={() => navigate('/task3')}>DAILY REPORT</button></li>;
-    }
-    return null;
+    return (
+      <>
+        <li>
+          <button
+            className={`logout-btn${location.pathname === '/onsite' ? ' active-nav-btn' : ''}`}
+            onClick={() => navigate('/onsite')}
+            style={{ width: '100%' }}
+          >
+            SHOOT REPORT
+          </button>
+        </li>
+        <li>
+          <button
+            className={`logout-btn${location.pathname === '/task3' ? ' active-nav-btn' : ''}`}
+            onClick={() => navigate('/task3')}
+            style={{ width: '100%' }}
+          >
+            DAILY REPORT
+          </button>
+        </li>
+      </>
+    );
   };
 
   return (
@@ -41,10 +51,17 @@ const EmployeeNavbar = ({ formAccess, onLogout }) => {
         <span role="img" aria-label="menu">&#9776;</span>
       </div>
       <ul className={`nav-links${menuOpen ? ' active' : ''}`} style={{ marginRight: 0 }}>
-        <li><a href="/employee-profile">DASHBOARD</a></li>
+        <li>
+          <a
+            href="/employee-profile"
+            className={location.pathname === '/employee-profile' ? 'active-nav-link' : ''}
+          >
+            DASHBOARD
+          </a>
+        </li>
         {renderFormButtons()}
         <li>
-          <button className="logout-btn" onClick={handleLogout}>LOGOUT</button>
+          <button className="logout-btn" onClick={handleLogout} style={{ width: '100%' }}>LOGOUT</button>
         </li>
       </ul>
     </nav>

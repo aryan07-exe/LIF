@@ -104,9 +104,7 @@ const OnsiteAdminPanel = () => {
       }
       // Filter by category
       if (filters.category) {
-        fetchedTasks = fetchedTasks.filter(task => {
-          return task.categories && task.categories[filters.category];
-        });
+        fetchedTasks = fetchedTasks.filter(task => task.category === filters.category);
       }
 
       setTasks(fetchedTasks);
@@ -114,8 +112,8 @@ const OnsiteAdminPanel = () => {
       // Gather unique categories
       const allCategories = new Set();
       fetchedTasks.forEach(task => {
-        if (task.categories) {
-          Object.keys(task.categories).forEach(cat => allCategories.add(cat));
+        if (task.category) {
+          allCategories.add(task.category);
         }
       });
       setCategories(Array.from(allCategories));
@@ -156,17 +154,14 @@ const OnsiteAdminPanel = () => {
 
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(tasks.map(task => ({
-      'Employee Name': task.ename,
-      'Employee ID': task.eid,
-      'Project Name': task.projectname,
+      'Employee Name': task.ename || '-',
+      'Employee ID': task.eid || '-',
+      'Project Name': task.projectname || '-',
       'Shoot Date': formatDateForFilter(task.shootDate),
-      'Start Time': task.startTime,
-      'End Time': task.endTime,
-      'Categories': Object.entries(task.categories)
-        .filter(([_, value]) => value)
-        .map(([key]) => key.replace(/([A-Z])/g, ' $1').trim())
-        .join(', '),
-      'Team Members': task.teamNames,
+      'Start Time': task.startTime || '-',
+      'End Time': task.endTime || '-',
+      'Category': task.category || '-',
+      'Team Members': task.teamNames || '-',
       'Points': task.points || 0,
       'Event Type': (() => {
         switch (task.eventType) {
@@ -178,14 +173,13 @@ const OnsiteAdminPanel = () => {
           default: return '-';
         }
       })(),
-      'Notes': task.notes
+      'Notes': task.notes || '-'
     })));
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Onsite Tasks');
     XLSX.writeFile(workbook, 'onsite_tasks.xlsx');
   };
 
-  // Helper to calculate hours worked from start and end time (format: 'HH:mm')
   const getHoursWorked = (start, end) => {
     if (!start || !end) return '-';
     const [sh, sm] = start.split(':').map(Number);
@@ -350,9 +344,9 @@ const OnsiteAdminPanel = () => {
                       default: return '-';
                     }
                   })()}</td>
-                  <td>{task.teamNames}</td>
+                  <td>{task.teamNames || '-'}</td>
                   <td><span className="points-badge">{task.points || 0}</span></td>
-                  <td>{task.notes}</td>
+                  <td>{task.notes || '-'}</td>
                 </tr>
               ))}
             </tbody>
@@ -405,16 +399,8 @@ const OnsiteAdminPanel = () => {
                   <span className="points-badge">{selectedTask.points || 0}</span>
                 </div>
                 <div className="detail-row">
-                  <span className="detail-label">Categories:</span>
-                  <div className="categories-list">
-                    {Object.entries(selectedTask.categories)
-                      .filter(([_, value]) => value)
-                      .map(([key]) => (
-                        <span key={key} className="category-tag">
-                          {key.replace(/([A-Z])/g, ' $1').trim()}
-                        </span>
-                      ))}
-                  </div>
+                  <span className="detail-label">Category:</span>
+                  <span className="category-tag">{selectedTask.category || '-'}</span>
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">Team Members:</span>
