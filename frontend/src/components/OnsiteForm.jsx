@@ -144,9 +144,12 @@ const OnsiteForm = () => {
       }
 
       // Validate required fields
-      if (!formData.projectname || !formData.shootDate || !formData.startTime || 
-          !formData.endTime || !formData.teamNames || !formData.eventType) {
+      if (!formData.eid || !formData.ename || !formData.projectname || !formData.shootDate || !formData.startTime || !formData.endTime || !formData.teamNames) {
         throw new Error('Please fill in all required fields');
+      }
+      // Validate eventType
+      if (!formData.eventType || formData.eventType === '') {
+        throw new Error('Please select an event type');
       }
 
       // Validate at least one category is selected
@@ -166,6 +169,9 @@ const OnsiteForm = () => {
         shootDate: new Date(formData.shootDate).toISOString(),
         categories: selectedCategories
       };
+
+      // Debug: Log payload before sending
+      console.log('Submitting onsite task payload:', submitData);
 
       console.log('Submitting form data:', submitData);
       const response = await axios.post('https://lif.onrender.com/onsiteTask', submitData, {

@@ -34,6 +34,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Removeuser from "./components/Removeuser";
 import MaintainUser from "./components/Maintainuser";
 
+
 const App = () => {
   return (
     <Router>
@@ -68,6 +69,7 @@ const App = () => {
 
         <Route path="/remove-user" element={<AdminRoute><Removeuser /></AdminRoute>} />
         <Route path="/maintain-user" element={<AdminRoute><MaintainUser /></AdminRoute>} />
+
          </Routes>
     </Router>
   );

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './ViewUsersFull.module.css';
-import NewNavbar from './NewNavbar';
 
 const RemoveUser = () => {
   const [users, setUsers] = useState([]);
@@ -49,9 +48,7 @@ const RemoveUser = () => {
   if (error) return <div className={styles['error-message']}>{error}</div>;
 
   return (
-    <>
-      <NewNavbar />
-      <div className={styles.pageBg}>
+    <div className={styles.pageBg}>
       <div className={styles.cardContainer}>
         <div className={styles.headerRow}>
           <h2 className={styles.title}>Remove Users</h2>
@@ -94,7 +91,6 @@ const RemoveUser = () => {
         )}
       </div>
     </div>
-    </>
   );
 };
 
