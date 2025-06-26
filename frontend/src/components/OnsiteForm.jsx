@@ -155,10 +155,16 @@ const OnsiteForm = () => {
         throw new Error('Please select at least one category');
       }
 
+      // Convert categories object to array of selected category names
+      const selectedCategories = Object.entries(formData.categories)
+        .filter(([_, value]) => value)
+        .map(([key]) => key);
+
       // Convert shootDate to Date object
       const submitData = {
         ...formData,
-        shootDate: new Date(formData.shootDate).toISOString()
+        shootDate: new Date(formData.shootDate).toISOString(),
+        categories: selectedCategories
       };
 
       console.log('Submitting form data:', submitData);

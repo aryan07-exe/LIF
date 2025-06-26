@@ -40,7 +40,7 @@ const Navbar = () => {
         <li><a href="/add-project"><FaProjectDiagram /> Add Project</a></li>
         <li><a href="/post-production-monthly"><FaProjectDiagram /> Daily Work Report</a></li>
         <li><a href="/onsite-admin"><FaProjectDiagram /> Shoot Report</a></li>
-        <li><a href="/view-users-full"><FaProjectDiagram /> View Users</a></li>
+        <li><a href="/maintain-user"><FaProjectDiagram /> Users</a></li>
         <li><a  onClick={handleLogout}><LogOut /> Log Out</a></li>
       </ul>
     </nav>
