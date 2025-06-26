@@ -326,13 +326,8 @@ const OnsiteAdminPanel = () => {
                   <td>{formatDateForDisplay(task.shootDate)}</td>
                   <td>{toIST(task.startTime)} - {toIST(task.endTime)}</td>
                   <td>{getHoursWorked(task.startTime, task.endTime)}</td>
-                  <td>{Object.entries(task.categories)
-                    .filter(([_, value]) => value)
-                    .map(([key]) => (
-                      <span key={key} className="category-tag">
-                        {key.replace(/([A-Z])/g, ' $1').trim()}
-                      </span>
-                    ))}
+                  <td>
+                    <span className="category-tag">{task.category || '-'}</span>
                   </td>
                   <td>{(() => {
                     switch (task.eventType) {

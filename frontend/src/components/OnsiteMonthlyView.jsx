@@ -37,10 +37,7 @@ const exportToExcel = (tasks, month) => {
       'Project Name': task.projectname || 'N/A',
       'Start Time': task.startTime || 'N/A',
       'End Time': task.endTime || 'N/A',
-      'Categories': Object.entries(task.categories)
-        .filter(([_, value]) => value)
-        .map(([key]) => key.replace(/([A-Z])/g, ' $1').trim())
-        .join(', ') || 'N/A',
+      'Category': task.category || '-',
       'Team Members': task.teamNames || 'N/A',
       'Points': task.points || 0,
       'Notes': task.notes || 'N/A'
@@ -61,7 +58,7 @@ const exportToExcel = (tasks, month) => {
       'D': 25, // Project Name
       'E': 15, // Start Time
       'F': 15, // End Time
-      'G': 30, // Categories
+      'G': 30, // Category
       'H': 20, // Team Members
       'I': 30, // Points
       'J': 30  // Notes
@@ -130,10 +127,7 @@ const OnsiteMonthlyView = () => {
         filteredTasks = filteredTasks.filter(task => task.eid === filters.eid);
       }
       if (filters.category) {
-        filteredTasks = filteredTasks.filter(task => 
-          Object.entries(task.categories)
-            .some(([key, value]) => key === filters.category && value)
-        );
+        filteredTasks = filteredTasks.filter(task => task.category === filters.category);
       }
       setTasks(filteredTasks);
       
@@ -142,14 +136,7 @@ const OnsiteMonthlyView = () => {
       setTotalPoints(total);
       
       // Extract unique categories
-      const uniqueCategories = [...new Set(
-        filteredTasks.flatMap(task => 
-          Object.entries(task.categories)
-            .filter(([_, value]) => value)
-            .map(([key]) => key)
-        )
-      )].filter(Boolean);
-      
+      const uniqueCategories = [...new Set(filteredTasks.map(task => task.category).filter(Boolean))];
       setCategories(uniqueCategories);
     } catch (error) {
       console.error('Error fetching tasks:', error);
@@ -325,13 +312,7 @@ const OnsiteMonthlyView = () => {
                       <td>{task.projectname}</td>
                       <td>{task.startTime} - {task.endTime}</td>
                       <td>
-                        {Object.entries(task.categories)
-                          .filter(([_, value]) => value)
-                          .map(([key]) => (
-                            <span key={key} className="category-badge">
-                              {key.replace(/([A-Z])/g, ' $1').trim()}
-                            </span>
-                          ))}
+                        <span className="category-badge">{task.category || '-'}</span>
                       </td>
                       <td>{task.teamNames}</td>
                       <td>
