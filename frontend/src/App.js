@@ -31,6 +31,8 @@ import NewProjecr from "./components/NewProjectform";
 import OnsiteCalender from "./components/OnsiteCalender";
 import Maintain from "./components/Maintainpage";
 import PrivateRoute from "./components/PrivateRoute";
+import ManinainUser from "./components/ManinainUser";
+
 const App = () => {
   return (
     <Router>
@@ -63,6 +65,7 @@ const App = () => {
         <Route path="/add-user-full" element={<AdminRoute><AddUserFull /></AdminRoute>} />
         <Route path="/view-users-full" element={<AdminRoute><ViewUsersFull /></AdminRoute>} />
 
+        <Route path="/maintain-user" element={<AdminRoute><ManinainUser /></AdminRoute>} />
          </Routes>
     </Router>
   );
