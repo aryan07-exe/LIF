@@ -349,7 +349,7 @@ const Taskname = () => {
               <div className="form-field">
                 <label htmlFor="category">
                   <AlertCircle size={18} className="field-icon" />
-                  Category-Enter the event.
+                  Category-Please Mention The Event.
                 </label>
                 <input
                   type="text"
