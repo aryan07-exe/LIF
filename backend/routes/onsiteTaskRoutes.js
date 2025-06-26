@@ -18,14 +18,14 @@ router.post('/', auth, async (req, res) => {
       shootDate,
       startTime,
       endTime,
-      categories,
+      category,
       teamNames,
       notes,
       eventType
     } = req.body;
 
     // Validate required fields
-    if (!eid || !ename || !projectname || !shootDate || !startTime || !endTime || !teamNames || !eventType) {
+    if (!eid || !ename || !projectname || !shootDate || !startTime || !endTime || !teamNames || !eventType || !category) {
       return res.status(400).json({ message: 'Please fill all required fields' });
     }
 
@@ -36,14 +36,7 @@ router.post('/', auth, async (req, res) => {
       shootDate,
       startTime,
       endTime,
-      categories: {
-        weddingCeremony: categories.includes('weddingCeremony'),
-        engagementSangeet: categories.includes('engagementSangeet'),
-        haldiGrahShanti: categories.includes('haldiGrahShanti'),
-        preWedding: categories.includes('preWedding'),
-        birthdayAnniversaryFamily: categories.includes('birthdayAnniversaryFamily'),
-        corporateEvent: categories.includes('corporateEvent')
-      },
+      category, // Pass as string
       teamNames,
       notes: notes || '',
       eventType
