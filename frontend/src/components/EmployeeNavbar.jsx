@@ -1,9 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './NewNavbar.css';
 import logoImg from '../images/5.png';
 
-const EmployeeNavbar = ({ formAccess, onLogout }) => {
+const EmployeeNavbar = ({ onLogout }) => {
+  const [formaccess, setFormaccess] = useState(localStorage.getItem('formaccess'));
+
+  // Listen for storage changes (e.g., from other tabs/windows)
+  useEffect(() => {
+    const handleStorage = (event) => {
+      if (event.key === 'formaccess') {
+        setFormaccess(event.newValue);
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  // Optionally, update formaccess on focus (for same-tab changes)
+  useEffect(() => {
+    const handleFocus = () => {
+      setFormaccess(localStorage.getItem('formaccess'));
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
+
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,28 +38,35 @@ const EmployeeNavbar = ({ formAccess, onLogout }) => {
 
   const handleHamburger = () => setMenuOpen((open) => !open);
 
-  // Always show both buttons, highlight if active
+  // Conditionally show buttons based on formaccess from localStorage
   const renderFormButtons = () => {
+    // Use the same logic as EmployeeProfile
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const access = user.formAccess;
     return (
       <>
-        <li>
-          <button
-            className={`logout-btn${location.pathname === '/onsite' ? ' active-nav-btn' : ''}`}
-            onClick={() => navigate('/onsite')}
-            style={{ width: '100%' }}
-          >
-            SHOOT REPORT
-          </button>
-        </li>
-        <li>
-          <button
-            className={`logout-btn${location.pathname === '/task3' ? ' active-nav-btn' : ''}`}
-            onClick={() => navigate('/task3')}
-            style={{ width: '100%' }}
-          >
-            DAILY REPORT
-          </button>
-        </li>
+        {(access === 'onsite' || access === 'both') && (
+          <li>
+            <button
+              className={`logout-btn${location.pathname === '/onsite' ? ' active-nav-btn' : ''}`}
+              onClick={() => navigate('/onsite')}
+              style={{ width: '100%' }}
+            >
+              SHOOT REPORT
+            </button>
+          </li>
+        )}
+        {(access === 'postproduction' || access === 'both') && (
+          <li>
+            <button
+              className={`logout-btn${location.pathname === '/task3' ? ' active-nav-btn' : ''}`}
+              onClick={() => navigate('/task3')}
+              style={{ width: '100%' }}
+            >
+              DAILY REPORT
+            </button>
+          </li>
+        )}
       </>
     );
   };
@@ -59,23 +88,7 @@ const EmployeeNavbar = ({ formAccess, onLogout }) => {
             DASHBOARD
           </a>
         </li>
-        <li>
-          <a
-            href="/employee-profile"
-            className={location.pathname === '/onsite' ? 'active-nav-link' : ''}
-          >
-            SHOOT REPORT
-          </a>
-        </li>
-        <li>
-          <a
-            href="/employee-profile"
-            className={location.pathname === '/task3' ? 'active-nav-link' : ''}
-          >
-            DAILY REPORT
-          </a>
-        </li>
-        {/* {renderFormButtons()} */}
+        {renderFormButtons()}
         <li>
           <button className="logout-btn" onClick={handleLogout} style={{ width: '100%' }}>LOGOUT</button>
         </li>
