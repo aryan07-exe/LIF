@@ -82,7 +82,7 @@ app.post("/task",async(req,res)=>{
             projectstatus,
             category,
             points,
-            note: req.body.notes || ''
+            notes: req.body.notes || ''
         });
         
         await task.save();

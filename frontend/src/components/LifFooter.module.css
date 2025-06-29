@@ -1,0 +1,14 @@
+.adminFooter {
+  background: #6c0428;
+  border-top: 2.5px solid #6c0428;
+  box-shadow: 0 2px 16px rgba(108,4,40,0.08);
+  color: white;
+  font-size: 1rem;
+  margin: 40px auto 0 auto;
+  padding: 18px 0 12px 0;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 0.03em;
+  font-weight: 600;
+  white-space: nowrap;
+}

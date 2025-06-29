@@ -7,6 +7,7 @@ import { UserCircle, Pencil } from "lucide-react";
 import Navbar from "./NewNavbar";
 import Calendar from "./EmployeeCalendar";
 import styles from "./AdminProfile.module.css";
+import LifFooter from './LifFooter';
 
 const AdminProfile = () => {
   const [user, setUser] = useState(null);
@@ -191,11 +192,11 @@ const AdminProfile = () => {
     <button className={styles.fabEditProfile} title="Edit Profile" onClick={() => alert('Edit profile coming soon!')}>
       <Pencil size={24} />
     </button>
-    <div style={{color: '#6c0428', fontSize: '0.95rem', marginTop: 32, marginBottom: 32, paddingBottom: 16, textAlign: 'center', whiteSpace: 'nowrap'}}>
-      &copy; Life In Frames. For Authorized Personnel Only.
-    </div>
+    <LifFooter />
     </>
   );
 };
+
+<LifFooter />
 
 export default AdminProfile;

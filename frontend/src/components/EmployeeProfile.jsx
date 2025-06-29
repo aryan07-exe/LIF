@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import LifFooter from './LifFooter';
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import EmployeeNavbar from "./EmployeeNavbar";

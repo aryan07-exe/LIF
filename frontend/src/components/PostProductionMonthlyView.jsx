@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import LifFooter from './LifFooter';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Calendar, User, Search, Trash2, Award, Download } from 'lucide-react';
@@ -383,6 +384,7 @@ const PostProductionMonthlyView = () => {
           )}
         </div>
       </div>
+      <LifFooter />
     </>
   );
 };

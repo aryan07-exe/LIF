@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import LifFooter from './LifFooter';
 
 import './LoginPage.css';
 import logoImg from '../images/4.png';
@@ -114,9 +115,7 @@ const LoginPage = () => {
             </div>
           </form>
 
-          <div className="login-footer" style={{color: '#6c0428', fontSize: '0.95rem', marginTop: 32, whiteSpace: 'nowrap'}}>
-  &copy;  Life In Frames. For Authorized Personnel Only.
-</div>
+          <LifFooter />
         </div>
       </div>
     </div>
