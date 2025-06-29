@@ -11,6 +11,7 @@ const pointsConfig = {
         'Event Photo Edit': 2,
         'Album Edit': 2,
         'Album Design': 1.5,
+        'Individual Event': 1,
         'Others': 0
     }
 };

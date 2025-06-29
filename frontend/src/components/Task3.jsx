@@ -39,6 +39,7 @@ const Taskname = () => {
     'Event Photo Edit',
     'Album Edit',
     'Album Design',
+    'Individual Event',
     'Others'
   ];
 

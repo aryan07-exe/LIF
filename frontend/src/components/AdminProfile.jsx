@@ -191,6 +191,9 @@ const AdminProfile = () => {
     <button className={styles.fabEditProfile} title="Edit Profile" onClick={() => alert('Edit profile coming soon!')}>
       <Pencil size={24} />
     </button>
+    <div style={{color: '#6c0428', fontSize: '0.95rem', marginTop: 32, marginBottom: 32, paddingBottom: 16, textAlign: 'center', whiteSpace: 'nowrap'}}>
+      &copy; Life In Frames. For Authorized Personnel Only.
+    </div>
     </>
   );
 };

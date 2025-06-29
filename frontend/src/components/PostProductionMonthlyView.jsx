@@ -199,7 +199,7 @@ const PostProductionMonthlyView = () => {
           transition={{ duration: 0.3 }}
         >
           <h2 className="dashboard-title">Post-Production Reports</h2>
-          <div className="total-points">
+          <div className="total-points responsive-total-points">
             <span className="points-label">Total Points:</span>
             <span className="points-value">{totalPoints}</span>
           </div>
