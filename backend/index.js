@@ -3,7 +3,13 @@ const mongoose=require('mongoose');
 const cors=require('cors');
 const app=express();
 app.use(express.json());
-app.use(cors());
+// Configure CORS with specific options
+app.use(cors({
+  origin: 'http://localhost:3000',  // Your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 const moment = require('moment');
 
 const port=process.env.PORT || 5000;

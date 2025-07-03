@@ -1,185 +1,127 @@
-import React from 'react';
-import { Monitor, Coffee, Code, Wrench, Zap, Terminal, Clock } from 'lucide-react';
-import './Maintenance.css';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import LifFooter from './LifFooter';
 
-function App() {
+import './LoginPage.css';
+import logoImg from '../images/4.png';
+import titleImg from '../images/2.png';
+
+const LoginPage = () => {
+  const [formData, setFormData] = useState({
+    employeeId: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await axios.post('https://lif.onrender.com/api/auth/login', formData);
+      const user = response.data.user;
+      // Store token and user info in localStorage
+      localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      
+      // Redirect based on user role
+      if (user.role === 'admin') {
+        navigate('/admin-profile'); // Redirect to new admin profile page
+      } else {
+        navigate('/employee-profile');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="maintenance-container">
-      {/* Animated background */}
-      <div className="animated-bg">
-        <div className="bg-orb orb-1"></div>
-        <div className="bg-orb orb-2"></div>
-        <div className="bg-orb orb-3"></div>
-      </div>
-
-      {/* Floating elements */}
-      <div className="floating-elements">
-        <div className="float-icon icon-1"><Code size={20} /></div>
-        <div className="float-icon icon-2"><Coffee size={18} /></div>
-        <div className="float-icon icon-3"><Wrench size={16} /></div>
-        <div className="float-icon icon-4"><Terminal size={22} /></div>
-      </div>
-
-      {/* Main content */}
-      <div className="main-content">
-        {/* Hero Section */}
-        <div className="hero">
-          <div className="status-badge">
-            <div className="status-dot"></div>
-            <span>Under Maintenance</span>
+    <div className="login-page" style={{ backgroundColor: '#f4f4f4' }}>
+      <div className="login-container">
+        <div className="login-card fade-in">
+          <div className="login-header login-header-centered">
+            <div className="login-logo-wrapper">
+              <img src={logoImg} alt="Life in Frames Logo" className="login-logo-img" />
+            </div>
+            <div className="login-title">
+              <img src={titleImg} alt="Login Title" style={{maxWidth: '160px', height: 'auto', display: 'block', margin: '0 auto'}} />
+            </div>
+            <div className="login-subtitle">User Login</div>
+            <div className="login-divider" style={{margin: '1.2rem 0 1.5rem 0', height: 2, background: 'linear-gradient(90deg, #fff 0%, #6c0428 60%, #fff 100%)', opacity: 0.25, borderRadius: 2}}></div>
           </div>
-          
-          <h1 className="hero-title">
-            <span className="word">Intern</span>
-            <span className="word">at</span>
-            <span className="word">Work</span>
-          </h1>
-          
-          <p className="hero-desc">
-            Our developer is crafting something amazing. We'll be back shortly with improvements.
-          </p>
-        </div>
 
-        {/* Main Animation */}
-        <div className="workspace">
-          <div className="workspace-glow"></div>
-          
-          {/* Desk Setup */}
-          <div className="desk-container">
-            <div className="monitor-setup">
-              <div className="monitor">
-                <div className="screen">
-                  <div className="screen-glow"></div>
-                  <div className="terminal">
-                    <div className="terminal-header">
-                      <div className="terminal-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                      </div>
-                      <div className="terminal-title">terminal</div>
-                    </div>
-                    <div className="terminal-body">
-                      <div className="code-line">
-                        <span className="prompt">$</span>
-                        <span className="text">npm run build</span>
-                      </div>
-                      <div className="code-line">
-                        <span className="comment">// Optimizing performance...</span>
-                      </div>
-                      <div className="code-line">
-                        <span className="keyword">const</span>
-                        <span className="variable">magic</span>
-                        <span className="operator">=</span>
-                        <span className="string">'happening'</span>
-                      </div>
-                      <div className="code-line">
-                        <span className="success">✓ Build successful</span>
-                      </div>
-                      <div className="cursor-line">
-                        <span className="prompt">$</span>
-                        <div className="cursor"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="monitor-stand"></div>
-              </div>
+          <form onSubmit={handleSubmit} autoComplete="off" style={{marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            {error && <div className="error-message">{error}</div>}
+
+            <div className="form-group" style={{width: '100%'}}>
+              <input
+                type="text"
+                id="employeeId"
+                name="employeeId"
+                value={formData.employeeId}
+                onChange={handleChange}
+                required
+                className="modern-input"
+                autoComplete="username"
+                style={{borderRadius: 8, border: '2px solid #6c0428', fontSize: '1.08rem', padding: '0.8rem 1.1rem'}}
+              />
+              <label htmlFor="employeeId" className={`modern-label${formData.employeeId ? ' filled' : ''}`}>Employee ID</label>
             </div>
 
-            {/* Developer Character */}
-            <div className="developer">
-              <div className="dev-head">
-                <div className="dev-hair"></div>
-                <div className="dev-face">
-                  <div className="dev-eyes">
-                    <div className="eye">
-                      <div className="pupil"></div>
-                    </div>
-                    <div className="eye">
-                      <div className="pupil"></div>
-                    </div>
-                  </div>
-                  <div className="dev-glasses">
-                    <div className="glass"></div>
-                    <div className="glass"></div>
-                    <div className="bridge"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="dev-body">
-                <div className="dev-arms">
-                  <div className="arm left-arm"></div>
-                  <div className="arm right-arm typing-arm"></div>
-                </div>
-              </div>
+            <div className="form-group" style={{width: '100%'}}>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="modern-input"
+                autoComplete="current-password"
+                style={{borderRadius: 8, border: '2px solid #6c0428', fontSize: '1.08rem', padding: '0.8rem 1.1rem'}}
+              />
+              <label htmlFor="password" className={`modern-label${formData.password ? ' filled' : ''}`}>Password</label>
             </div>
 
-            {/* Desk Items */}
-            <div className="desk-items">
-              <div className="coffee-cup">
-                <div className="cup-body">
-                  <div className="coffee-liquid"></div>
-                  <div className="cup-handle"></div>
-                </div>
-                <div className="steam">
-                  <div className="steam-line"></div>
-                  <div className="steam-line"></div>
-                  <div className="steam-line"></div>
-                </div>
-              </div>
-              
-              <div className="keyboard">
-                <div className="key-rows">
-                  <div className="key-row">
-                    <div className="key active"></div>
-                    <div className="key"></div>
-                    <div className="key active"></div>
-                    <div className="key"></div>
-                  </div>
-                  <div className="key-row">
-                    <div className="key"></div>
-                    <div className="key active"></div>
-                    <div className="key"></div>
-                    <div className="key"></div>
-                  </div>
-                  <div className="spacebar active"></div>
-                </div>
-              </div>
+            <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
+              <button 
+                type="submit" 
+                className={`login-button${loading ? ' loading' : ''}`}
+                disabled={loading}
+                style={{borderRadius: 8, background: '#6c0428', color: '#fff', border: '2px solid #6c0428', fontWeight: 600, fontSize: '1.08rem', marginTop: 18, boxShadow: '0 2px 8px rgba(108,4,40,0.08)', minWidth: 140, display: 'flex', alignItems: 'center', justifyContent: 'center'}}
+              >
+                {loading ? (
+                  <span className="loading-spinner-container" style={{display: 'flex', alignItems: 'center', gap: 8}}>
+                    <span style={{display: 'inline-block', verticalAlign: 'middle'}}>
+                      <div className="loader"></div>
+                    </span>
+                    Signing in...
+                  </span>
+                ) : 'Sign In'}
+              </button>
             </div>
+          </form>
 
-            <div className="desk-surface"></div>
-          </div>
-        </div>
-
-        {/* Progress Indicator */}
-        <div className="progress-container">
-          <div className="progress-info">
-            <Clock size={16} />
-            <span>Estimated completion</span>
-          </div>
-          <div className="progress-bar">
-            <div className="progress-fill"></div>
-            <div className="progress-glow"></div>
-          </div>
-          <div className="progress-text">
-            <span>Almost there...</span>
-            <span className="progress-percent">78%</span>
-          </div>
-        </div>
-
-        {/* Loading Animation */}
-        <div className="loading-indicator">
-          <div className="loading-dots">
-            <div className="dot"></div>
-            <div className="dot"></div>
-            <div className="dot"></div>
-          </div>
-          <p>Hang tight, we'll be back soon</p>
+          <div style={{ color: '#6c0428', fontSize: '0.95rem', marginTop: 32, whiteSpace: 'nowrap' }}>
+  &copy;  Life In Frames. For Authorized Personnel Only.
+</div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default LoginPage;
