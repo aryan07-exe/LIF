@@ -110,6 +110,13 @@ const AdminProfile = () => {
       route: "/add-project" 
     },
      
+ { 
+      title: "Edit Enteries", 
+      icon: <Database size={24} />, 
+      description: "Add or edit projects in the system", 
+      route: "/edit-onsite" 
+    },
+
     { 
       title: "Onsite Reports", 
       icon: <FileText size={24} />, 

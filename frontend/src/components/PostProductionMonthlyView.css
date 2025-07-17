@@ -1,8 +1,17 @@
-/* From Uiverse.io by abrahamcalsin */
+.monthly-task-view {
+  min-height: 100vh;
+  width: 100%;
+  background: #ffffff;
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading Spinner */
 .dot-spinner {
   --uib-size: 2.8rem;
   --uib-speed: .9s;
-  --uib-color: #183153;
+  --uib-color: #6c0428;
   position: relative;
   display: flex;
   align-items: center;
@@ -102,18 +111,230 @@
   }
 }
 
-/* Responsive: Move total points below heading on mobile */
-@media (max-width: 600px) {
-  .responsive-total-points {
-    display: block;
-    width: 100%;
-    margin: 16px 0 0 0;
-    text-align: left;
-    font-size: 1.1rem;
+.dashboard-header {
+  background: #6c0428;
+  color: white;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+}
+
+.dashboard-title {
+  font-size: 1.25rem;
+  margin: 0;
+  color: white;
+}
+
+.total-points {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.points-value {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.filter-form {
+  background: white;
+  padding: 0.75rem;
+  border-bottom: 1px solid rgba(108, 4, 40, 0.1);
+}
+
+.input-group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.form-field {
+  flex: 1;
+  min-width: 180px;
+}
+
+.form-field label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.filter-select, 
+.form-field input {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.813rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.button-group button {
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  font-size: 0.813rem;
+  cursor: pointer;
+}
+
+.button-group button:first-child {
+  background: #6c0428;
+  color: white;
+}
+
+.clear-btn {
+  background: #f3f4f6;
+  color: #666;
+}
+
+.table-container {
+  flex: 1;
+  overflow: auto;
+  border-top: 1px solid rgba(108, 4, 40, 0.1);
+}
+
+.task-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.task-table th {
+  background: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 2px solid rgba(108, 4, 40, 0.1);
+  height: 32px;
+}
+
+.task-table td {
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+  height: 28px;
+}
+
+.task-table tr:hover {
+  background-color: rgba(108, 4, 40, 0.02);
+}
+
+.category-badge {
+  display: inline-block;
+  padding: 0.2rem 0.4rem;
+  background: rgba(108, 4, 40, 0.1);
+  color: #6c0428;
+  border-radius: 4px;
+  font-size: 0.7rem;
+}
+
+.points-badge {
+  display: inline-block;
+  padding: 0.2rem 0.4rem;
+  background: #e5e7eb;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.export-section {
+  padding: 0.5rem;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+}
+
+.download-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: #6c0428;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.813rem;
+  cursor: pointer;
+}
+
+.no-tasks-msg {
+  text-align: center;
+  padding: 1.5rem;
+  color: #666;
+}
+
+.no-tasks-subtitle {
+  font-size: 0.813rem;
+  color: #999;
+  margin-top: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .task-table {
+    font-size: 0.7rem;
   }
+  
+  .task-table th,
+  .task-table td {
+    padding: 0.4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .task-table {
+    font-size: 0.65rem;
+  }
+  
+  .task-table th,
+  .task-table td {
+    padding: 0.35rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .task-table {
+    font-size: 0.6rem;
+  }
+  
+  .task-table th,
+  .task-table td {
+    padding: 0.3rem;
+  }
+}
+
+@media (max-width: 768px) {
   .dashboard-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .input-group {
+    flex-direction: column;
+  }
+  
+  .form-field {
+    min-width: 100%;
+  }
+  
+  .responsive-total-points {
+    margin-top: 0.5rem;
   }
 }
 

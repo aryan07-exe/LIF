@@ -14,7 +14,7 @@ import Taskname from "./components/Taskname"
 import Register from "./components/Register"
 import TestConnection from "./components/TestConnection"
 import AddProject from "./components/AddProject"
-import MonthWiseView from "./components/MonthWiseView"
+import MonthWiseView from "./components/PostProduction"
 import EmployeeProfile from "./components/EmployeeProfile"
 import OnsiteForm from "./components/OnsiteForm"
 import AddUser from "./components/AddUser"
@@ -25,7 +25,8 @@ import AdminProfile from "./components/AdminProfile";
 import AdminRoute from "./components/AdminRoute";
 import AddUserFull from "./components/AddUserFull";
 import ViewUsersFull from "./components/ViewUsersFull";
-
+import Edit from "./components/Edite";
+import EditOnsite from "./components/EditOnsite";
 import EmployeeCalendar from "./components/EmployeeCalendar";
 import NewProjecr from "./components/NewProjectform";
 import OnsiteCalender from "./components/OnsiteCalender";
@@ -66,7 +67,8 @@ const App = () => {
         <Route path="/onsite-calendar" element={<PrivateRoute><OnsiteCalender /></PrivateRoute>} />
         <Route path="/add-user-full" element={<AdminRoute><AddUserFull /></AdminRoute>} />
         <Route path="/view-users-full" element={<AdminRoute><ViewUsersFull /></AdminRoute>} />
-
+  <Route path="/edit-entries" element={<AdminRoute><Edit /></AdminRoute>} />
+  <Route path="/edit-onsite" element={<AdminRoute><EditOnsite /></AdminRoute>} />
         <Route path="/remove-user" element={<AdminRoute><Removeuser /></AdminRoute>} />
         <Route path="/maintain-user" element={<AdminRoute><MaintainUser /></AdminRoute>} />
 

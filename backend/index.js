@@ -2,6 +2,8 @@ const express=require('express');
 const mongoose=require('mongoose');
 const cors=require('cors');
 const app=express();
+// ...existing code...
+
 app.use(express.json());
 // Configure CORS with multiple allowed origins
 const allowedOrigins = [
@@ -30,7 +32,8 @@ const moment = require('moment');
 const port=process.env.PORT || 5000;
 require('dotenv').config();
 const ProjectDetails = require('./models/ProjectDetails');
-
+const editRoutes = require('./routes/editRoutes');
+app.use('/api/edit', editRoutes);
 const Task=require('./models/Task');
 const pointsConfig = require('./config/pointsConfig');
 const User = require('./models/User');
@@ -171,7 +174,8 @@ app.get('/api/tasks/last7days/:eid', async (req, res) => {
     }
 });
 
- 
+  
+
 
 app.get('/api/onsite/last7days/:eid', async (req, res) => {
     const { eid } = req.params;

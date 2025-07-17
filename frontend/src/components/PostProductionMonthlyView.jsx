@@ -3,7 +3,7 @@ import LifFooter from './LifFooter';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Calendar, User, Search, Trash2, Award, Download } from 'lucide-react';
-import './OnsiteMonthlyView.css';
+
 import './PostProductionMonthlyView.css';
 import Navbar from './NewNavbar';
 import * as XLSX from 'xlsx';
