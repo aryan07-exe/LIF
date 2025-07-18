@@ -318,23 +318,15 @@
 }
 
 .points-export-group {
-  flex: 1 1 220px;
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: 1.5rem;
-  min-width: 220px;
+  align-items: center;
+  gap: 1rem;
 }
 
 .total-points {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  background: linear-gradient(90deg, #e3f2fd 60%, #f8fafc 100%);
-  padding: 0.85rem 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.07);
+  gap: 0.5rem;
   font-size: 1.1rem;
 }
 
@@ -355,19 +347,23 @@
   background: #7c052f;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 768px) {
   .admin-panel-header {
     flex-direction: column;
-    align-items: stretch;
-    gap: 1.5rem;
-    padding: 1.2rem 1rem 1.2rem 1rem;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
+  
+  .responsive-total-points {
+    margin-top: 0.5rem;
+  }
+
   .points-export-group {
-    align-items: stretch;
     flex-direction: row;
-    justify-content: space-between;
-    gap: 1.5rem;
-    min-width: 0;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    width: 100%;
   }
 }
 
