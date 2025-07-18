@@ -14,7 +14,7 @@ const EditOnsite = () => {
   const [filteredTasks, setFilteredTasks] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/edit/onsite/all')
+    axios.get('https://lifonrender.com/api/edit/onsite/all')
       .then(res => {
         setTasks(res.data);
         setFilteredTasks(res.data);
@@ -38,7 +38,7 @@ const EditOnsite = () => {
 
   const handleEditSave = async (id) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/edit/onsite/update/${id}`, editForm);
+      const res = await axios.put(`https://lifonrender.om/api/edit/onsite/update/${id}`, editForm);
       const updated = res.data;
       setTasks((prev) => prev.map((t) => (t._id === id ? updated : t)));
       setEditIdx(null);
