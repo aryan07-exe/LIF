@@ -199,58 +199,140 @@
   color: #666;
 }
 
+
 .table-container {
   flex: 1;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: visible;
   border-top: 1px solid rgba(108, 4, 40, 0.1);
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(108, 4, 40, 0.08);
+  margin-top: 1rem;
+  padding: 0.5rem 0.2rem;
 }
+
+
 
 .task-table {
+  min-width: 900px;
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 0.75rem;
+  table-layout: fixed;
+  word-break: break-word;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(108, 4, 40, 0.08);
 }
 
+
+
 .task-table th {
-  background: #f8f9fa;
-  color: #333;
+  background: linear-gradient(90deg, #6c0428 0%, #a80a3c 100%);
+  color: #fff;
   font-weight: 600;
   text-align: left;
-  padding: 0.5rem;
+  padding: 0.5rem 0.3rem;
   position: sticky;
   top: 0;
   z-index: 10;
   border-bottom: 2px solid rgba(108, 4, 40, 0.1);
   height: 32px;
+  font-size: 0.95em;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
 }
 
+
+
 .task-table td {
-  padding: 0.4rem 0.5rem;
+  padding: 0.35rem 0.25rem;
   border-bottom: 1px solid #eee;
   vertical-align: middle;
   height: 28px;
+  font-size: 0.98em;
+  overflow-wrap: break-word;
+  max-width: 120px;
+  background: #fff;
 }
 
-.task-table tr:hover {
-  background-color: rgba(108, 4, 40, 0.02);
+.task-table input,
+.task-table textarea {
+  width: 100%;
+  font-size: 1em;
+  padding: 0.25rem 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f8f9fa;
+  resize: vertical;
+  box-sizing: border-box;
+  transition: border 0.2s;
 }
+.task-table input:focus,
+.task-table textarea:focus {
+  border: 1.5px solid #a80a3c;
+  outline: none;
+}
+.task-table textarea {
+  min-height: 32px;
+  max-height: 80px;
+}
+.task-table button {
+  font-size: 1em;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  border: none;
+  background: #6c0428;
+  color: #fff;
+  cursor: pointer;
+  margin-right: 0.2rem;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 1px 4px rgba(108, 4, 40, 0.08);
+}
+.task-table button:last-child {
+  background: #ccc;
+  color: #333;
+}
+.task-table button:hover {
+  background: #a80a3c;
+  box-shadow: 0 2px 8px rgba(168, 10, 60, 0.12);
+}
+
+
+.task-table tr.editing {
+  background: #fbeaf4;
+}
+.task-table tr:hover {
+  background-color: #f8f9fa;
+}
+
 
 .category-badge {
   display: inline-block;
-  padding: 0.2rem 0.4rem;
-  background: rgba(108, 4, 40, 0.1);
+  padding: 0.12rem 0.25rem;
+  background: rgba(108, 4, 40, 0.12);
   color: #6c0428;
   border-radius: 4px;
   font-size: 0.7rem;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
+
 
 .points-badge {
   display: inline-block;
-  padding: 0.2rem 0.4rem;
+  padding: 0.12rem 0.25rem;
   background: #e5e7eb;
   border-radius: 4px;
   font-size: 0.7rem;
   font-weight: 600;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .export-section {
@@ -285,36 +367,65 @@
 }
 
 /* Responsive adjustments */
+
+
 @media (max-width: 1024px) {
+  .table-container {
+    padding: 0.2rem 0.1rem;
+  }
   .task-table {
     font-size: 0.7rem;
+    min-width: 700px;
   }
-  
   .task-table th,
   .task-table td {
-    padding: 0.4rem;
+    padding: 0.18rem 0.1rem;
   }
 }
 
 @media (max-width: 768px) {
-  .task-table {
-    font-size: 0.65rem;
+  .table-container {
+    padding: 0.1rem 0.05rem;
   }
-  
+  .task-table {
+    font-size: 0.6rem;
+    min-width: 500px;
+  }
   .task-table th,
   .task-table td {
-    padding: 0.35rem;
+    padding: 0.12rem 0.08rem;
+  }
+  .task-table input,
+  .task-table textarea {
+    font-size: 0.85em;
+    padding: 0.1rem 0.1rem;
+  }
+  .task-table button {
+    font-size: 0.9em;
+    padding: 0.22rem 0.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .task-table {
-    font-size: 0.6rem;
+  .table-container {
+    padding: 0.05rem 0.01rem;
   }
-  
+  .task-table {
+    font-size: 0.52rem;
+    min-width: 320px;
+  }
   .task-table th,
   .task-table td {
-    padding: 0.3rem;
+    padding: 0.08rem 0.04rem;
+  }
+  .task-table input,
+  .task-table textarea {
+    font-size: 0.8em;
+    padding: 0.08rem 0.08rem;
+  }
+  .task-table button {
+    font-size: 0.8em;
+    padding: 0.15rem 0.3rem;
   }
 }
 

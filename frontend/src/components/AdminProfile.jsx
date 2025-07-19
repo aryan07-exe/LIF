@@ -111,10 +111,16 @@ const AdminProfile = () => {
     },
      
  { 
-      title: "Edit Enteries", 
+      title: "Edit Enteries Seperate", 
       icon: <Database size={24} />, 
       description: "Add or edit projects in the system", 
       route: "/edit-onsite" 
+    },
+     { 
+      title: "Edit Enteries Merged", 
+      icon: <Database size={24} />, 
+      description: "Add or edit projects in the system", 
+      route: "/edit-test" 
     },
 
     { 

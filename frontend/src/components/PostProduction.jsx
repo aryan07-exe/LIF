@@ -101,6 +101,43 @@ const PostProductionMonthlyView = () => {
   const [categories, setCategories] = useState([]);
   const [projectStatuses, setProjectStatuses] = useState([]);
   const [totalPoints, setTotalPoints] = useState(0);
+  const [editIdx, setEditIdx] = useState(null);
+  const [editForm, setEditForm] = useState({});
+
+  // Edit handlers
+  const handleEditClick = (idx) => {
+    setEditIdx(idx);
+    // Ensure notes field is present for editing
+    setEditForm({ ...tasks[idx], notes: tasks[idx].notes || tasks[idx].note || '' });
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditSave = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      // Use notes field for payload
+      const payload = { ...editForm };
+      if (editForm.notes !== undefined) {
+        payload.note = editForm.notes;
+      }
+      const res = await axios.put(`https://lif.onrender.com/api/edit/update/${id}`, payload, {
+        headers: { Authorization: token }
+      });
+      const updated = res.data;
+      setTasks((prev) => prev.map((t) => (t._id === id ? updated : t)));
+      setEditIdx(null);
+    } catch (err) {
+      alert('Failed to update post-production task.');
+    }
+  };
+
+  const handleEditCancel = () => {
+    setEditIdx(null);
+  };
 
   const fetchTasks = async () => {
     setIsLoading(true);
@@ -349,28 +386,54 @@ const PostProductionMonthlyView = () => {
                     <th>Category</th>
                     <th>Points</th>
                     <th>Notes</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tasks.map((task, idx) => (
                     <tr key={idx}>
-                      <td>{task.eid}</td>
-                      <td>{task.ename}</td>
-                      <td>{formatDate(task.date)}</td>
-                      <td>{task.projectname}</td>
-                      <td>{task.projecttype}</td>
-                      <td>{task.projectstatus}</td>
-                      <td>
-                        <span className="category-badge">
-                          {task.category}
-                        </span>
-                      </td>
-                      <td>
-                        <span className="points-badge">
-                          {task.points || 0}
-                        </span>
-                      </td>
-                      <td>{task.note}</td>
+                      {editIdx === idx ? (
+                        <>
+                          <td><input name="eid" value={editForm.eid} onChange={handleEditChange} /></td>
+                          <td><input name="ename" value={editForm.ename} onChange={handleEditChange} /></td>
+                          <td><input name="date" type="date" value={editForm.date ? editForm.date.slice(0,10) : ''} onChange={handleEditChange} /></td>
+                          <td><input name="projectname" value={editForm.projectname} onChange={handleEditChange} /></td>
+                          <td><input name="projecttype" value={editForm.projecttype} onChange={handleEditChange} /></td>
+                          <td><input name="projectstatus" value={editForm.projectstatus} onChange={handleEditChange} /></td>
+                          <td><input name="category" value={editForm.category} onChange={handleEditChange} /></td>
+                          <td><input name="points" value={editForm.points} onChange={handleEditChange} /></td>
+                          <td>
+                            <textarea name="notes" value={editForm.notes || ''} onChange={handleEditChange} rows="3" style={{ width: '100%' }} />
+                          </td>
+                          <td>
+                            <button onClick={() => handleEditSave(task._id)}>Save</button>
+                            <button onClick={handleEditCancel}>Cancel</button>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td>{task.eid}</td>
+                          <td>{task.ename}</td>
+                          <td>{formatDate(task.date)}</td>
+                          <td>{task.projectname}</td>
+                          <td>{task.projecttype}</td>
+                          <td>{task.projectstatus}</td>
+                          <td>
+                            <span className="category-badge">
+                              {task.category}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="points-badge">
+                              {task.points || 0}
+                            </span>
+                          </td>
+                          <td>{task.notes || task.note || ''}</td>
+                          <td>
+                            <button onClick={() => handleEditClick(idx)}>Edit</button>
+                          </td>
+                        </>
+                      )}
                     </tr>
                   ))}
                 </tbody>

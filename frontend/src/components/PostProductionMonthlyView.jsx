@@ -34,7 +34,7 @@ const exportToExcel = (tasks, dateRange) => {
       'Project Status': task.projectstatus || 'N/A',
       'Category': task.category || 'N/A',
       'Points': task.points || 0,
-      'Notes': task.note || 'N/A'
+  'Notes': task.notes || 'N/A'
     }));
 
     if (formattedTasks.length === 0) {
@@ -370,7 +370,7 @@ const PostProductionMonthlyView = () => {
                           {task.points || 0}
                         </span>
                       </td>
-                      <td>{task.note}</td>
+                      <td>{task.notes}</td>
                     </tr>
                   ))}
                 </tbody>

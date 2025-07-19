@@ -14,7 +14,7 @@ import Taskname from "./components/Taskname"
 import Register from "./components/Register"
 import TestConnection from "./components/TestConnection"
 import AddProject from "./components/AddProject"
-import MonthWiseView from "./components/PostProduction"
+import EditTest from "./components/PostProduction"
 import EmployeeProfile from "./components/EmployeeProfile"
 import OnsiteForm from "./components/OnsiteForm"
 import AddUser from "./components/AddUser"
@@ -48,7 +48,7 @@ const App = () => {
         <Route path="/task3" element={<PrivateRoute><Task3 /></PrivateRoute>} />
         <Route path="/admin" element={<PrivateRoute><Admin /></PrivateRoute>} />
         <Route path="/monthly" element={<PrivateRoute><Monthly /></PrivateRoute>} />
-        <Route path="/month-wise" element={<PrivateRoute><MonthWiseView /></PrivateRoute>} />
+        <Route path="/edit-test" element={<PrivateRoute><EditTest /></PrivateRoute>} />
         <Route path="/landing" element={<PrivateRoute><Landing /></PrivateRoute>} />
         <Route path="/taskname" element={<PrivateRoute><Taskname /></PrivateRoute>} />
         <Route path="/register" element={<AdminRoute><Register /></AdminRoute>} />
