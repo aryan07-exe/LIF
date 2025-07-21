@@ -97,10 +97,10 @@ const AdminProfile = () => {
       route: "/register"
     },
     { 
-      title: "View Postproduction Reports", 
+      title: "Manage Daily Reports", 
       icon: <BarChart3 size={24} />, 
       description: "Access analytics and performance reports", 
-      route: "/post-production-monthly" 
+      route: "/edit-test" 
     },
  
     { 
@@ -109,22 +109,10 @@ const AdminProfile = () => {
       description: "Add or edit projects in the system", 
       route: "/add-project" 
     },
-     
- { 
-      title: "Edit Enteries Seperate", 
-      icon: <Database size={24} />, 
-      description: "Add or edit projects in the system", 
-      route: "/edit-onsite" 
-    },
-     { 
-      title: "Edit Enteries Merged", 
-      icon: <Database size={24} />, 
-      description: "Add or edit projects in the system", 
-      route: "/edit-test" 
-    },
+  
 
     { 
-      title: "Onsite Reports", 
+      title: "Manage Onsite Reports", 
       icon: <FileText size={24} />, 
       description: "Manage onsite forms and submissions", 
       route: "/onsite-admin" 

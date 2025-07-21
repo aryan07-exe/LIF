@@ -1,5 +1,3 @@
-
- 
 import React, { useState, useEffect } from 'react';
 import LifFooter from './LifFooter';
 import axios from 'axios';
@@ -28,6 +26,37 @@ const toIST = (dateStringOrTime) => {
 };
 const OnsiteAdminPanel = () => {
   const [tasks, setTasks] = useState([]);
+  const [editIdx, setEditIdx] = useState(null);
+  const [editForm, setEditForm] = useState({});
+  // Edit handlers
+  const handleEditClick = (idx) => {
+    setEditIdx(idx);
+    setEditForm({ ...tasks[idx], notes: tasks[idx].notes || '' });
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditSave = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+      const payload = { ...editForm };
+      const res = await axios.put(`https://lif.onrender.com/api/edit/onsite/update/${id}`, payload, {
+        headers: { Authorization: token }
+      });
+      const updated = res.data;
+      setTasks((prev) => prev.map((t) => (t._id === id ? updated : t)));
+      setEditIdx(null);
+    } catch (err) {
+      alert('Failed to update onsite task.');
+    }
+  };
+
+  const handleEditCancel = () => {
+    setEditIdx(null);
+  };
   const [filters, setFilters] = useState(() => {
     const today = new Date();
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -305,109 +334,116 @@ const OnsiteAdminPanel = () => {
           <table className="data-table">
             <thead>
               <tr>
-                <th>Employee Name</th>
-                <th>Employee ID</th>
-                <th>Project Name</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>P.Name</th>
                 <th>Shoot Date</th>
                 <th>Time</th>
-                <th>Hours Worked</th>
+                <th>Hours </th>
                 <th>Categories</th>
-                <th>Event Type</th>
-                <th>Team Members</th>
+                <th>Type</th>
+                <th>Team</th>
                 <th>Points</th>
-                <th>Notes</th>
+                <th>Edit</th>
               </tr>
             </thead>
             <tbody>
-              {tasks.map(task => (
-                <tr key={task._id} onClick={() => handleTaskClick(task)}>
-                  <td>{task.ename}</td>
-                  <td>{task.eid}</td>
-                  <td>{task.projectname}</td>
-                  <td>{formatDateForDisplay(task.shootDate)}</td>
-                  <td>{toIST(task.startTime)} - {toIST(task.endTime)}</td>
-                  <td>{getHoursWorked(task.startTime, task.endTime)}</td>
-                  <td>
-                    <span className="category-tag">{task.category || '-'}</span>
-                  </td>
-                  <td>{(() => {
-                    switch (task.eventType) {
-                      case 'micro': return 'Micro';
-                      case 'small': return 'Small';
-                      case 'wedding half day': return 'Wedding Half Day';
-                      case 'wedding full day': return 'Wedding Full Day';
-                      case 'commercial': return 'Commercial';
-                      default: return '-';
-                    }
-                  })()}</td>
-                  <td>{task.teamNames || '-'}</td>
-                  <td><span className="points-badge">{task.points || 0}</span></td>
-                  <td>{task.notes || '-'}</td>
+              {tasks.map((task, idx) => (
+                <tr
+                  key={task._id}
+                  className={editIdx === idx ? 'editing' : ''}
+                  onClick={editIdx === idx ? undefined : () => { setSelectedTask(task); setShowModal(true); }}
+                  style={{ cursor: editIdx === idx ? 'default' : 'pointer' }}
+                >
+                  {editIdx === idx ? (
+                    <>
+                      <td><input name="ename" value={editForm.ename} onChange={handleEditChange} /></td>
+                      <td><input name="eid" value={editForm.eid} onChange={handleEditChange} /></td>
+                      <td><input name="projectname" value={editForm.projectname} onChange={handleEditChange} /></td>
+                      <td><input name="shootDate" type="date" value={editForm.shootDate ? editForm.shootDate.slice(0,10) : ''} onChange={handleEditChange} /></td>
+                      <td>
+                        <input name="startTime" value={editForm.startTime} onChange={handleEditChange} style={{ width: '45%' }} />
+                        -
+                        <input name="endTime" value={editForm.endTime} onChange={handleEditChange} style={{ width: '45%' }} />
+                      </td>
+                      <td>{getHoursWorked(editForm.startTime, editForm.endTime)}</td>
+                      <td><input name="category" value={editForm.category} onChange={handleEditChange} /></td>
+                      <td><input name="eventType" value={editForm.eventType} onChange={handleEditChange} /></td>
+                      <td><input name="teamNames" value={editForm.teamNames} onChange={handleEditChange} /></td>
+                      <td><input name="points" value={editForm.points} onChange={handleEditChange} /></td>
+                      <td>
+                        <button onClick={e => { e.stopPropagation(); handleEditSave(task._id); }}>Save</button>
+                        <button onClick={e => { e.stopPropagation(); handleEditCancel(); }}>Cancel</button>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      <td>{task.ename}</td>
+                      <td>{task.eid}</td>
+                      <td>{task.projectname}</td>
+                      <td>{formatDateForDisplay(task.shootDate)}</td>
+                      <td>{toIST(task.startTime)} - {toIST(task.endTime)}</td>
+                      <td>{getHoursWorked(task.startTime, task.endTime)}</td>
+                      <td>
+                        <span className="category-tag">{task.category || '-'}</span>
+                      </td>
+                      <td>{(() => {
+                        switch (task.eventType) {
+                          case 'micro': return 'Micro';
+                          case 'small': return 'Small';
+                          case 'wedding half day': return 'Wedding Half Day';
+                          case 'wedding full day': return 'Wedding Full Day';
+                          case 'commercial': return 'Commercial';
+                          default: return '-';
+                        }
+                      })()}</td>
+                      <td>{task.teamNames || '-'}</td>
+                      <td><span className="points-badge">{task.points || 0}</span></td>
+                      <td>
+                        <button
+                          className="edit"
+                          onClick={e => { e.stopPropagation(); handleEditClick(idx); }}
+                          style={{ background: '#a80a3c', color: '#fff', borderRadius: '4px', padding: '0.2rem 0.6rem', border: 'none' }}
+                        >
+                          Edit
+                        </button>
+                      </td>
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-
         {showModal && selectedTask && (
-          <motion.div 
-            className="modal-overlay"
+          <motion.div
+            className="entry-modal-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleCloseModal}
           >
-            <motion.div 
-              className="modal-content"
-              initial={{ scale: 0.9, opacity: 0 }}
+            <motion.div
+              className="entry-modal-content"
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+              exit={{ scale: 0.95, opacity: 0 }}
               onClick={e => e.stopPropagation()}
             >
-              <h2>Task Details</h2>
-              <div className="modal-details">
-                <div className="detail-row">
-                  <span className="detail-label">Employee Name:</span>
-                  <span>{selectedTask.ename}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Employee ID:</span>
-                  <span>{selectedTask.eid}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Project Name:</span>
-                  <span>{selectedTask.projectname}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Shoot Date:</span>
-                  <span>{formatDateForDisplay(selectedTask.shootDate)}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Time:</span>
-                  <span>{toIST(selectedTask.startTime)} - {toIST(selectedTask.endTime)}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Hours Worked:</span>
-                  <span>{getHoursWorked(selectedTask.startTime, selectedTask.endTime)}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Points:</span>
-                  <span className="points-badge">{selectedTask.points || 0}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Category:</span>
-                  <span className="category-tag">{selectedTask.category || '-'}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Team Members:</span>
-                  <span>{selectedTask.teamNames}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-label">Notes:</span>
-                  <span>{selectedTask.notes}</span>
-                </div>
+              <h2 style={{ marginBottom: '1rem', color: '#6c0428', fontWeight: 700 }}>Task Details</h2>
+              <div className="entry-modal-details">
+                <div className="entry-detail-row"><span className="entry-detail-label">Employee Name:</span> <span>{selectedTask.ename}</span></div>
+                <div className="entry-detail-row"><span className="entry-detail-label">Employee ID:</span> <span>{selectedTask.eid}</span></div>
+                <div className="entry-detail-row"><span className="entry-detail-label">Project Name:</span> <span>{selectedTask.projectname}</span></div>
+                <div className="entry-detail-row"><span className="entry-detail-label">Shoot Date:</span> <span>{formatDateForDisplay(selectedTask.shootDate)}</span></div>
+                <div className="entry-detail-row"><span className="entry-detail-label">Time:</span> <span>{toIST(selectedTask.startTime)} - {toIST(selectedTask.endTime)}</span></div>
+                <div className="entry-detail-row"><span className="entry-detail-label">Hours Worked:</span> <span>{getHoursWorked(selectedTask.startTime, selectedTask.endTime)}</span></div>
+                <div className="entry-detail-row"><span className="entry-detail-label">Points:</span> <span className="points-badge">{selectedTask.points || 0}</span></div>
+                <div className="entry-detail-row"><span className="entry-detail-label">Category:</span> <span className="category-tag">{selectedTask.category || '-'}</span></div>
+                <div className="entry-detail-row"><span className="entry-detail-label">Team Members:</span> <span>{selectedTask.teamNames}</span></div>
+                <div className="entry-detail-row"><span className="entry-detail-label">Notes:</span> <span>{selectedTask.notes}</span></div>
               </div>
-              <button className="close-btn" onClick={handleCloseModal}>
+              <button className="entry-close-btn" onClick={handleCloseModal} style={{ marginTop: '1rem', background: '#a80a3c', color: '#fff', borderRadius: '4px', padding: '0.4rem 1.2rem', border: 'none', fontWeight: 600 }}>
                 Close
               </button>
             </motion.div>
@@ -416,6 +452,8 @@ const OnsiteAdminPanel = () => {
       </motion.div>
       <LifFooter />
     </>
+   
+
    
   );
 };

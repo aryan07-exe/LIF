@@ -133,30 +133,35 @@
 }
 
 .data-table th {
-  background: #6c0428;
-  color: white;
-  font-weight: 600;
+  background: #6c0428 ;
+  color: #fff;
+  font-weight: 700;
   text-align: left;
-  padding: 0.75rem 0.5rem;
+  padding: 0.45rem 0.22rem;
   position: sticky;
   top: 0;
   z-index: 10;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-  height: 32px;
-  font-size: 0.813rem;
-  text-transform: uppercase;
+  border-bottom: 2px solid rgba(108, 4, 40, 0.12);
+  height: 28px;
+  font-size: 0.93em;
+  white-space: nowrap;
   letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .data-table td {
-  padding: 0.4rem 0.5rem;
-  border-bottom: 1px solid #eee;
+  padding: 0.22rem 0.12rem;
+  border-bottom: 1px solid #f3f3f3;
   vertical-align: middle;
-  height: 28px;
+  height: 18px;
+  font-size: 0.85em;
+  overflow-wrap: break-word;
+  max-width: 80px;
+  background: #fff;
 }
 
 .data-table tr:hover {
-  background-color: rgba(108, 4, 40, 0.02);
+  background-color: #fbeaf4;
   cursor: pointer;
 }
 
@@ -166,11 +171,14 @@
 
 .category-tag {
   display: inline-block;
-  padding: 0.2rem 0.4rem;
-  background: rgba(108, 4, 40, 0.1);
+  padding: 0.09rem 0.18rem;
+  background: rgba(108, 4, 40, 0.10);
   color: #6c0428;
   border-radius: 4px;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .modal-overlay {
@@ -277,14 +285,14 @@
 
 .points-badge {
   display: inline-block;
-  padding: 4px 8px;
-  background-color: #4CAF50;
-  color: white;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  min-width: 40px;
-  text-align: center;
+  padding: 0.09rem 0.18rem;
+  background: #6d0808;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  max-width: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .admin-panel-header {
@@ -311,60 +319,67 @@
   gap: 1.2rem 2rem;
 }
 
-.button-group {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
+   
 
-.points-export-group {
+/* Official, modern popup dialog for entry details */
+.entry-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(108, 4, 40, 0.18);
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 1rem;
+  z-index: 1000;
+  backdrop-filter: blur(2.5px);
 }
-
-.total-points {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.1rem;
+.entry-modal-content {
+  background: #fff;
+  box-shadow: 0 12px 48px 0 rgba(108, 4, 40, 0.18);
+  padding: 1.5rem 1.2rem;
+  border-radius: 14px;
+  width: 95%;
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border: 1.5px solid #e3eafc;
+  animation: modalPopIn 0.25s cubic-bezier(.24,1.38,.63,.98);
 }
-
-.export-btn {
+.entry-modal-details {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.75rem;
-  background: #6c0428;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin: 1rem 0;
+}
+.entry-detail-row {
+  display: flex;
+  gap: 0.7rem;
+  font-size: 0.92em;
+}
+.entry-detail-label {
+  font-weight: 600;
+  color: #6c0428;
+  min-width: 90px;
+}
+.entry-close-btn {
+  background-color: #a80a3c;
   color: white;
   border: none;
-  border-radius: 4px;
-  font-size: 0.813rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 0.5rem;
+  font-weight: 600;
 }
-
-.export-btn:hover {
-  background: #7c052f;
+.entry-close-btn:hover {
+  background-color: #6c0428;
 }
-
-@media (max-width: 768px) {
-  .admin-panel-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .responsive-total-points {
-    margin-top: 0.5rem;
-  }
-
-  .points-export-group {
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 1rem;
-    width: 100%;
-  }
+@keyframes modalPopIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 @media (max-width: 1024px) {
@@ -401,6 +416,17 @@
   .data-table th,
   .data-table td {
     padding: 0.3rem;
+  }
+  .data-table td button {
+    display: block;
+    width: 100%;
+    margin-bottom: 6px;
+  }
+  .data-table td button:last-child {
+    margin-bottom: 0;
+  }
+  .data-table td {
+    min-width: 90px;
   }
 }
 

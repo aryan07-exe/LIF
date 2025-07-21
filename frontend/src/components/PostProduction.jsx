@@ -103,6 +103,8 @@ const PostProductionMonthlyView = () => {
   const [totalPoints, setTotalPoints] = useState(0);
   const [editIdx, setEditIdx] = useState(null);
   const [editForm, setEditForm] = useState({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTask, setModalTask] = useState(null);
 
   // Edit handlers
   const handleEditClick = (idx) => {
@@ -224,6 +226,18 @@ const PostProductionMonthlyView = () => {
       category: '',
       projectstatus: ''
     });
+  };
+
+  // Modal open handler
+  const handleRowClick = (task) => {
+    setModalTask(task);
+    setModalOpen(true);
+  };
+
+  // Modal close handler
+  const handleModalClose = () => {
+    setModalOpen(false);
+    setModalTask(null);
   };
 
   return (
@@ -377,21 +391,20 @@ const PostProductionMonthlyView = () => {
               <table className="task-table">
                 <thead>
                   <tr>
-                    <th>Employee ID</th>
-                    <th>Employee Name</th>
+                    <th>EID</th>
+                    <th>Name</th>
                     <th>Date</th>
-                    <th>Project Name</th>
-                    <th>Project Type</th>
-                    <th>Project Status</th>
-                    <th>Category</th>
+                    <th>P.Name</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Event</th>
                     <th>Points</th>
-                    <th>Notes</th>
-                    <th>Actions</th>
+                    <th>Edit</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tasks.map((task, idx) => (
-                    <tr key={idx}>
+                    <tr key={idx} onClick={() => editIdx === idx ? null : handleRowClick(task)} style={{ cursor: editIdx === idx ? 'default' : 'pointer' }}>
                       {editIdx === idx ? (
                         <>
                           <td><input name="eid" value={editForm.eid} onChange={handleEditChange} /></td>
@@ -428,9 +441,8 @@ const PostProductionMonthlyView = () => {
                               {task.points || 0}
                             </span>
                           </td>
-                          <td>{task.notes || task.note || ''}</td>
                           <td>
-                            <button onClick={() => handleEditClick(idx)}>Edit</button>
+                            <button onClick={(e) => { e.stopPropagation(); handleEditClick(idx); }}>Edit</button>
                           </td>
                         </>
                       )}
@@ -438,6 +450,33 @@ const PostProductionMonthlyView = () => {
                   ))}
                 </tbody>
               </table>
+              {/* Modal for entry details */}
+              {modalOpen && modalTask && (
+                <div className="modal-overlay" onClick={handleModalClose}>
+                  <motion.div 
+                    className="modal-content official-modal"
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <h3 className="modal-title">Task Details</h3>
+                    <div className="modal-details">
+                      <div><strong>Employee ID:</strong> {modalTask.eid}</div>
+                      <div><strong>Employee Name:</strong> {modalTask.ename}</div>
+                      <div><strong>Date:</strong> {formatDate(modalTask.date)}</div>
+                      <div><strong>Project Name:</strong> {modalTask.projectname}</div>
+                      <div><strong>Project Type:</strong> {modalTask.projecttype}</div>
+                      <div><strong>Project Status:</strong> {modalTask.projectstatus}</div>
+                      <div><strong>Category:</strong> {modalTask.category}</div>
+                      <div><strong>Points:</strong> {modalTask.points || 0}</div>
+                      <div><strong>Notes:</strong> {modalTask.notes || modalTask.note || ''}</div>
+                    </div>
+                    <button className="close-modal-btn" onClick={handleModalClose}>Close</button>
+                  </motion.div>
+                </div>
+              )}
             </>
           ) : (
             <div className="no-tasks-msg">
