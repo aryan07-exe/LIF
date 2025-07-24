@@ -38,6 +38,7 @@ const Navbar = () => {
         <li><a href="/admin-profile"><FaHome/> Dashboard</a></li>
 
         <li><a href="/add-project"><FaProjectDiagram /> Add Project</a></li>
+      <li><a href="https://lifproject-management.vercel.app"><FaProjectDiagram /> Manage Projects</a></li>
         <li><a href="/edit-test"><FaProjectDiagram /> Manage Daily Report</a></li>
         <li><a href="/onsite-admin"><FaProjectDiagram /> Manage Shoot Report</a></li>
         <li><a href="/view-users-full"><FaProjectDiagram /> Users</a></li>

@@ -116,7 +116,7 @@ const AdminProfile = () => {
       icon: <FileText size={24} />, 
       description: "Manage onsite forms and submissions", 
       route: "/onsite-admin" 
-    }
+    },
   ];
 
   return (
