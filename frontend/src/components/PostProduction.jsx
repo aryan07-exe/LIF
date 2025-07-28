@@ -141,6 +141,19 @@ const PostProductionMonthlyView = () => {
     setEditIdx(null);
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this entry?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`https://lif.onrender.com/api/postproduction/delete/${id}`, {
+        headers: { Authorization: token }
+      });
+      setTasks((prev) => prev.filter((t) => t._id !== id));
+    } catch (err) {
+      alert('Failed to delete post-production task.');
+    }
+  };
+
   const fetchTasks = async () => {
     setIsLoading(true);
     try {
@@ -404,7 +417,7 @@ const PostProductionMonthlyView = () => {
                 </thead>
                 <tbody>
                   {tasks.map((task, idx) => (
-                    <tr key={idx} onClick={() => editIdx === idx ? null : handleRowClick(task)} style={{ cursor: editIdx === idx ? 'default' : 'pointer' }}>
+                    <tr key={idx}>
                       {editIdx === idx ? (
                         <>
                           <td><input name="eid" value={editForm.eid} onChange={handleEditChange} /></td>
@@ -442,7 +455,8 @@ const PostProductionMonthlyView = () => {
                             </span>
                           </td>
                           <td>
-                            <button onClick={(e) => { e.stopPropagation(); handleEditClick(idx); }}>Edit</button>
+                            <button onClick={() => handleEditClick(idx)}>Edit</button>
+                            <button onClick={() => handleDelete(task._id)} style={{ marginLeft: '0.3rem', background: '#e74c3c', color: '#fff', borderRadius: '4px', padding: '0.2rem 0.6rem', border: 'none' }}>Delete</button>
                           </td>
                         </>
                       )}

@@ -100,7 +100,7 @@ app.post("/task",async(req,res)=>{
         const task = new Task({
             eid,
             ename,
-            date, // Store date as string
+            date: date, // Store date as string
             projectname,
             projecttype,
             projectstatus,
@@ -608,6 +608,38 @@ app.get('/postproduction/monthly', async (req, res) => {
   } catch (error) {
     console.error('Error fetching post-production tasks:', error);
     res.status(500).json({ message: 'Error fetching tasks' });
+  }
+});
+
+// Delete an onsite task by ID (new API for frontend)
+app.delete('/api/onsite/delete/:id', async (req, res) => {
+  try {
+    const token = req.headers.authorization;
+    // Optionally, add authentication/authorization check here if needed
+    const deletedTask = await OnsiteTask.findByIdAndDelete(req.params.id);
+    if (!deletedTask) {
+      return res.status(404).json({ message: 'Onsite task not found' });
+    }
+    res.json({ message: 'Onsite task deleted successfully', task: deletedTask });
+  } catch (error) {
+    console.error('Error deleting onsite task:', error);
+    res.status(500).json({ message: 'Error deleting onsite task', error: error.message });
+  }
+});
+
+// Delete a post-production task by ID (for PostProduction page)
+app.delete('/api/postproduction/delete/:id', async (req, res) => {
+  try {
+    const token = req.headers.authorization;
+    // Optionally, add authentication/authorization check here if needed
+    const deletedTask = await Task.findByIdAndDelete(req.params.id);
+    if (!deletedTask) {
+      return res.status(404).json({ message: 'Post-production task not found' });
+    }
+    res.json({ message: 'Post-production task deleted successfully', task: deletedTask });
+  } catch (error) {
+    console.error('Error deleting post-production task:', error);
+    res.status(500).json({ message: 'Error deleting post-production task', error: error.message });
   }
 });
 

@@ -221,6 +221,19 @@ const OnsiteAdminPanel = () => {
     return diff.toFixed(2);
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this entry?')) return;
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`https://lif.onrender.com/api/onsite/delete/${id}`, {
+        headers: { Authorization: token }
+      });
+      setTasks((prev) => prev.filter((t) => t._id !== id));
+    } catch (err) {
+      alert('Failed to delete onsite task.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -403,9 +416,16 @@ const OnsiteAdminPanel = () => {
                         <button
                           className="edit"
                           onClick={e => { e.stopPropagation(); handleEditClick(idx); }}
-                          style={{ background: '#a80a3c', color: '#fff', borderRadius: '4px', padding: '0.2rem 0.6rem', border: 'none' }}
+                          style={{ background: '#a80a3c', color: '#fff', borderRadius: '4px', padding: '0.2rem 0.6rem', border: 'none', marginRight: '0.3rem' }}
                         >
                           Edit
+                        </button>
+                        <button
+                          className="delete"
+                          onClick={e => { e.stopPropagation(); handleDelete(task._id); }}
+                          style={{ background: '#e74c3c', color: '#fff', borderRadius: '4px', padding: '0.2rem 0.6rem', border: 'none' }}
+                        >
+                          Delete
                         </button>
                       </td>
                     </>

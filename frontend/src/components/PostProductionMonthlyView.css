@@ -215,17 +215,16 @@
 
 
 .task-table {
-  min-width: 900px;
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  font-size: 0.75rem;
-  table-layout: fixed;
-  word-break: break-word;
+  font-size: 0.85rem;
   background: #fff;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(108, 4, 40, 0.08);
+  table-layout: fixed;
+  word-break: break-word;
 }
 
 
@@ -236,12 +235,9 @@
   font-weight: 600;
   text-align: left;
   padding: 0.5rem 0.3rem;
-  position: sticky;
-  top: 0;
-  z-index: 10;
   border-bottom: 2px solid rgba(108, 4, 40, 0.1);
-  height: 32px;
-  font-size: 0.95em;
+  height: 36px;
+  font-size: 1em;
   white-space: nowrap;
   letter-spacing: 0.02em;
 }
@@ -249,10 +245,10 @@
 
 
 .task-table td {
-  padding: 0.35rem 0.25rem;
+  padding: 0.38rem 0.22rem;
   border-bottom: 1px solid #eee;
   vertical-align: middle;
-  height: 28px;
+  height: 32px;
   font-size: 0.98em;
   overflow-wrap: break-word;
   max-width: 120px;
@@ -306,7 +302,7 @@
   background: #fbeaf4;
 }
 .task-table tr:hover {
-  background-color: #f8f9fa;
+  background: #fbeaf4;
 }
 
 
