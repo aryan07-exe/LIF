@@ -347,8 +347,10 @@ const OnsiteAdminPanel = () => {
           <table className="data-table">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Name</th>
+                
+                <th>ID</th>
+               
                 <th>P.Name</th>
                 <th>Shoot Date</th>
                 <th>Time</th>
@@ -385,8 +387,8 @@ const OnsiteAdminPanel = () => {
                       <td><input name="teamNames" value={editForm.teamNames} onChange={handleEditChange} /></td>
                       <td><input name="points" value={editForm.points} onChange={handleEditChange} /></td>
                       <td>
-                        <button onClick={e => { e.stopPropagation(); handleEditSave(task._id); }}>Save</button>
-                        <button onClick={e => { e.stopPropagation(); handleEditCancel(); }}>Cancel</button>
+                        <button className="save-btn" onClick={e => { e.stopPropagation(); handleEditSave(task._id); }}>Save</button>
+                        <button className="cancel-btn" onClick={e => { e.stopPropagation(); handleEditCancel(); }}>Cancel</button>
                       </td>
                     </>
                   ) : (
@@ -416,14 +418,12 @@ const OnsiteAdminPanel = () => {
                         <button
                           className="edit"
                           onClick={e => { e.stopPropagation(); handleEditClick(idx); }}
-                          style={{ background: '#a80a3c', color: '#fff', borderRadius: '4px', padding: '0.2rem 0.6rem', border: 'none', marginRight: '0.3rem' }}
                         >
                           Edit
                         </button>
                         <button
                           className="delete"
                           onClick={e => { e.stopPropagation(); handleDelete(task._id); }}
-                          style={{ background: '#e74c3c', color: '#fff', borderRadius: '4px', padding: '0.2rem 0.6rem', border: 'none' }}
                         >
                           Delete
                         </button>
