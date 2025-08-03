@@ -1,0 +1,126 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+const OptionManager = () => {
+  const [projectTypes, setProjectTypes] = useState([]);
+  const [projectStatuses, setProjectStatuses] = useState([]);
+  const [newType, setNewType] = useState('');
+  const [newStatus, setNewStatus] = useState('');
+  const [editTypeIdx, setEditTypeIdx] = useState(null);
+  const [editStatusIdx, setEditStatusIdx] = useState(null);
+  const [editTypeValue, setEditTypeValue] = useState('');
+  const [editStatusValue, setEditStatusValue] = useState('');
+  const [msg, setMsg] = useState('');
+
+  useEffect(() => {
+    fetchOptions();
+  }, []);
+
+  const fetchOptions = async () => {
+    const types = await axios.get('https://lif.onrender.com/api/task/projecttypes');
+    setProjectTypes(types.data.projectTypes || []);
+    const statuses = await axios.get('https://lif.onrender.com/api/task/projectstatuses');
+    setProjectStatuses(statuses.data.projectStatuses || []);
+  };
+
+  // Project Type handlers
+  const addType = async () => {
+    if (!newType.trim()) return;
+    await axios.post('https://lif.onrender.com/api/task/projecttypes', { value: newType });
+    setNewType('');
+    fetchOptions();
+  };
+  const deleteType = async (val) => {
+    await axios.delete(`https://lif.onrender.com/api/task/projecttypes/${encodeURIComponent(val)}`);
+    fetchOptions();
+  };
+  const startEditType = (idx, val) => {
+    setEditTypeIdx(idx);
+    setEditTypeValue(val);
+  };
+  const saveEditType = async (oldVal) => {
+    await axios.put(`https://lif.onrender.com/api/task/projecttypes/${encodeURIComponent(oldVal)}`, { newValue: editTypeValue });
+    setEditTypeIdx(null);
+    setEditTypeValue('');
+    fetchOptions();
+  };
+
+  // Project Status handlers
+  const addStatus = async () => {
+    if (!newStatus.trim()) return;
+    await axios.post('https://lif.onrender.com/api/task/projectstatuses', { value: newStatus });
+    setNewStatus('');
+    fetchOptions();
+  };
+  const deleteStatus = async (val) => {
+    await axios.delete(`https://lif.onrender.com/api/task/projectstatuses/${encodeURIComponent(val)}`);
+    fetchOptions();
+  };
+  const startEditStatus = (idx, val) => {
+    setEditStatusIdx(idx);
+    setEditStatusValue(val);
+  };
+  const saveEditStatus = async (oldVal) => {
+    await axios.put(`https://lif.onrender.com/api/task/projectstatuses/${encodeURIComponent(oldVal)}`, { newValue: editStatusValue });
+    setEditStatusIdx(null);
+    setEditStatusValue('');
+    fetchOptions();
+  };
+
+  return (
+    <div style={{ maxWidth: 600, margin: '2rem auto', background: '#fff', borderRadius: 10, boxShadow: '0 2px 12px #a80a3c22', padding: 24 }}>
+      <h2 style={{ color: '#a80a3c', marginBottom: 16 }}>Project Type & Status Manager</h2>
+      <div style={{ marginBottom: 32 }}>
+        <h3>Project Types</h3>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {projectTypes.map((type, idx) => (
+            <li key={type} style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+              {editTypeIdx === idx ? (
+                <>
+                  <input value={editTypeValue} onChange={e => setEditTypeValue(e.target.value)} style={{ marginRight: 8 }} />
+                  <button onClick={() => saveEditType(type)} style={{ marginRight: 4 }}>Save</button>
+                  <button onClick={() => setEditTypeIdx(null)}>Cancel</button>
+                </>
+              ) : (
+                <>
+                  <span style={{ flex: 1 }}>{type}</span>
+                  <button onClick={() => startEditType(idx, type)} style={{ marginRight: 4 }}>Edit</button>
+                  <button onClick={() => deleteType(type)}>Delete</button>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+        <input value={newType} onChange={e => setNewType(e.target.value)} placeholder="Add new type" style={{ marginRight: 8 }} />
+        <button onClick={addType}>Add</button>
+      </div>
+      <div>
+        <h3>Project Statuses</h3>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {projectStatuses.map((status, idx) => (
+            <li key={status} style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+              {editStatusIdx === idx ? (
+                <>
+                  <input value={editStatusValue} onChange={e => setEditStatusValue(e.target.value)} style={{ marginRight: 8 }} />
+                  <button onClick={() => saveEditStatus(status)} style={{ marginRight: 4 }}>Save</button>
+                  <button onClick={() => setEditStatusIdx(null)}>Cancel</button>
+                </>
+              ) : (
+                <>
+                  <span style={{ flex: 1 }}>{status}</span>
+                  <button onClick={() => startEditStatus(idx, status)} style={{ marginRight: 4 }}>Edit</button>
+                  <button onClick={() => deleteStatus(status)}>Delete</button>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+        <input value={newStatus} onChange={e => setNewStatus(e.target.value)} placeholder="Add new status" style={{ marginRight: 8 }} />
+        <button onClick={addStatus}>Add</button>
+      </div>
+      {msg && <div style={{ marginTop: 16, color: '#218c5a' }}>{msg}</div>}
+    </div>
+  );
+};
+
+export default OptionManager;

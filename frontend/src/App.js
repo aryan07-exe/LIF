@@ -1,3 +1,4 @@
+import OptionManager from "./components/OptionManager";
 // App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -72,7 +73,8 @@ const App = () => {
         <Route path="/remove-user" element={<AdminRoute><Removeuser /></AdminRoute>} />
         <Route path="/maintain-user" element={<AdminRoute><MaintainUser /></AdminRoute>} />
 
-         </Routes>
+  <Route path="/manage-options" element={<AdminRoute><OptionManager /></AdminRoute>} />
+   </Routes>
     </Router>
   );
 };
