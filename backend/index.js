@@ -1,3 +1,4 @@
+
 const express=require('express');
 const mongoose=require('mongoose');
 const cors=require('cors');
@@ -54,6 +55,8 @@ const userManagementRoutes = require('./routes/userManagement');
 app.use('/api/user-management', userManagementRoutes);
 
 
+const taskRoutes = require('./routes/taskRoutes');
+app.use('/api/task', taskRoutes);
 
 // Mount routes
 app.use('/api/projects', projectRoutes);

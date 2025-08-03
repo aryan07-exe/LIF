@@ -343,97 +343,121 @@ const OnsiteAdminPanel = () => {
 
         {error && <div className="error-message">{error}</div>}
 
-        <div className="table-container">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                
-                <th>ID</th>
-               
-                <th>P.Name</th>
-                <th>Shoot Date</th>
-                <th>Time</th>
-                <th>Hours </th>
-                <th>Categories</th>
-                <th>Type</th>
-                <th>Team</th>
-                <th>Points</th>
-                <th>Edit</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tasks.map((task, idx) => (
-                <tr
-                  key={task._id}
-                  className={editIdx === idx ? 'editing' : ''}
-                  onClick={editIdx === idx ? undefined : () => { setSelectedTask(task); setShowModal(true); }}
-                  style={{ cursor: editIdx === idx ? 'default' : 'pointer' }}
-                >
-                  {editIdx === idx ? (
-                    <>
-                      <td><input name="ename" value={editForm.ename} onChange={handleEditChange} /></td>
-                      <td><input name="eid" value={editForm.eid} onChange={handleEditChange} /></td>
-                      <td><input name="projectname" value={editForm.projectname} onChange={handleEditChange} /></td>
-                      <td><input name="shootDate" type="date" value={editForm.shootDate ? editForm.shootDate.slice(0,10) : ''} onChange={handleEditChange} /></td>
-                      <td>
-                        <input name="startTime" value={editForm.startTime} onChange={handleEditChange} style={{ width: '45%' }} />
-                        -
-                        <input name="endTime" value={editForm.endTime} onChange={handleEditChange} style={{ width: '45%' }} />
-                      </td>
-                      <td>{getHoursWorked(editForm.startTime, editForm.endTime)}</td>
-                      <td><input name="category" value={editForm.category} onChange={handleEditChange} /></td>
-                      <td><input name="eventType" value={editForm.eventType} onChange={handleEditChange} /></td>
-                      <td><input name="teamNames" value={editForm.teamNames} onChange={handleEditChange} /></td>
-                      <td><input name="points" value={editForm.points} onChange={handleEditChange} /></td>
-                      <td>
-                        <button className="save-btn" onClick={e => { e.stopPropagation(); handleEditSave(task._id); }}>Save</button>
-                        <button className="cancel-btn" onClick={e => { e.stopPropagation(); handleEditCancel(); }}>Cancel</button>
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td>{task.ename}</td>
-                      <td>{task.eid}</td>
-                      <td>{task.projectname}</td>
-                      <td>{formatDateForDisplay(task.shootDate)}</td>
-                      <td>{toIST(task.startTime)} - {toIST(task.endTime)}</td>
-                      <td>{getHoursWorked(task.startTime, task.endTime)}</td>
-                      <td>
-                        <span className="category-tag">{task.category || '-'}</span>
-                      </td>
-                      <td>{(() => {
-                        switch (task.eventType) {
-                          case 'micro': return 'Micro';
-                          case 'small': return 'Small';
-                          case 'wedding half day': return 'Wedding Half Day';
-                          case 'wedding full day': return 'Wedding Full Day';
-                          case 'commercial': return 'Commercial';
-                          default: return '-';
-                        }
-                      })()}</td>
-                      <td>{task.teamNames || '-'}</td>
-                      <td><span className="points-badge">{task.points || 0}</span></td>
-                      <td>
-                        <button
-                          className="edit"
-                          onClick={e => { e.stopPropagation(); handleEditClick(idx); }}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="delete"
-                          onClick={e => { e.stopPropagation(); handleDelete(task._id); }}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </>
-                  )}
+        <div className="table-container" style={{ marginTop: '1.5rem', borderRadius: '14px', boxShadow: '0 4px 24px rgba(108,4,40,0.10)', background: '#faf7fa', padding: '1.2rem 0.5rem' }}>
+          <div style={{ width: '100%', overflowX: 'auto' }}>
+            <table
+              style={{
+                width: '100%',
+                minWidth: '1100px',
+                tableLayout: 'auto',
+                borderCollapse: 'separate',
+                borderSpacing: 0,
+                background: '#fff',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                boxShadow: '0 2px 12px rgba(108, 4, 40, 0.08)'
+              }}
+            >
+              <thead>
+                <tr style={{ background: 'linear-gradient(90deg, #6c0428 0%, #a80a3c 100%)', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
+                  <th style={{ color: '#fff', fontWeight: 700, padding: '0.7em 0.5em', minWidth: 90, letterSpacing: '0.02em', borderTopLeftRadius: '12px' }}>Name</th>
+                  <th style={{ color: '#fff', fontWeight: 700, padding: '0.7em 0.5em', minWidth: 70 }}>ID</th>
+                  <th style={{ color: '#fff', fontWeight: 700, padding: '0.7em 0.5em', minWidth: 120 }}>P.Name</th>
+                  <th style={{ color: '#fff', fontWeight: 700, padding: '0.7em 0.5em', minWidth: 90 }}>Shoot Date</th>
+                  <th style={{ color: '#fff', fontWeight: 700, padding: '0.7em 0.5em', minWidth: 120 }}>Time</th>
+                  <th style={{ color: '#fff', fontWeight: 700, padding: '0.7em 0.5em', minWidth: 80 }}>Hours</th>
+                  <th style={{ color: '#fff', fontWeight: 700, padding: '0.7em 0.5em', minWidth: 80 }}>Categories</th>
+                  <th style={{ color: '#fff', fontWeight: 700, padding: '0.7em 0.5em', minWidth: 80 }}>Type</th>
+                  <th style={{ color: '#fff', fontWeight: 700, padding: '0.7em 0.5em', minWidth: 100 }}>Team</th>
+                  <th style={{ color: '#fff', fontWeight: 700, padding: '0.7em 0.5em', minWidth: 60 }}>Points</th>
+                  <th style={{ color: '#fff', fontWeight: 700, padding: '0.7em 0.5em', minWidth: 160, width: 180, borderTopRightRadius: '12px' }}>Edit</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {tasks.map((task, idx) => (
+                  <tr
+                    key={task._id}
+                    className={editIdx === idx ? 'editing' : ''}
+                    style={{
+                      background: idx % 2 === 0 ? '#f9f6fa' : '#fff',
+                      transition: 'background 0.2s',
+                      borderBottom: '1px solid #eee',
+                      cursor: editIdx === idx ? 'default' : 'pointer',
+                      boxShadow: editIdx === idx ? '0 2px 8px rgba(168,10,60,0.08)' : 'none'
+                    }}
+                    onMouseOver={e => (e.currentTarget.style.background = '#fbeaf4')}
+                    onMouseOut={e => (e.currentTarget.style.background = idx % 2 === 0 ? '#f9f6fa' : '#fff')}
+                    onClick={editIdx === idx ? undefined : () => { setSelectedTask(task); setShowModal(true); }}
+                  >
+                    {editIdx === idx ? (
+                      <>
+                        <td style={{padding:'0.7em 0.5em'}}><input name="ename" value={editForm.ename} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                        <td style={{padding:'0.7em 0.5em'}}><input name="eid" value={editForm.eid} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                        <td style={{padding:'0.7em 0.5em'}}><input name="projectname" value={editForm.projectname} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                        <td style={{padding:'0.7em 0.5em'}}><input name="shootDate" type="date" value={editForm.shootDate ? editForm.shootDate.slice(0,10) : ''} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                        <td style={{padding:'0.7em 0.5em'}}>
+                          <input name="startTime" value={editForm.startTime} onChange={handleEditChange} style={{ width: '45%' }} />
+                          -
+                          <input name="endTime" value={editForm.endTime} onChange={handleEditChange} style={{ width: '45%' }} />
+                        </td>
+                        <td style={{padding:'0.7em 0.5em'}}>{getHoursWorked(editForm.startTime, editForm.endTime)}</td>
+                        <td style={{padding:'0.7em 0.5em'}}><input name="category" value={editForm.category} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                        <td style={{padding:'0.7em 0.5em'}}><input name="eventType" value={editForm.eventType} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                        <td style={{padding:'0.7em 0.5em'}}><input name="teamNames" value={editForm.teamNames} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                        <td style={{padding:'0.7em 0.5em'}}><input name="points" value={editForm.points} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                        <td style={{ minWidth: 160, width: 180, padding:'0.7em 0.5em', background: '#fbeaf4', borderRadius: '8px' }}>
+                          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start', alignItems: 'center' }}>
+                            <button className="save-btn" style={{ background: '#218c5a', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.2rem 0.7rem' }} onClick={e => { e.stopPropagation(); handleEditSave(task._id); }}>Save</button>
+                            <button className="cancel-btn" style={{ background: '#f3f3f3', color: '#a80a3c', border: '1px solid #e0e0e0', borderRadius: '4px', padding: '0.2rem 0.7rem' }} onClick={e => { e.stopPropagation(); handleEditCancel(); }}>Cancel</button>
+                          </div>
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td style={{padding:'0.7em 0.5em'}}>{task.ename}</td>
+                        <td style={{padding:'0.7em 0.5em'}}>{task.eid}</td>
+                        <td style={{padding:'0.7em 0.5em'}}>{task.projectname}</td>
+                        <td style={{padding:'0.7em 0.5em'}}>{formatDateForDisplay(task.shootDate)}</td>
+                        <td style={{padding:'0.7em 0.5em'}}>{toIST(task.startTime)} - {toIST(task.endTime)}</td>
+                        <td style={{padding:'0.7em 0.5em'}}>{getHoursWorked(task.startTime, task.endTime)}</td>
+                        <td style={{padding:'0.7em 0.5em'}}><span className="category-tag">{task.category || '-'}</span></td>
+                        <td style={{padding:'0.7em 0.5em'}}>{(() => {
+                          switch (task.eventType) {
+                            case 'micro': return 'Micro';
+                            case 'small': return 'Small';
+                            case 'wedding half day': return 'Wedding Half Day';
+                            case 'wedding full day': return 'Wedding Full Day';
+                            case 'commercial': return 'Commercial';
+                            default: return '-';
+                          }
+                        })()}</td>
+                        <td style={{padding:'0.7em 0.5em'}}>{task.teamNames || '-'}</td>
+                        <td style={{padding:'0.7em 0.5em'}}><span className="points-badge">{task.points || 0}</span></td>
+                        <td style={{ minWidth: 160, width: 180, padding:'0.7em 0.5em', background: '#fbeaf4', borderRadius: '8px' }}>
+                          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start', alignItems: 'center' }}>
+                            <button
+                              className="edit"
+                              style={{ background: '#a80a3c', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.2rem 0.7rem' }}
+                              onClick={e => { e.stopPropagation(); handleEditClick(idx); }}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="delete"
+                              style={{ background: '#e74c3c', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.2rem 0.7rem' }}
+                              onClick={e => { e.stopPropagation(); handleDelete(task._id); }}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
         {showModal && selectedTask && (
           <motion.div

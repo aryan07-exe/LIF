@@ -28,28 +28,18 @@ const Taskname = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const projectTypes = [
-    'Reel',
-    'Teaser',
-    'Wedding Highlight',
-    'Wedding Long Film',
-    'Wedding Cine Film',
-    'Event Highlight',
-    'Event Film',
-    'Wedding Photo Edit',
-    'Event Photo Edit',
-    'Album Edit',
-    'Album Design',
-    'Individual Event',
-    'Others'
-  ];
 
-  const projectStatuses = [
-    'Complete',
-    'In-Process',
-    'In House Correction',
-    'Client\'s Correction'
-  ];
+  const [projectTypes, setProjectTypes] = useState([]);
+  const [projectStatuses, setProjectStatuses] = useState([]);
+
+  useEffect(() => {
+      axios.get('https://lif.onrender.com/api/task/projecttypes')
+        .then(res => setProjectTypes(res.data.projectTypes || []))
+        .catch(() => setProjectTypes([]));
+      axios.get('https://lif.onrender.com/api/task/projectstatuses')
+        .then(res => setProjectStatuses(res.data.projectStatuses || []))
+        .catch(() => setProjectStatuses([]));
+    }, []);
 
 
   // Add useEffect to update form data when user data changes

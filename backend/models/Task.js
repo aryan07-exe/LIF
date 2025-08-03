@@ -51,4 +51,33 @@ notes:{
     timestamps: true
 });
 
-module.exports=mongoose.model('Task',Taskschema);
+// Static options for projecttype and projectstatus
+const PROJECT_TYPE_OPTIONS = [
+    "Reel",
+    "Teaser",
+    "Wedding Highlight",
+    "Wedding Long Film",
+    "Wedding Cine Film",
+    "Event Highlight",
+    "Event Film",
+    "Wedding Photo Edit",
+    "Event Photo Edit",
+    "Album Edit",
+    "Album Design",
+    "Individual Event",
+    "Others"
+];
+
+const PROJECT_STATUS_OPTIONS = [
+    "Complete",
+    "In-Process",
+    "In House Correction",
+    "Client's Correction",
+    "New"
+];
+
+const Task = mongoose.model('Task',Taskschema);
+Task.PROJECT_TYPE_OPTIONS = PROJECT_TYPE_OPTIONS;
+Task.PROJECT_STATUS_OPTIONS = PROJECT_STATUS_OPTIONS;
+
+module.exports = Task;

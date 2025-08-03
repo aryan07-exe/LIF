@@ -99,6 +99,7 @@ const PostProductionMonthlyView = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [projectTypes, setProjectTypes] = useState([]);
   const [projectStatuses, setProjectStatuses] = useState([]);
   const [totalPoints, setTotalPoints] = useState(0);
   const [editIdx, setEditIdx] = useState(null);
@@ -164,7 +165,7 @@ const PostProductionMonthlyView = () => {
           eid: filters.eid,
           startDate: filters.startDate,
           endDate: filters.endDate,
-          category: filters.category,
+          // Do not send category to backend, filter by projecttype on frontend
           projectstatus: filters.projectstatus
         }
       });
@@ -174,11 +175,13 @@ const PostProductionMonthlyView = () => {
       if (filters.projectstatus) {
         fetchedTasks = fetchedTasks.filter(task => task.projectstatus === filters.projectstatus);
       }
-      setTasks(fetchedTasks);
-      setTotalPoints(response.data.totalPoints || 0);
-      setCategories(response.data.categories || []);
-      const uniqueStatuses = [...new Set((response.data.tasks || []).map(task => task.projectstatus))].filter(Boolean);
-      setProjectStatuses(uniqueStatuses);
+      // Apply frontend filtering for projecttype if selected
+      if (filters.category) {
+        fetchedTasks = fetchedTasks.filter(task => task.projecttype === filters.category);
+      }
+  setTasks(fetchedTasks);
+  setTotalPoints(response.data.totalPoints || 0);
+  setCategories(response.data.categories || []);
     } catch (error) {
       console.error('Error fetching tasks:', error);
       setTasks([]);
@@ -202,7 +205,29 @@ const PostProductionMonthlyView = () => {
   useEffect(() => {
     fetchUsers();
     fetchTasks();
+    fetchProjectTypes();
+    fetchProjectStatuses();
   }, [filters]);
+
+  // Fetch project types from backend
+  const fetchProjectTypes = async () => {
+    try {
+      const res = await axios.get('https://lif.onrender.com/api/task/projecttypes');
+      setProjectTypes(res.data.projectTypes || []);
+    } catch (error) {
+      setProjectTypes([]);
+    }
+  };
+
+  // Fetch project statuses from backend
+  const fetchProjectStatuses = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/task/projectstatuses');
+      setProjectStatuses(res.data.projectStatuses || []);
+    } catch (error) {
+      setProjectStatuses([]);
+    }
+  };
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -333,9 +358,9 @@ const PostProductionMonthlyView = () => {
                 className="filter-select"
               >
                 <option value="">All Categories</option>
-                {categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
+                {projectTypes.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
                   </option>
                 ))}
               </select>
@@ -401,69 +426,102 @@ const PostProductionMonthlyView = () => {
                   <span>Download Excel</span>
                 </motion.button>
               </div>
-              <table className="task-table">
+              <div style={{ width: '100%', overflowX: 'auto' }}>
+                <table
+                  style={{
+                    width: '100%',
+                    minWidth: '900px',
+                    tableLayout: 'auto',
+                    borderCollapse: 'separate',
+                    borderSpacing: 0,
+                    background: '#fff',
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 12px rgba(108, 4, 40, 0.08)'
+                  }}
+                >
                 <thead>
-                  <tr>
-                    <th>EID</th>
-                    <th>Name</th>
-                    <th>Date</th>
-                    <th>P.Name</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th>Event</th>
-                    <th>Points</th>
-                    <th>Edit</th>
+                  <tr style={{ background: 'linear-gradient(90deg, #6c0428 0%, #a80a3c 100%)' }}>
+                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 90, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Name</th>
+                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 70, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>ID</th>
+                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 120, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>P.Name</th>
+                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 90, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Date</th>
+                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 80, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Type</th>
+                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 80, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Status</th>
+                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 80, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Category</th>
+                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 60, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Points</th>
+                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 160, width: 180, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Edit</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tasks.map((task, idx) => (
-                    <tr key={idx}>
+                    <tr
+                      key={task._id}
+                      className={editIdx === idx ? 'editing' : ''}
+                      style={{
+                        background: idx % 2 === 0 ? '#f9f6fa' : '#fff',
+                        transition: 'background 0.2s',
+                        borderBottom: '1px solid #eee',
+                        cursor: editIdx === idx ? 'default' : 'pointer'
+                      }}
+                      onMouseOver={e => (e.currentTarget.style.background = '#fbeaf4')}
+                      onMouseOut={e => (e.currentTarget.style.background = idx % 2 === 0 ? '#f9f6fa' : '#fff')}
+                      onClick={
+                        editIdx === idx
+                          ? undefined
+                          : (e) => {
+                              // Only open modal if not clicking on a button
+                              if (
+                                e.target.tagName !== 'BUTTON' &&
+                                e.target.tagName !== 'svg' &&
+                                e.target.tagName !== 'path' &&
+                                e.target.type !== 'submit'
+                              ) {
+                                handleRowClick(task);
+                              }
+                            }
+                      }
+                    >
                       {editIdx === idx ? (
                         <>
-                          <td><input name="eid" value={editForm.eid} onChange={handleEditChange} /></td>
-                          <td><input name="ename" value={editForm.ename} onChange={handleEditChange} /></td>
-                          <td><input name="date" type="date" value={editForm.date ? editForm.date.slice(0,10) : ''} onChange={handleEditChange} /></td>
-                          <td><input name="projectname" value={editForm.projectname} onChange={handleEditChange} /></td>
-                          <td><input name="projecttype" value={editForm.projecttype} onChange={handleEditChange} /></td>
-                          <td><input name="projectstatus" value={editForm.projectstatus} onChange={handleEditChange} /></td>
-                          <td><input name="category" value={editForm.category} onChange={handleEditChange} /></td>
-                          <td><input name="points" value={editForm.points} onChange={handleEditChange} /></td>
-                          <td>
-                            <textarea name="notes" value={editForm.notes || ''} onChange={handleEditChange} rows="3" style={{ width: '100%' }} />
-                          </td>
-                          <td>
-                            <button onClick={() => handleEditSave(task._id)}>Save</button>
-                            <button onClick={handleEditCancel}>Cancel</button>
+                          <td style={{padding:'0.5px'}}><input name="ename" value={editForm.ename} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                          <td style={{padding:'0.5px'}}><input name="eid" value={editForm.eid} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                          <td style={{padding:'0.5px'}}><input name="projectname" value={editForm.projectname} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                          <td style={{padding:'0.5px'}}><input name="date" type="date" value={editForm.date ? editForm.date.slice(0,10) : ''} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                          <td style={{padding:'0.5px'}}><input name="projecttype" value={editForm.projecttype} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                          <td style={{padding:'0.5px'}}><input name="projectstatus" value={editForm.projectstatus} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                          <td style={{padding:'0.5px'}}><input name="category" value={editForm.category} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                          <td style={{padding:'0.5px'}}><input name="points" value={editForm.points} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                          <td style={{ minWidth: 160, width: 180, padding:'0.5px' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start', alignItems: 'center' }}>
+                              <button className="save-btn" style={{ background: '#218c5a', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.2rem 0.7rem' }} onClick={() => handleEditSave(task._id)}>Save</button>
+                              <button className="cancel-btn" style={{ background: '#f3f3f3', color: '#a80a3c', border: '1px solid #e0e0e0', borderRadius: '4px', padding: '0.2rem 0.7rem' }} onClick={handleEditCancel}>Cancel</button>
+                            </div>
                           </td>
                         </>
                       ) : (
                         <>
-                          <td>{task.eid}</td>
-                          <td>{task.ename}</td>
-                          <td>{formatDate(task.date)}</td>
-                          <td>{task.projectname}</td>
-                          <td>{task.projecttype}</td>
-                          <td>{task.projectstatus}</td>
-                          <td>
-                            <span className="category-badge">
-                              {task.category}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="points-badge">
-                              {task.points || 0}
-                            </span>
-                          </td>
-                          <td>
-                            <button onClick={() => handleEditClick(idx)}>Edit</button>
-                            <button onClick={() => handleDelete(task._id)} style={{ marginLeft: '0.3rem', background: '#e74c3c', color: '#fff', borderRadius: '4px', padding: '0.2rem 0.6rem', border: 'none' }}>Delete</button>
+                          <td style={{padding:'0.5px'}}>{task.ename}</td>
+                          <td style={{padding:'0.5px'}}>{task.eid}</td>
+                          <td style={{padding:'0.5px'}}>{task.projectname}</td>
+                          <td style={{padding:'0.5px'}}>{formatDate(task.date)}</td>
+                          <td style={{padding:'0.5px'}}>{task.projecttype}</td>
+                          <td style={{padding:'0.5px'}}>{task.projectstatus}</td>
+                          <td style={{padding:'0.5px'}}><span style={{ background: '#fbeaf4', color: '#6c0428', borderRadius: '4px', padding: '0.1rem 0.4rem', fontSize: '0.9em' }}>{task.category}</span></td>
+                          <td style={{padding:'0.5px'}}><span style={{ background: '#e5e7eb', borderRadius: '4px', padding: '0.1rem 0.4rem', fontWeight: 600, fontSize: '0.9em' }}>{task.points || 0}</span></td>
+                          <td style={{ minWidth: 160, width: 180, padding:'0.5px' }}>
+                            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start', alignItems: 'center' }}>
+                              <button className="edit" style={{ background: '#a80a3c', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.2rem 0.7rem' }} onClick={(e) => { e.stopPropagation(); handleEditClick(idx); }}>Edit</button>
+                              <button className="delete" style={{ background: '#e74c3c', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.2rem 0.7rem' }} onClick={(e) => { e.stopPropagation(); handleDelete(task._id); }}>Delete</button>
+                            </div>
                           </td>
                         </>
                       )}
                     </tr>
                   ))}
                 </tbody>
-              </table>
+                </table>
+              </div>
               {/* Modal for entry details */}
               {modalOpen && modalTask && (
                 <div className="modal-overlay" onClick={handleModalClose}>

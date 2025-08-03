@@ -91,10 +91,10 @@ const AdminProfile = () => {
   // Admin routes that the user can navigate to
   const adminActions = [
     { 
-      title: "AddUsers", 
+      title: "Manage Users", 
       icon: <Users size={24} />, 
       description: "Add, edit or remove users from the system", 
-      route: "/register"
+      route: "/view-users-full"
     },
     { 
       title: "Manage Daily Reports", 
