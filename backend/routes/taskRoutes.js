@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const Task = require('../models/Task');
@@ -101,6 +100,16 @@ router.put('/projectstatuses/:oldValue', async (req, res) => {
 	doc.values[idx] = newValue;
 	await doc.save();
 	res.json({ projectStatuses: doc.values });
+});
+
+// GET all task entries
+router.get('/all', async (req, res) => {
+  try {
+    const tasks = await Task.find({}).sort({ date: -1, _id: -1 });
+    res.json({ tasks });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch tasks.' });
+  }
 });
 
 module.exports = router;

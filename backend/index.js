@@ -1,4 +1,3 @@
-
 const express=require('express');
 const mongoose=require('mongoose');
 const cors=require('cors');
@@ -64,6 +63,8 @@ app.use('/api/auth', authRoutes);
 const projectDetailsRouter = require('./routes/projectDetails');
 app.use('/api/projectdetails', projectDetailsRouter);
 
+const projectnameRoutes = require('./routes/projectname');
+app.use('/api/projectname', projectnameRoutes);
 
 mongoose.connect(process.env.Mongo_URL)
   .then(() => {

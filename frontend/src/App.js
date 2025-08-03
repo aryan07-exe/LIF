@@ -1,3 +1,4 @@
+import CombinedAdminPanel from "./components/CombinedAdminPanel";
 import OptionManager from "./components/OptionManager";
 // App.jsx
 import React from 'react';
@@ -74,6 +75,7 @@ const App = () => {
         <Route path="/maintain-user" element={<AdminRoute><MaintainUser /></AdminRoute>} />
 
   <Route path="/manage-options" element={<AdminRoute><OptionManager /></AdminRoute>} />
+  <Route path="/combined-admin" element={<AdminRoute><CombinedAdminPanel /></AdminRoute>} />
    </Routes>
     </Router>
   );

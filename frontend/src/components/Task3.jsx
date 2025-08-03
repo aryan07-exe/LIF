@@ -63,16 +63,16 @@ const Taskname = () => {
       if (!token) {
         throw new Error('No authentication token found');
       }
-
-      const response = await axios.get('https://lif.onrender.com/api/projects', {
+      // Fetch project names from new backend API
+      const response = await axios.get('http://localhost:5000/api/projectname/names', {
         headers: {
           'Authorization': token
         }
       });
-      setProjects(response.data);
+      setProjects(response.data.projectNames || []);
     } catch (error) {
-      console.error('Error fetching projects:', error);
-      setError('Failed to fetch projects. Please try again later.');
+      console.error('Error fetching project names:', error);
+      setError('Failed to fetch project names. Please try again later.');
     } finally {
       setIsLoadingProjects(false);
     }
@@ -86,10 +86,10 @@ const Taskname = () => {
     }));
 
     if (value.length >= 2) {
-      const filteredProjects = projects.filter(project => 
-        project.projectname.toLowerCase().includes(value.toLowerCase())
+      const filteredProjects = projects.filter(projectName => 
+        projectName.toLowerCase().includes(value.toLowerCase())
       );
-      setSuggestions(filteredProjects.map(project => project.projectname));
+      setSuggestions(filteredProjects);
       setShowSuggestions(true);
     } else {
       setSuggestions([]);
