@@ -222,7 +222,7 @@ const PostProductionMonthlyView = () => {
   // Fetch project statuses from backend
   const fetchProjectStatuses = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/task/projectstatuses');
+      const res = await axios.get('https://lif.onrender.com/api/task/projectstatuses');
       setProjectStatuses(res.data.projectStatuses || []);
     } catch (error) {
       setProjectStatuses([]);
