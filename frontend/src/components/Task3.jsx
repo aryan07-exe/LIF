@@ -27,19 +27,20 @@ const Taskname = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-
   const [projectTypes, setProjectTypes] = useState([]);
   const [projectStatuses, setProjectStatuses] = useState([]);
 
   useEffect(() => {
-      axios.get('https://lif.onrender.com/api/task/projecttypes')
-        .then(res => setProjectTypes(res.data.projectTypes || []))
-        .catch(() => setProjectTypes([]));
-      axios.get('https://lif.onrender.com/api/task/projectstatuses')
-        .then(res => setProjectStatuses(res.data.projectStatuses || []))
-        .catch(() => setProjectStatuses([]));
-    }, []);
+    axios.get('https://lif.onrender.com/api/task/projecttypes')
+      .then(res => setProjectTypes(res.data.projectTypes || []))
+      .catch(() => setProjectTypes([]));
+    axios.get('https://lif.onrender.com/api/task/projectstatuses')
+      .then(res => {
+        console.log('Fetched projectStatuses:', res.data.projectStatuses);
+        setProjectStatuses(res.data.projectStatuses || []);
+      })
+      .catch(() => setProjectStatuses([]));
+  }, []);
 
 
   // Add useEffect to update form data when user data changes
