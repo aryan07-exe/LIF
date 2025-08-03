@@ -104,6 +104,13 @@ const AdminProfile = () => {
     },
  
     { 
+      title: "Manage Categories and Status", 
+      icon: <BarChart3 size={24} />, 
+      description: "Access analytics and performance reports", 
+      route: "/manage-options" 
+    },
+ 
+    { 
       title: "Add Projects", 
       icon: <Database size={24} />, 
       description: "Add or edit projects in the system", 
