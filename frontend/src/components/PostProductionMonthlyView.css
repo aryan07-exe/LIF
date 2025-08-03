@@ -1,3 +1,49 @@
+/* Clean Table Styles for PostProduction */
+.clean-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(108, 4, 40, 0.08);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.clean-table th {
+  background: linear-gradient(90deg, #6c0428 0%, #a80a3c 100%);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.7em 0.6em;
+  border-bottom: 2px solid #fbeaf4;
+  text-align: left;
+}
+
+.clean-table td {
+  padding: 0.5em 0.6em;
+  border-bottom: 1px solid #f3e6ed;
+  background: #fff;
+  vertical-align: middle;
+  font-size: 0.95em;
+}
+
+.clean-table tr:nth-child(even) td {
+  background: #f9f6fa;
+}
+
+.clean-table tr:hover td {
+  background: #fbeaf4;
+  transition: background 0.2s;
+}
+
+.clean-table td:last-child, .clean-table th:last-child {
+  border-radius: 0 10px 10px 0;
+}
+.clean-table td:first-child, .clean-table th:first-child {
+  border-radius: 10px 0 0 10px;
+}
 .monthly-task-view {
   min-height: 100vh;
   width: 100%;

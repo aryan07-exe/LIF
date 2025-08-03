@@ -426,31 +426,19 @@ const PostProductionMonthlyView = () => {
                   <span>Download Excel</span>
                 </motion.button>
               </div>
-              <div style={{ width: '100%', overflowX: 'auto' }}>
-                <table
-                  style={{
-                    width: '100%',
-                    minWidth: '900px',
-                    tableLayout: 'auto',
-                    borderCollapse: 'separate',
-                    borderSpacing: 0,
-                    background: '#fff',
-                    borderRadius: '10px',
-                    overflow: 'hidden',
-                    boxShadow: '0 2px 12px rgba(108, 4, 40, 0.08)'
-                  }}
-                >
+              <div className="table-container" style={{ width: '100%', overflowX: 'auto' }}>
+                <table className="task-table clean-table">
                 <thead>
-                  <tr style={{ background: 'linear-gradient(90deg, #6c0428 0%, #a80a3c 100%)' }}>
-                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 90, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Name</th>
-                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 70, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>ID</th>
-                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 120, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>P.Name</th>
-                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 90, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Date</th>
-                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 80, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Type</th>
-                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 80, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Status</th>
-                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 80, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Category</th>
-                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 60, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Points</th>
-                    <th style={{ color: '#fff', fontWeight: 600, padding: '0.6em 0.3em', minWidth: 160, width: 180, paddingLeft: '0.5px', paddingRight: '0.5px', paddingTop: '0.5px', paddingBottom: '0.5px' }}>Edit</th>
+                  <tr>
+                    <th>Name</th>
+                    <th>ID</th>
+                    <th>P.Name</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Category</th>
+                    <th>Points</th>
+                    <th>Edit</th>
                   </tr>
                 </thead>
                 <tbody>
