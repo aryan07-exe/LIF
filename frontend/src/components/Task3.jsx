@@ -58,13 +58,14 @@ const Taskname = () => {
 
   const fetchProjects = async () => {
     setIsLoadingProjects(true);
+    
     try {
       const token = localStorage.getItem('token');
       if (!token) {
         throw new Error('No authentication token found');
       }
       // Fetch project names from new backend API
-      const response = await axios.get('http://localhost:5000/api/projectname/names', {
+      const response = await axios.get('https://lif.onrender.com/api/projectname/names', {
         headers: {
           'Authorization': token
         }
