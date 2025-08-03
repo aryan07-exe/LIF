@@ -68,6 +68,8 @@ const OptionManager = () => {
   };
 
   return (
+    <>
+    <Navbar/>
     <div style={{ maxWidth: 600, margin: '2rem auto', background: '#fff', borderRadius: 10, boxShadow: '0 2px 12px #a80a3c22', padding: 24 }}>
       <h2 style={{ color: '#a80a3c', marginBottom: 16 }}>Project Type & Status Manager</h2>
       <div style={{ marginBottom: 32 }}>
@@ -120,7 +122,7 @@ const OptionManager = () => {
       </div>
       {msg && <div style={{ marginTop: 16, color: '#218c5a' }}>{msg}</div>}
     </div>
-  );
+</>  );
 };
 
 export default OptionManager;

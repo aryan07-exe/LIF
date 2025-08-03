@@ -30,15 +30,13 @@ const Taskname = () => {
   const [projectTypes, setProjectTypes] = useState([]);
   const [projectStatuses, setProjectStatuses] = useState([]);
 
+  // Fetch project type and status options from Option model (not Task model)
   useEffect(() => {
     axios.get('https://lif.onrender.com/api/task/projecttypes')
       .then(res => setProjectTypes(res.data.projectTypes || []))
       .catch(() => setProjectTypes([]));
     axios.get('https://lif.onrender.com/api/task/projectstatuses')
-      .then(res => {
-        console.log('Fetched projectStatuses:', res.data.projectStatuses);
-        setProjectStatuses(res.data.projectStatuses || []);
-      })
+      .then(res => setProjectStatuses(res.data.projectStatuses || []))
       .catch(() => setProjectStatuses([]));
   }, []);
 
