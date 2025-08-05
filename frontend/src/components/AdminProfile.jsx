@@ -91,20 +91,20 @@ const AdminProfile = () => {
   // Admin routes that the user can navigate to
   const adminActions = [
     { 
-      title: "Manage Users", 
+      title: "Users", 
       icon: <Users size={24} />, 
       description: "Add, edit or remove users from the system", 
       route: "/view-users-full"
     },
     { 
-      title: "Manage Daily Reports", 
+      title: "Daily Reports", 
       icon: <BarChart3 size={24} />, 
       description: "Access analytics and performance reports", 
       route: "/edit-test" 
     },
  
     { 
-      title: "Manage Categories and Status", 
+      title: "Categories and Status", 
       icon: <BarChart3 size={24} />, 
       description: "Access analytics and performance reports", 
       route: "/manage-options" 
@@ -119,7 +119,7 @@ const AdminProfile = () => {
   
 
     { 
-      title: "Manage Onsite Reports", 
+      title: "Onsite Reports", 
       icon: <FileText size={24} />, 
       description: "Manage onsite forms and submissions", 
       route: "/onsite-admin" 

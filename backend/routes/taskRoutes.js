@@ -102,6 +102,42 @@ router.put('/projectstatuses/:oldValue', async (req, res) => {
 	res.json({ projectStatuses: doc.values });
 });
 
+// PUT update pointsConfig for a project type and update all tasks in DB
+router.put('/points-config/:type', async (req, res) => {
+  try {
+    const pointsConfig = require('../config/pointsConfig');
+    const { points } = req.body;
+    const type = decodeURIComponent(req.params.type);
+    if (typeof points !== 'number') {
+      return res.status(400).json({ error: 'Points must be a number.' });
+    }
+    // Update in-memory config
+    pointsConfig.projectType[type] = points;
+    // Write back to file
+    const fs = require('fs');
+    fs.writeFileSync(
+      require.resolve('../config/pointsConfig.js'),
+      'const pointsConfig = ' + JSON.stringify(pointsConfig, null, 4) + '\n\nmodule.exports = pointsConfig;\n'
+    );
+    // Update all tasks in DB with this project type
+    const Task = require('../models/Task');
+    await Task.updateMany({ projecttype: type }, { $set: { points } });
+    res.json({ success: true, pointsConfig: pointsConfig.projectType });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update points config and DB.' });
+  }
+});
+
+// GET points config for all project types
+router.get('/points-config', async (req, res) => {
+  try {
+    const pointsConfig = require('../config/pointsConfig');
+    res.json({ points: pointsConfig.projectType });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch points config.' });
+  }
+});
+
 // GET all task entries
 router.get('/all', async (req, res) => {
   try {
