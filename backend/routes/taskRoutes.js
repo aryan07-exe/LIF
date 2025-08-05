@@ -106,7 +106,7 @@ router.put('/projectstatuses/:oldValue', async (req, res) => {
 router.options('/points-config/:type', (req, res) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.header('Access-Control-Allow-Methods', 'PUT, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.sendStatus(200);
 });
 
@@ -114,7 +114,7 @@ router.options('/points-config/:type', (req, res) => {
 router.put('/points-config/:type', async (req, res) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.header('Access-Control-Allow-Methods', 'PUT, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
   try {
     const pointsConfig = require('../config/pointsConfig');
     const { points } = req.body;
@@ -141,6 +141,7 @@ router.put('/points-config/:type', async (req, res) => {
 
 // GET points config for all project types
 router.get('/points-config', async (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   try {
     const pointsConfig = require('../config/pointsConfig');
     res.json({ points: pointsConfig.projectType });
