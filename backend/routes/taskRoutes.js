@@ -104,17 +104,11 @@ router.put('/projectstatuses/:oldValue', async (req, res) => {
 
 // CORS preflight for points-config update
 router.options('/points-config/:type', (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.header('Access-Control-Allow-Methods', 'PUT, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.sendStatus(200);
 });
 
 // PUT update pointsConfig for a project type and update all tasks in DB
 router.put('/points-config/:type', async (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
-  res.header('Access-Control-Allow-Methods', 'PUT, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
   try {
     const { points } = req.body;
     const type = decodeURIComponent(req.params.type);
@@ -139,7 +133,6 @@ router.put('/points-config/:type', async (req, res) => {
 
 // GET points config for all project types
 router.get('/points-config', async (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   try {
     const doc = await Option.findOne({ key: 'pointsConfig' });
     res.json({ points: doc ? doc.values : {} });
