@@ -116,24 +116,22 @@ router.put('/points-config/:type', async (req, res) => {
   res.header('Access-Control-Allow-Methods', 'PUT, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   try {
-    const pointsConfig = require('../config/pointsConfig');
     const { points } = req.body;
     const type = decodeURIComponent(req.params.type);
     if (typeof points !== 'number') {
       return res.status(400).json({ error: 'Points must be a number.' });
     }
-    // Update in-memory config
-    pointsConfig.projectType[type] = points;
-    // Write back to file
-    const fs = require('fs');
-    fs.writeFileSync(
-      require.resolve('../config/pointsConfig.js'),
-      'const pointsConfig = ' + JSON.stringify(pointsConfig, null, 4) + '\n\nmodule.exports = pointsConfig;\n'
-    );
+    // Update Option collection
+    let doc = await Option.findOne({ key: 'pointsConfig' });
+    if (!doc) {
+      doc = await Option.create({ key: 'pointsConfig', values: {} });
+    }
+    doc.values[type] = points;
+    await doc.save();
     // Update all tasks in DB with this project type
     const Task = require('../models/Task');
     await Task.updateMany({ projecttype: type }, { $set: { points } });
-    res.json({ success: true, pointsConfig: pointsConfig.projectType });
+    res.json({ success: true, pointsConfig: doc.values });
   } catch (err) {
     res.status(500).json({ error: 'Failed to update points config and DB.' });
   }
@@ -143,8 +141,8 @@ router.put('/points-config/:type', async (req, res) => {
 router.get('/points-config', async (req, res) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   try {
-    const pointsConfig = require('../config/pointsConfig');
-    res.json({ points: pointsConfig.projectType });
+    const doc = await Option.findOne({ key: 'pointsConfig' });
+    res.json({ points: doc ? doc.values : {} });
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch points config.' });
   }
