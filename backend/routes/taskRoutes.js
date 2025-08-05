@@ -102,6 +102,14 @@ router.put('/projectstatuses/:oldValue', async (req, res) => {
 	res.json({ projectStatuses: doc.values });
 });
 
+// CORS preflight for points-config update
+router.options('/points-config/:type', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'PUT, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.sendStatus(200);
+});
+
 // PUT update pointsConfig for a project type and update all tasks in DB
 router.put('/points-config/:type', async (req, res) => {
   try {
