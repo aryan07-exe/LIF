@@ -112,6 +112,9 @@ router.options('/points-config/:type', (req, res) => {
 
 // PUT update pointsConfig for a project type and update all tasks in DB
 router.put('/points-config/:type', async (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'PUT, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   try {
     const pointsConfig = require('../config/pointsConfig');
     const { points } = req.body;
