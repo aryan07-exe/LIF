@@ -47,8 +47,11 @@ router.get('/all', async (req, res) => {
 router.put('/update/:id', async (req, res) => {
   try {
     let updateData = { ...req.body };
-    // Only assign points if status is 'complete'
-    if (updateData.projectstatus && updateData.projectstatus.toLowerCase() === 'complete') {
+    // Only assign points from schema if not provided in request
+    if (
+      updateData.projectstatus && updateData.projectstatus.toLowerCase() === 'complete' &&
+      (updateData.points === undefined || updateData.points === '' || isNaN(Number(updateData.points)))
+    ) {
       const ProjectTypePoints = require('../models/ProjectTypePoints');
       const entry = await ProjectTypePoints.findOne({ type: updateData.projecttype });
       updateData.points = entry ? entry.points : 0;
