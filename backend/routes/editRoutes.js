@@ -46,9 +46,16 @@ router.get('/all', async (req, res) => {
 // PUT update a task by ID
 router.put('/update/:id', async (req, res) => {
   try {
+    let updateData = { ...req.body };
+    // Only assign points if status is 'complete'
+    if (updateData.projectstatus && updateData.projectstatus.toLowerCase() === 'complete') {
+      const ProjectTypePoints = require('../models/ProjectTypePoints');
+      const entry = await ProjectTypePoints.findOne({ type: updateData.projecttype });
+      updateData.points = entry ? entry.points : 0;
+    }
     const updatedTask = await Task.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true }
     );
     if (!updatedTask) {
