@@ -110,8 +110,12 @@ const PostProductionMonthlyView = () => {
   // Edit handlers
   const handleEditClick = (idx) => {
     setEditIdx(idx);
-    // Ensure notes field is present for editing
-    setEditForm({ ...tasks[idx], notes: tasks[idx].notes || tasks[idx].note || '' });
+    // Always show the stored points from DB for editing
+    setEditForm({
+      ...tasks[idx],
+      points: tasks[idx].points,
+      notes: tasks[idx].notes || tasks[idx].note || ''
+    });
   };
 
   const handleEditChange = (e) => {
@@ -122,11 +126,17 @@ const PostProductionMonthlyView = () => {
   const handleEditSave = async (id) => {
     try {
       let updatedPoints = editForm.points;
-      // Only assign points if status is 'complete'
-      if (editForm.projectstatus && editForm.projectstatus.toLowerCase() === 'complete') {
-        // Fetch points for the project type/category from backend
+      // If status is 'complete' and user did NOT manually change points, fetch from backend
+      if (
+        editForm.projectstatus && editForm.projectstatus.toLowerCase() === 'complete' &&
+        (editForm.points === undefined || editForm.points === '' || isNaN(Number(editForm.points)))
+      ) {
         const pointsRes = await axios.get(`https://lif.onrender.com/api/points/${encodeURIComponent(editForm.projecttype)}`);
         updatedPoints = pointsRes.data.points ?? 0;
+      }
+      // If user manually entered a points value, use that
+      if (editForm.points !== undefined && editForm.points !== '' && !isNaN(Number(editForm.points))) {
+        updatedPoints = Number(editForm.points);
       }
       const payload = { ...editForm, points: updatedPoints };
       if (editForm.notes !== undefined) {
