@@ -37,9 +37,7 @@ router.put('/:type', async (req, res) => {
       { $set: { points } },
       { new: true, upsert: true }
     );
-    // Update all tasks of this type to use the new points value
-    const Task = require('../models/Task');
-    await Task.updateMany({ projecttype: type }, { $set: { points } });
+  // Do NOT update existing tasks; only new or edited tasks get new points
     res.json({ success: true, points: entry.points });
   } catch (err) {
     res.status(500).json({ error: 'Failed to update points.' });

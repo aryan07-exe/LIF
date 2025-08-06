@@ -126,17 +126,11 @@ const PostProductionMonthlyView = () => {
   const handleEditSave = async (id) => {
     try {
       let updatedPoints = editForm.points;
-      // If status is 'complete' and user did NOT manually change points, fetch from backend
-      if (
-        editForm.projectstatus && editForm.projectstatus.toLowerCase() === 'complete' &&
-        (editForm.points === undefined || editForm.points === '' || isNaN(Number(editForm.points)))
-      ) {
-        const pointsRes = await axios.get(`https://lif.onrender.com/api/points/${encodeURIComponent(editForm.projecttype)}`);
-        updatedPoints = pointsRes.data.points ?? 0;
-      }
-      // If user manually entered a points value, use that
+      // Always use the points value entered by the user, or the stored value
       if (editForm.points !== undefined && editForm.points !== '' && !isNaN(Number(editForm.points))) {
         updatedPoints = Number(editForm.points);
+      } else {
+        updatedPoints = tasks.find(t => t._id === id)?.points ?? 0;
       }
       const payload = { ...editForm, points: updatedPoints };
       if (editForm.notes !== undefined) {
