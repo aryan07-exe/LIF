@@ -12,9 +12,13 @@ const OptionManager = () => {
   const [editTypeValue, setEditTypeValue] = useState('');
   const [editStatusValue, setEditStatusValue] = useState('');
   const [msg, setMsg] = useState('');
+  const [pointsList, setPointsList] = useState({});
+  const [editPointsIdx, setEditPointsIdx] = useState(null);
+  const [editPointsValue, setEditPointsValue] = useState('');
 
   useEffect(() => {
     fetchOptions();
+    fetchPointsList();
   }, []);
 
   const fetchOptions = async () => {
@@ -22,6 +26,14 @@ const OptionManager = () => {
     setProjectTypes(types.data.projectTypes || []);
     const statuses = await axios.get('https://lif.onrender.com/api/task/projectstatuses');
     setProjectStatuses(statuses.data.projectStatuses || []);
+  };
+
+  const fetchPointsList = async () => {
+    const res = await axios.get('http://localhost:5000/api/points');
+    // Convert array to object: { type: points }
+    const obj = {};
+    (res.data.points || []).forEach(pt => { obj[pt.type] = pt.points; });
+    setPointsList(obj);
   };
 
   // Project Type handlers
@@ -44,6 +56,22 @@ const OptionManager = () => {
     setEditTypeIdx(null);
     setEditTypeValue('');
     fetchOptions();
+  };
+
+  const startEditPoints = (idx, type) => {
+    setEditPointsIdx(idx);
+    setEditPointsValue(pointsList[type] ?? '');
+  };
+  const saveEditPoints = async (type) => {
+    try {
+      await axios.put(`http://localhost:5000/api/points/${encodeURIComponent(type)}`, { points: Number(editPointsValue) });
+      setMsg('Points updated for this project type!');
+      setEditPointsIdx(null);
+      setEditPointsValue('');
+      fetchPointsList();
+    } catch (err) {
+      setMsg('Failed to update points.');
+    }
   };
 
   // Project Status handlers
@@ -79,15 +107,17 @@ const OptionManager = () => {
           {projectTypes.map((type, idx) => (
             <li key={type} style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
               <span style={{ flex: 1 }}>{type}</span>
-              {editTypeIdx === idx ? (
+              <span style={{ marginRight: 8, color: '#218c5a', fontWeight: 500 }}>Points: {pointsList[type] ?? 0}</span>
+              {editPointsIdx === idx ? (
                 <>
-                  <input value={editTypeValue} onChange={e => setEditTypeValue(e.target.value)} style={{ marginRight: 8 }} />
-                  <button onClick={() => saveEditType(type)} style={{ marginRight: 4 }}>Save</button>
-                  <button onClick={() => setEditTypeIdx(null)}>Cancel</button>
+                  <input type="number" value={editPointsValue} onChange={e => setEditPointsValue(e.target.value)} style={{ width: 60, marginRight: 4 }} />
+                  <button onClick={() => saveEditPoints(type)} style={{ marginRight: 4 }}>Save Points</button>
+                  <button onClick={() => setEditPointsIdx(null)}>Cancel</button>
                 </>
               ) : (
-                <button onClick={() => startEditType(idx, type)} style={{ marginRight: 4 }}>Edit</button>
+                <button onClick={() => startEditPoints(idx, type)} style={{ marginRight: 4 }}>Edit Points</button>
               )}
+              <button onClick={() => startEditType(idx, type)} style={{ marginRight: 4 }}>Edit</button>
               <button onClick={() => deleteType(type)}>Delete</button>
             </li>
           ))}

@@ -66,6 +66,9 @@ app.use('/api/projectdetails', projectDetailsRouter);
 const projectnameRoutes = require('./routes/projectname');
 app.use('/api/projectname', projectnameRoutes);
 
+const pointsRoutes = require('./routes/pointsRoutes');
+app.use('/api/points', pointsRoutes);
+
 mongoose.connect(process.env.Mongo_URL)
   .then(() => {
     console.log("✅ Connected to MongoDB");
@@ -77,8 +80,11 @@ mongoose.connect(process.env.Mongo_URL)
 
   
 // Calculate points based on project type only
-const calculatePoints = (projectType) => {
-    return pointsConfig.projectType[projectType] || 0;
+// Calculate points based on project type from DB
+const ProjectTypePoints = require('./models/ProjectTypePoints');
+const calculatePoints = async (projectType) => {
+  const entry = await ProjectTypePoints.findOne({ type: projectType });
+  return entry ? entry.points : 0;
 };
 
 app.post("/task",async(req,res)=>{
@@ -96,25 +102,24 @@ app.post("/task",async(req,res)=>{
             return res.status(400).json({ message: "Invalid date format. Please use YYYY-MM-DD format" });
         }
 
-        // Only assign points if projectstatus is 'Complete'
-        let points = 0;
-        if (projectstatus && projectstatus.toLowerCase() === 'complete') {
-            points = calculatePoints(projecttype);
-        }
-        const task = new Task({
-            eid,
-            ename,
-            date: date, // Store date as string
-            projectname,
-            projecttype,
-            projectstatus,
-            category,
-            points,
-            notes: req.body.notes || ''
-        });
-        
-        await task.save();
-        res.status(201).json({message:"Task created successfully"});
+    // Only assign points if projectstatus is 'Complete'
+    let points = 0;
+    if (projectstatus && projectstatus.toLowerCase() === 'complete') {
+      points = await calculatePoints(projecttype);
+    }
+    const task = new Task({
+      eid,
+      ename,
+      date: date, // Store date as string
+      projectname,
+      projecttype,
+      projectstatus,
+      category,
+      points,
+      notes: req.body.notes || ''
+    });
+    await task.save();
+    res.status(201).json({message:"Task created successfully"});
     }catch(error){
         console.error('Task creation error:', error);
         res.status(500).json({message: "Error creating task", error: error.message});

@@ -121,12 +121,18 @@ const PostProductionMonthlyView = () => {
 
   const handleEditSave = async (id) => {
     try {
-      const token = localStorage.getItem('token');
-      // Use notes field for payload
-      const payload = { ...editForm };
+      let updatedPoints = editForm.points;
+      // Only assign points if status is 'complete'
+      if (editForm.projectstatus && editForm.projectstatus.toLowerCase() === 'complete') {
+        // Fetch points for the project type/category from backend
+        const pointsRes = await axios.get(`https://lif.onrender.com/api/points/${encodeURIComponent(editForm.projecttype)}`);
+        updatedPoints = pointsRes.data.points ?? 0;
+      }
+      const payload = { ...editForm, points: updatedPoints };
       if (editForm.notes !== undefined) {
         payload.note = editForm.notes;
       }
+      const token = localStorage.getItem('token');
       const res = await axios.put(`https://lif.onrender.com/api/edit/update/${id}`, payload, {
         headers: { Authorization: token }
       });
