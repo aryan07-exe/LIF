@@ -46,9 +46,14 @@ const projectRoutes = require('./routes/projects')
 app.use(express.json());
 
   
+
 // Import users route
 const usersRouter = require('./routes/users');
 app.use('/api/users', usersRouter);
+
+// Mount employee profile route
+const employeeProfileRouter = require('./routes/employeeProfile');
+app.use('/api/employee', employeeProfileRouter);
 
 const userManagementRoutes = require('./routes/userManagement');
 app.use('/api/user-management', userManagementRoutes);

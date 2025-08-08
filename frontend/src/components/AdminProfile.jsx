@@ -124,6 +124,14 @@ const AdminProfile = () => {
       description: "Manage onsite forms and submissions", 
       route: "/onsite-admin" 
     },
+
+{ 
+      title: "Productivity Page", 
+      icon: <FileText size={24} />, 
+      description: "Manage productivity forms and submissions", 
+      route: "/see-user" 
+    },
+
   ];
 
   return (

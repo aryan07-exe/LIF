@@ -36,7 +36,7 @@ import Maintain from "./components/Maintainpage";
 import PrivateRoute from "./components/PrivateRoute";
 import Removeuser from "./components/Removeuser";
 import MaintainUser from "./components/Maintainuser";
-
+import Seeuser from "./components/EmployeeProfilePage";
 
 const App = () => {
   return (
@@ -73,7 +73,7 @@ const App = () => {
   <Route path="/edit-onsite" element={<AdminRoute><EditOnsite /></AdminRoute>} />
         <Route path="/remove-user" element={<AdminRoute><Removeuser /></AdminRoute>} />
         <Route path="/maintain-user" element={<AdminRoute><MaintainUser /></AdminRoute>} />
-
+ <Route path="/see-user" element={<AdminRoute><Seeuser /></AdminRoute>} />
   <Route path="/manage-options" element={<AdminRoute><OptionManager /></AdminRoute>} />
   <Route path="/combined-admin" element={<AdminRoute><CombinedAdminPanel /></AdminRoute>} />
    </Routes>
