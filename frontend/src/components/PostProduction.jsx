@@ -102,6 +102,16 @@ const PostProductionMonthlyView = () => {
   const [projectTypes, setProjectTypes] = useState([]);
   const [projectStatuses, setProjectStatuses] = useState([]);
   const [totalPoints, setTotalPoints] = useState(0);
+  // Calculate total points for visible tasks with status 'complete'
+  useEffect(() => {
+    const sum = tasks.reduce((acc, task) => {
+      if (task.projectstatus && task.projectstatus.toLowerCase() === 'complete') {
+        return acc + (Number(task.points) || 0);
+      }
+      return acc;
+    }, 0);
+    setTotalPoints(sum);
+  }, [tasks]);
   const [editIdx, setEditIdx] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
@@ -190,7 +200,6 @@ const PostProductionMonthlyView = () => {
         fetchedTasks = fetchedTasks.filter(task => task.projecttype === filters.category);
       }
   setTasks(fetchedTasks);
-  setTotalPoints(response.data.totalPoints || 0);
   setCategories(response.data.categories || []);
     } catch (error) {
       console.error('Error fetching tasks:', error);
