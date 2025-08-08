@@ -506,7 +506,7 @@ const PostProductionMonthlyView = () => {
                           <td style={{padding:'0.5px'}}>{task.projecttype}</td>
                           <td style={{padding:'0.5px'}}>{task.projectstatus}</td>
                           <td style={{padding:'0.5px'}}><span style={{ background: '#fbeaf4', color: '#6c0428', borderRadius: '4px', padding: '0.1rem 0.4rem', fontSize: '0.9em' }}>{task.category}</span></td>
-                          <td style={{padding:'0.5px'}}><span style={{ background: '#e5e7eb', borderRadius: '4px', padding: '0.1rem 0.4rem', fontWeight: 600, fontSize: '0.9em' }}>{task.points || 0}</span></td>
+                          <td style={{padding:'0.5px'}}><span style={{ background: '#e5e7eb', borderRadius: '4px', padding: '0.1rem 0.4rem', fontWeight: 600, fontSize: '0.9em' }}>{task.projectstatus && task.projectstatus.toLowerCase() === 'complete' ? (task.points || 0) : 0}</span></td>
                           <td style={{ minWidth: 160, width: 180, padding:'0.5px' }}>
                             <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start', alignItems: 'center' }}>
                               <button className="edit" style={{ background: '#a80a3c', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.2rem 0.7rem' }} onClick={(e) => { e.stopPropagation(); handleEditClick(idx); }}>Edit</button>
@@ -540,7 +540,7 @@ const PostProductionMonthlyView = () => {
                       <div><strong>Project Type:</strong> {modalTask.projecttype}</div>
                       <div><strong>Project Status:</strong> {modalTask.projectstatus}</div>
                       <div><strong>Category:</strong> {modalTask.category}</div>
-                      <div><strong>Points:</strong> {modalTask.points || 0}</div>
+                      <div><strong>Points:</strong> {modalTask.projectstatus && modalTask.projectstatus.toLowerCase() === 'complete' ? (modalTask.points || 0) : 0}</div>
                       <div><strong>Notes:</strong> {modalTask.notes || modalTask.note || ''}</div>
                     </div>
                     <button className="close-modal-btn" onClick={handleModalClose}>Close</button>
