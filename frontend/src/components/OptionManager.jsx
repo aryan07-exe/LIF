@@ -106,19 +106,30 @@ const OptionManager = () => {
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {projectTypes.map((type, idx) => (
             <li key={type} style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
-              <span style={{ flex: 1 }}>{type}</span>
-              <span style={{ marginRight: 8, color: '#218c5a', fontWeight: 500 }}>Points: {pointsList[type] ?? 0}</span>
-              {editPointsIdx === idx ? (
+              {editTypeIdx === idx ? (
                 <>
-                  <input type="number" value={editPointsValue} onChange={e => setEditPointsValue(e.target.value)} style={{ width: 60, marginRight: 4 }} />
-                  <button onClick={() => saveEditPoints(type)} style={{ marginRight: 4 }}>Save Points</button>
-                  <button onClick={() => setEditPointsIdx(null)}>Cancel</button>
+                  <input value={editTypeValue} onChange={e => setEditTypeValue(e.target.value)} style={{ flex: 1, marginRight: 8 }} />
+                  <span style={{ marginRight: 8, color: '#218c5a', fontWeight: 500 }}>Points: {pointsList[type] ?? 0}</span>
+                  <button onClick={() => saveEditType(type)} style={{ marginRight: 4 }}>Save</button>
+                  <button onClick={() => { setEditTypeIdx(null); setEditTypeValue(''); }}>Cancel</button>
                 </>
               ) : (
-                <button onClick={() => startEditPoints(idx, type)} style={{ marginRight: 4 }}>Edit Points</button>
+                <>
+                  <span style={{ flex: 1 }}>{type}</span>
+                  <span style={{ marginRight: 8, color: '#218c5a', fontWeight: 500 }}>Points: {pointsList[type] ?? 0}</span>
+                  {editPointsIdx === idx ? (
+                    <>
+                      <input type="number" value={editPointsValue} onChange={e => setEditPointsValue(e.target.value)} style={{ width: 60, marginRight: 4 }} />
+                      <button onClick={() => saveEditPoints(type)} style={{ marginRight: 4 }}>Save Points</button>
+                      <button onClick={() => setEditPointsIdx(null)}>Cancel</button>
+                    </>
+                  ) : (
+                    <button onClick={() => startEditPoints(idx, type)} style={{ marginRight: 4 }}>Edit Points</button>
+                  )}
+                  <button onClick={() => startEditType(idx, type)} style={{ marginRight: 4 }}>Edit</button>
+                  <button onClick={() => deleteType(type)}>Delete</button>
+                </>
               )}
-              <button onClick={() => startEditType(idx, type)} style={{ marginRight: 4 }}>Edit</button>
-              <button onClick={() => deleteType(type)}>Delete</button>
             </li>
           ))}
         </ul>
