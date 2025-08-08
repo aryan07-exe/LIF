@@ -29,7 +29,7 @@ const OptionManager = () => {
   };
 
   const fetchPointsList = async () => {
-    const res = await axios.get('http://localhost:5000/api/points');
+    const res = await axios.get('https://lif.onrender.com/api/points');
     // Convert array to object: { type: points }
     const obj = {};
     (res.data.points || []).forEach(pt => { obj[pt.type] = pt.points; });
@@ -64,7 +64,7 @@ const OptionManager = () => {
   };
   const saveEditPoints = async (type) => {
     try {
-      await axios.put(`http://localhost:5000/api/points/${encodeURIComponent(type)}`, { points: Number(editPointsValue) });
+      await axios.put(`https://lif.onrender.com/api/points/${encodeURIComponent(type)}`, { points: Number(editPointsValue) });
       setMsg('Points updated for this project type!');
       setEditPointsIdx(null);
       setEditPointsValue('');
