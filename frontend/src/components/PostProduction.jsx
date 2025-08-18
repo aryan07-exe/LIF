@@ -496,7 +496,20 @@ const PostProductionMonthlyView = () => {
                           <td style={{padding:'0.5px'}}><input name="projectname" value={editForm.projectname} onChange={handleEditChange} style={{ width: '100%' }} /></td>
                           <td style={{padding:'0.5px'}}><input name="date" type="date" value={editForm.date ? editForm.date.slice(0,10) : ''} onChange={handleEditChange} style={{ width: '100%' }} /></td>
                           <td style={{padding:'0.5px'}}><input name="projecttype" value={editForm.projecttype} onChange={handleEditChange} style={{ width: '100%' }} /></td>
-                          <td style={{padding:'0.5px'}}><input name="projectstatus" value={editForm.projectstatus} onChange={handleEditChange} style={{ width: '100%' }} /></td>
+                          <td style={{padding:'0.5px'}}>
+                            <select
+                              name="projectstatus"
+                              value={editForm.projectstatus || ''}
+                              onChange={handleEditChange}
+                              className="filter-select"
+                              style={{ width: '100%' }}
+                            >
+                              <option value="">Select Status</option>
+                              {projectStatuses.map((status) => (
+                                <option key={status} value={status}>{status}</option>
+                              ))}
+                            </select>
+                          </td>
                           <td style={{padding:'0.5px'}}><input name="category" value={editForm.category} onChange={handleEditChange} style={{ width: '100%' }} /></td>
                           <td style={{padding:'0.5px'}}><input name="points" value={editForm.points} onChange={handleEditChange} style={{ width: '100%' }} /></td>
                           <td style={{ minWidth: 160, width: 180, padding:'0.5px' }}>

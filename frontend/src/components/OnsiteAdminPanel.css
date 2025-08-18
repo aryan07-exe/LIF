@@ -124,17 +124,17 @@
   }
 
   .data-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    font-size: 0.85rem;
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(108, 4, 40, 0.08);
-    table-layout: fixed;
-    word-break: break-word;
-  }
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.7rem;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(108, 4, 40, 0.08);
+      table-layout: fixed;
+      word-break: break-word;
+    }
 
   .data-table th {
     background: linear-gradient(90deg, #6c0428 0%, #a80a3c 100%);
@@ -144,7 +144,7 @@
     padding: 0.5rem 0.3rem;
     border-bottom: 2px solid rgba(108, 4, 40, 0.1);
     height: 36px;
-    font-size: 1em;
+    font-size: 0.9em;
     white-space: nowrap;
     letter-spacing: 0.02em;
   }
@@ -154,7 +154,7 @@
     border-bottom: 1px solid #eee;
     vertical-align: middle;
     height: 32px;
-    font-size: 0.98em;
+    font-size: 0.85em;
     overflow-wrap: break-word;
     max-width: 120px;
     background: #fff;
@@ -267,10 +267,10 @@
   @media (max-width: 768px) {
     .data-table th, .data-table td {
       padding: 0.25rem 0.12rem;
-      font-size: 0.92em;
+      font-size: 0.8em;
     }
     .data-table {
-      font-size: 0.78rem;
+      font-size: 0.6rem;
     }
   }
 
@@ -501,12 +501,13 @@
 
   @media (max-width: 480px) {
     .data-table {
-      font-size: 0.6rem;
+      font-size: 0.5rem;
     }
 
     .data-table th,
     .data-table td {
-      padding: 0.3rem;
+      padding: 0.18rem;
+      font-size: 0.7em;
     }
     .data-table td button {
       display: block;
