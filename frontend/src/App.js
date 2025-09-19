@@ -37,7 +37,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Removeuser from "./components/Removeuser";
 import MaintainUser from "./components/Maintainuser";
 import Seeuser from "./components/EmployeeProfilePage";
-
+import MonthlyTask from "./components/AssignMonthlyTask";
 const App = () => {
   return (
     <Router>
@@ -76,6 +76,7 @@ const App = () => {
  <Route path="/see-user" element={<AdminRoute><Seeuser /></AdminRoute>} />
   <Route path="/manage-options" element={<AdminRoute><OptionManager /></AdminRoute>} />
   <Route path="/combined-admin" element={<AdminRoute><CombinedAdminPanel /></AdminRoute>} />
+  <Route path="/assigntasks" element={<AdminRoute><MonthlyTask /></AdminRoute>} />
    </Routes>
     </Router>
   );

@@ -75,6 +75,10 @@ app.use('/api/projectname', projectnameRoutes);
 const pointsRoutes = require('./routes/pointsRoutes');
 app.use('/api/points', pointsRoutes);
 
+// Monthly task routes
+const monthlyTaskRoutes = require('./routes/monthlyTaskRoutes');
+app.use('/api/monthly-task', monthlyTaskRoutes);
+
 mongoose.connect(process.env.Mongo_URL)
   .then(() => {
     console.log("✅ Connected to MongoDB");
