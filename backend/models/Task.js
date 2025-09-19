@@ -32,6 +32,12 @@ projectstatus:{
     type:String,
     required:true 
 },
+// Approval state for admin review
+approval: {
+    type: String,
+    enum: ['pending', 'approved'],
+    default: 'pending'
+},
 // Category is now a free-form string provided by user input
 category:{
     type:String,

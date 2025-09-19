@@ -9,7 +9,8 @@ app.use(express.json());
 const allowedOrigins = [
   'http://localhost:3000',  // Local development
   'https://liffrontend.vercel.app',  // Your deployed frontend URL
-  'https://lifclone.onrender.com'  // Another possible frontend URL
+  'https://lifclone.onrender.com',  // Another possible frontend URL
+  'https://lif.onrender.com' // Production frontend domain
 ];
 
 app.use(cors({
@@ -119,6 +120,8 @@ app.post("/task",async(req,res)=>{
       projectname,
       projecttype,
       projectstatus,
+      // Approval flag defaults to pending for review
+      approval: 'pending',
       category,
       points,
       notes: req.body.notes || ''

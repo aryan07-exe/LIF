@@ -42,10 +42,23 @@ router.get('/all', async (req, res) => {
   }
 });
 
+// GET single task by ID (debug / verification)
+router.get('/:id', async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) return res.status(404).json({ error: 'Task not found' });
+    res.json(task);
+  } catch (err) {
+    console.error('Error fetching task by id:', req.params.id, err);
+    res.status(500).json({ error: 'Failed to fetch task' });
+  }
+});
+
 
 // PUT update a task by ID
 router.put('/update/:id', async (req, res) => {
   try {
+    console.log(`PUT /api/edit/update/${req.params.id} payload:`, req.body);
     let updateData = { ...req.body };
     // Only assign points from schema if not provided in request
     if (
@@ -59,14 +72,37 @@ router.put('/update/:id', async (req, res) => {
     const updatedTask = await Task.findByIdAndUpdate(
       req.params.id,
       updateData,
-      { new: true }
+      { new: true, runValidators: true }
     );
     if (!updatedTask) {
       return res.status(404).json({ error: 'Task not found.' });
     }
     res.json(updatedTask);
   } catch (err) {
+    console.error('Error in PUT /update/:id, payload:', req.body, err);
     res.status(500).json({ error: 'Failed to update task.' });
+  }
+});
+
+// PATCH update approval only (admin review)
+router.patch('/approval/:id', async (req, res) => {
+  try {
+    console.log(`PATCH /api/edit/approval/${req.params.id} payload:`, req.body);
+    const { approval } = req.body;
+    if (!approval || !['pending', 'approved'].includes(approval)) {
+      return res.status(400).json({ error: 'Invalid approval value' });
+    }
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      return res.status(404).json({ error: 'Task not found.' });
+    }
+    task.approval = approval;
+    await task.save();
+    console.log(`Approval updated for ${req.params.id}:`, approval);
+    res.json(task);
+  } catch (err) {
+    console.error('Error updating approval:', { body: req.body, err });
+    res.status(500).json({ error: 'Failed to update approval.' });
   }
 });
 

@@ -32,9 +32,10 @@ const exportToExcel = (tasks, dateRange) => {
       'Project Name': task.projectname || 'N/A',
       'Project Type': task.projecttype || 'N/A',
       'Project Status': task.projectstatus || 'N/A',
+      'Approval': task.approval || 'pending',
       'Category': task.category || 'N/A',
       'Points': task.points || 0,
-      'Notes': task.note || 'N/A'
+  'Notes': task.notes || 'N/A'
     }));
 
     if (formattedTasks.length === 0) {
@@ -45,19 +46,19 @@ const exportToExcel = (tasks, dateRange) => {
     const worksheet = XLSX.utils.json_to_sheet(formattedTasks);
     
     // Set column widths
-    const columnWidths = {
-      'A': 15, // Employee ID
-      'B': 20, // Employee Name
-      'C': 12, // Date
-      'D': 25, // Project Name
-      'E': 15, // Project Type
-      'F': 15, // Project Status
-      'G': 20, // Category
-      'H': 10, // Points
-      'I': 30  // Notes
-    };
-    
-    worksheet['!cols'] = Object.values(columnWidths).map(width => ({ wch: width }));
+    // Provide column widths array matching exported columns
+    worksheet['!cols'] = [
+      { wch: 15 }, // Employee ID
+      { wch: 20 }, // Employee Name
+      { wch: 12 }, // Date
+      { wch: 25 }, // Project Name
+      { wch: 15 }, // Project Type
+      { wch: 15 }, // Project Status
+      { wch: 12 }, // Approval
+      { wch: 20 }, // Category
+      { wch: 10 }, // Points
+      { wch: 30 }  // Notes
+    ];
 
     // Create workbook
     const workbook = XLSX.utils.book_new();
@@ -116,6 +117,7 @@ const PostProductionMonthlyView = () => {
   const [editForm, setEditForm] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTask, setModalTask] = useState(null);
+  const [savingId, setSavingId] = useState(null);
 
   // Edit handlers
   const handleEditClick = (idx) => {
@@ -124,7 +126,7 @@ const PostProductionMonthlyView = () => {
     setEditForm({
       ...tasks[idx],
       points: tasks[idx].points,
-      notes: tasks[idx].notes || tasks[idx].note || ''
+      notes: tasks[idx].notes || ''
     });
   };
 
@@ -135,6 +137,7 @@ const PostProductionMonthlyView = () => {
 
   const handleEditSave = async (id) => {
     try {
+      setSavingId(id);
       let updatedPoints = editForm.points;
       // Always use the points value entered by the user, or the stored value
       if (editForm.points !== undefined && editForm.points !== '' && !isNaN(Number(editForm.points))) {
@@ -143,18 +146,48 @@ const PostProductionMonthlyView = () => {
         updatedPoints = tasks.find(t => t._id === id)?.points ?? 0;
       }
       const payload = { ...editForm, points: updatedPoints };
+      // Ensure approval is always sent (default to 'pending' if missing)
+      payload.approval = editForm.approval !== undefined ? editForm.approval : 'pending';
+      // Use 'notes' field as expected by backend
       if (editForm.notes !== undefined) {
-        payload.note = editForm.notes;
+        payload.notes = editForm.notes;
+        // remove any legacy 'note' field to avoid confusion
+        delete payload.note;
       }
       const token = localStorage.getItem('token');
+      console.log('Saving payload for id', id, payload);
+      // Remove immutable/internal fields before sending to backend
+      delete payload._id;
+      delete payload.__v;
+      delete payload.createdAt;
+      delete payload.updatedAt;
+
       const res = await axios.put(`https://lif.onrender.com/api/edit/update/${id}`, payload, {
         headers: { Authorization: token }
       });
       const updated = res.data;
-      setTasks((prev) => prev.map((t) => (t._id === id ? updated : t)));
+      console.log('PUT update response:', updated);
+
+      let finalUpdated = updated;
+      // If approval changed, call dedicated approval endpoint and use its response
+      if (payload.approval !== undefined) {
+        try {
+          const apprRes = await axios.patch(`https://lif.onrender.com/api/edit/approval/${id}`, { approval: payload.approval }, { headers: { Authorization: token } });
+          console.log('PATCH approval response:', apprRes.data);
+          finalUpdated = apprRes.data || updated;
+        } catch (apprErr) {
+          console.error('Approval update failed:', apprErr);
+          // fallback: merge approval into updated so UI reflects intended change
+          finalUpdated = { ...updated, approval: payload.approval };
+        }
+      }
+      setTasks((prev) => prev.map((t) => (t._id === id ? finalUpdated : t)));
       setEditIdx(null);
+      setSavingId(null);
     } catch (err) {
-      alert('Failed to update post-production task.');
+      setSavingId(null);
+      console.error('Update failed:', err.response ? err.response.data : err.message);
+      alert(`Failed to update post-production task: ${err.response ? err.response.data.error || JSON.stringify(err.response.data) : err.message}`);
     }
   };
 
@@ -455,6 +488,7 @@ const PostProductionMonthlyView = () => {
                     <th>Date</th>
                     <th>Type</th>
                     <th>Status</th>
+                    <th>Approval</th>
                     <th>Category</th>
                     <th>Points</th>
                     <th>Edit</th>
@@ -510,11 +544,17 @@ const PostProductionMonthlyView = () => {
                               ))}
                             </select>
                           </td>
+                          <td style={{padding:'0.5px'}}>
+                            <select name="approval" value={editForm.approval || 'pending'} onChange={handleEditChange} style={{ width: '100%' }}>
+                              <option value="pending">pending</option>
+                              <option value="approved">approved</option>
+                            </select>
+                          </td>
                           <td style={{padding:'0.5px'}}><input name="category" value={editForm.category} onChange={handleEditChange} style={{ width: '100%' }} /></td>
                           <td style={{padding:'0.5px'}}><input name="points" value={editForm.points} onChange={handleEditChange} style={{ width: '100%' }} /></td>
                           <td style={{ minWidth: 160, width: 180, padding:'0.5px' }}>
                             <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-start', alignItems: 'center' }}>
-                              <button className="save-btn" style={{ background: '#218c5a', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.2rem 0.7rem' }} onClick={() => handleEditSave(task._id)}>Save</button>
+                              <button className="save-btn" style={{ background: '#218c5a', color: '#fff', border: 'none', borderRadius: '4px', padding: '0.2rem 0.7rem' }} onClick={() => handleEditSave(task._id)} disabled={savingId === task._id}>{savingId === task._id ? 'Saving...' : 'Save'}</button>
                               <button className="cancel-btn" style={{ background: '#f3f3f3', color: '#a80a3c', border: '1px solid #e0e0e0', borderRadius: '4px', padding: '0.2rem 0.7rem' }} onClick={handleEditCancel}>Cancel</button>
                             </div>
                           </td>
@@ -527,6 +567,7 @@ const PostProductionMonthlyView = () => {
                           <td style={{padding:'0.5px'}}>{formatDate(task.date)}</td>
                           <td style={{padding:'0.5px'}}>{task.projecttype}</td>
                           <td style={{padding:'0.5px'}}>{task.projectstatus}</td>
+                          <td style={{padding:'0.5px'}}>{task.approval || 'pending'}</td>
                           <td style={{padding:'0.5px'}}><span style={{ background: '#fbeaf4', color: '#6c0428', borderRadius: '4px', padding: '0.1rem 0.4rem', fontSize: '0.9em' }}>{task.category}</span></td>
                           <td style={{padding:'0.5px'}}><span style={{ background: '#e5e7eb', borderRadius: '4px', padding: '0.1rem 0.4rem', fontWeight: 600, fontSize: '0.9em' }}>{task.projectstatus && task.projectstatus.toLowerCase() === 'complete' ? (task.points || 0) : 0}</span></td>
                           <td style={{ minWidth: 160, width: 180, padding:'0.5px' }}>
@@ -563,7 +604,7 @@ const PostProductionMonthlyView = () => {
                       <div><strong>Project Status:</strong> {modalTask.projectstatus}</div>
                       <div><strong>Category:</strong> {modalTask.category}</div>
                       <div><strong>Points:</strong> {modalTask.projectstatus && modalTask.projectstatus.toLowerCase() === 'complete' ? (modalTask.points || 0) : 0}</div>
-                      <div><strong>Notes:</strong> {modalTask.notes || modalTask.note || ''}</div>
+                      <div><strong>Notes:</strong> {modalTask.notes || ''}</div>
                     </div>
                     <button className="close-modal-btn" onClick={handleModalClose}>Close</button>
                   </motion.div>
