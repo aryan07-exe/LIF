@@ -4,7 +4,7 @@ const cors=require('cors');
 const app=express();
 // ...existing code...
 
-app.use(express.json());
+
 // Configure CORS with multiple allowed origins
 const allowedOrigins = [
   'http://localhost:3000',  // Local development
@@ -79,13 +79,24 @@ app.use('/api/points', pointsRoutes);
 const monthlyTaskRoutes = require('./routes/monthlyTaskRoutes');
 app.use('/api/monthly-task', monthlyTaskRoutes);
 
-mongoose.connect(process.env.Mongo_URL)
+
+// Ensure MongoDB connection string is provided
+const mongoUri = process.env.Mongo_URI || process.env.MONGODB_URI || process.env.MONGO_URL;
+if (!mongoUri) {
+  console.error('❌ Missing MongoDB connection string. Set `Mongo_URL` in your environment or in a .env file.');
+  console.error('Example .env entry: Mongo_URL=mongodb+srv://<user>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority');
+  // Exit so the server doesn't run without a DB connection
+  process.exit(1);
+}
+
+mongoose.connect(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("✅ Connected to MongoDB");
   })
   .catch((err) => {
     console.error("❌ MongoDB connection error:", err);
     console.log("Error details:", err);
+    process.exit(1);
   });
 
   

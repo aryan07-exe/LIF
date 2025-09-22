@@ -126,10 +126,10 @@ const AdminProfile = () => {
     },
 
 { 
-      title: "Productivity Page", 
+      title: "Assign Tasks", 
       icon: <FileText size={24} />, 
       description: "Manage productivity forms and submissions", 
-      route: "/see-user" 
+      route: "/assigntasks" 
     },
 
   ];

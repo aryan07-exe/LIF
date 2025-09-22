@@ -15,6 +15,8 @@ const MonthlyTaskSchema = new mongoose.Schema({
   month: { type: String, required: true, index: true },
   // count of tasks assigned for this combination
   count: { type: Number, default: 0 },
+  // approval mirrors Task.approval for the same project and month
+  approval: { type: String, enum: ['pending', 'approved'], default: 'pending' },
   assignedBy: { type: String },
   notes: { type: String },
   meta: { type: mongoose.Schema.Types.Mixed }

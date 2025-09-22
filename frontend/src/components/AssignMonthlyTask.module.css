@@ -1,0 +1,58 @@
+:root{
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --accent: #6c0428;
+  --accent-2: #a80a3c;
+  --muted: #6b7280;
+  --glass: rgba(255,255,255,0.6);
+}
+
+.pageWrap {
+  padding: 1.25rem;
+  background: var(--bg);
+  min-height: calc(100vh - 60px);
+}
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+}
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(16,24,40,0.06);
+  padding: 1rem;
+  border: 1px solid rgba(108,4,40,0.06);
+}
+.header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+.title { font-size:1.2rem; font-weight:700; color:var(--accent); }
+.controls { display:flex; gap:0.6rem; align-items:center; }
+.select, .input, .btn { padding:0.55rem 0.75rem; border-radius:8px; border:1px solid #e6e6e6; }
+.select { min-width:240px; }
+.gridRows { display:grid; gap:12px; margin-top:0.65rem; }
+.row { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; align-items:end; }
+.row label { display:block; margin-bottom:6px; font-weight:600; color:var(--muted); }
+.row input[type="month"] { padding:0.55rem; }
+.row input, .row select, .row datalist { width:100%; padding:0.55rem; border-radius:8px; border:1px solid #e6e6e6; }
+.rowActions { grid-column: 1 / -1; display:flex; justify-content:flex-end; gap:8px; }
+.mutedText { color:var(--muted); font-size:0.95rem; }
+.primaryBtn { background:var(--accent); color:#fff; border:none; cursor:pointer; border-radius:8px; padding:0.6rem 0.9rem; font-weight:700; }
+.ghostBtn { background:transparent; border:1px solid rgba(16,24,40,0.06); cursor:pointer; border-radius:8px; padding:0.5rem 0.75rem; }
+.dangerBtn { background:#ef4444; color:#fff; border:none; cursor:pointer; border-radius:8px; padding:0.5rem 0.75rem; font-weight:700; }
+.assignTable { width:100%; border-collapse:collapse; margin-top:0.85rem; }
+.assignTable th { text-align:left; padding:0.65rem; background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff; font-weight:700; }
+.assignTable td { padding:0.65rem; border-bottom:1px solid rgba(0,0,0,0.04); }
+.badge { padding:6px 10px; border-radius:999px; font-weight:700; display:inline-block; }
+.approved { background: rgba(16,185,129,0.12); color: #10b981; }
+.pending { background: rgba(245,158,11,0.08); color: #b45309; }
+
+@media (max-width: 880px) {
+  .row { grid-template-columns: 1fr; }
+  .select { min-width:unset; width:100%; }
+  .controls { flex-direction:column; align-items:stretch; }
+}

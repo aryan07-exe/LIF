@@ -1,14 +1,15 @@
 import React, { useEffect, useState, useRef } from "react";
-import LifFooter from './LifFooter';
+
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import EmployeeNavbar from "./EmployeeNavbar";
 
 import { User, Mail, Phone, Award, IdCard, ChevronRight } from "lucide-react";
-
+import LifFooter from './LifFooter';
 import styles from "./EmployeeProfile.module.css";
 import TaskCalendar from "./EmployeeCalendar";
 import OnsiteCalendar from "./OnsiteCalender";
+import axios from 'axios';
 
 const EmployeeProfile = () => {
   const [user, setUser] = useState(null);
@@ -25,6 +26,33 @@ const EmployeeProfile = () => {
     const userData = JSON.parse(localStorage.getItem("user") || "{}");
     setUser(userData);
   }, []);
+
+  // Monthly assignments state
+  const [assignments, setAssignments] = useState([]);
+  const [assignLoading, setAssignLoading] = useState(false);
+
+  useEffect(() => {
+    // fetch assignments when user is available
+    if (user && (user.employeeId || user.eid)) fetchAssignments();
+  }, [user]);
+
+  const fetchAssignments = async () => {
+    try {
+      setAssignLoading(true);
+      const eid = user.employeeId || user.eid || localStorage.getItem('eid');
+      if (!eid) { setAssignments([]); setAssignLoading(false); return; }
+  // use full API URL (change to your deployment if needed)
+  const token = localStorage.getItem('token');
+  const apiBase = 'https://lif.onrender.com';
+  const res = await axios.get(`${apiBase}/api/monthly-task`, { params: { eid }, headers: token ? { Authorization: token } : {} });
+      setAssignments(res.data || []);
+    } catch (err) {
+      console.error('Failed to fetch monthly assignments', err);
+      setAssignments([]);
+    } finally {
+      setAssignLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (user?.name && nameRef.current) {
@@ -173,6 +201,46 @@ const EmployeeProfile = () => {
 
           {/* Calendar Section - styled to match profile card */}
           {renderCalendarCards()}
+          {/* Monthly assignments for logged-in employee */}
+          <div style={{ marginTop: 20 }}>
+            <div className={styles.sectionHeader}><h3>Assigned Monthly Tasks</h3></div>
+            {assignLoading ? (
+              <div>Loading assignments...</div>
+            ) : assignments.length === 0 ? (
+              <div>No monthly assignments found.</div>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table className={styles.assignmentsTable}>
+                  <thead>
+                    <tr>
+                      <th>Project</th>
+                      <th>Type</th>
+                      <th>Month</th>
+                      <th>Count</th>
+                      <th>Approval</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {assignments.map(a => (
+                      <tr key={a._id}>
+                        <td>{a.projectname}</td>
+                        <td>{a.projecttype}</td>
+                        <td>{a.month}</td>
+                        <td>{a.count}</td>
+                        <td>
+                          {a.approval === 'approved' ? (
+                            <span className={`${styles.badge} ${styles.approved}`}>approved</span>
+                          ) : (
+                            <span className={`${styles.badge} ${styles.pending}`}>{a.approval || 'pending'}</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </main>
       </div>
     </>

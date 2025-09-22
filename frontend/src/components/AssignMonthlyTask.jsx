@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Navbar from './NewNavbar';
+import NewNavbar from './NewNavbar';
+import styles from './AssignMonthlyTask.module.css';
 
 const API_BASE = 'https://lif.onrender.com';
 
-const emptyRow = () => ({ projectname: '', projecttype: '', date: new Date().toISOString().slice(0,10), month: new Date().toISOString().slice(0,7) });
+const emptyRow = () => ({ projectname: '', projecttype: '', month: new Date().toISOString().slice(0,7) });
 
 const AssignMonthlyTask = () => {
   const [users, setUsers] = useState([]);
@@ -29,10 +30,11 @@ const AssignMonthlyTask = () => {
 
   const fetchProjectLists = async () => {
     try {
-      axios.get(`${API_BASE}/api/task/projecttypes`).then(res => setProjectTypes(res.data.projectTypes || [])).catch(() => setProjectTypes([]));
       const token = localStorage.getItem('token');
-      const res = await axios.get(`${API_BASE}/api/projectname/names`, { headers: { Authorization: token } });
+      const res = await axios.get(`${API_BASE}/api/projectname/names`, { headers: token ? { Authorization: token } : {} });
       setProjects(res.data.projectNames || []);
+      const res2 = await axios.get(`${API_BASE}/api/task/projecttypes`);
+      setProjectTypes(res2.data.projectTypes || []);
     } catch (err) {
       console.error('Failed to fetch project lists', err);
       setProjects([]); setProjectTypes([]);
@@ -70,7 +72,7 @@ const AssignMonthlyTask = () => {
       }));
 
       const token = localStorage.getItem('token');
-      const res = await axios.post(`${API_BASE}/api/monthly-task/bulk`, payload, { headers: { Authorization: token } });
+      const res = await axios.post(`${API_BASE}/api/monthly-task/bulk`, payload, { headers: token ? { Authorization: token } : {} });
       if (res.status === 200) {
         alert('Assigned successfully');
         setRows([ emptyRow() ]);
@@ -84,85 +86,116 @@ const AssignMonthlyTask = () => {
     }
   };
 
+  const handleApprovalChange = async (id, approval) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`${API_BASE}/api/monthly-task/${id}`, { approval }, { headers: token ? { Authorization: token } : {} });
+      // refresh assignments for current user
+      if (selectedUser) fetchAssignments(selectedUser);
+    } catch (err) {
+      console.error('Failed to update approval', err);
+      alert('Failed to update approval');
+    }
+  };
+
+  const handleDeleteAssignment = async (id) => {
+    if (!window.confirm('Delete this assignment? This cannot be undone.')) return;
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.delete(`${API_BASE}/api/monthly-task/${id}`, { headers: token ? { Authorization: token } : {} });
+      if (res.status === 200) {
+        // refresh list
+        if (selectedUser) fetchAssignments(selectedUser);
+      } else {
+        alert('Failed to delete assignment');
+      }
+    } catch (err) {
+      console.error('Delete failed', err);
+      alert('Delete request failed');
+    }
+  };
+
   return (
     <>
-      <Navbar />
-      <div style={{ padding: 20 }}>
-        <h2>Assign Monthly Task</h2>
-        <div style={{ maxWidth: 900 }}>
-          <div style={{ marginBottom: 10 }}>
-            <label style={{ display: 'block' }}>Employee</label>
-            <select value={selectedUser} onChange={e => { setSelectedUser(e.target.value); fetchAssignments(e.target.value); }} style={{ width: '100%', padding: 8 }}>
-              <option value="">Select Employee</option>
-              {users.map(u => (
-                <option key={u.employeeId || u.eid} value={u.employeeId || u.eid}>{(u.employeeId || u.eid)} - {(u.name || u.ename)}</option>
-              ))}
-            </select>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {rows.map((row, idx) => (
-              <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 8, alignItems: 'end' }}>
-                <div>
-                  <label>Project Name</label>
-                  <input list="project-list" value={row.projectname} onChange={e => { const newRows = [...rows]; newRows[idx].projectname = e.target.value; setRows(newRows); }} style={{ width: '100%', padding: 8 }} />
-                  <datalist id="project-list">
-                    {projects.map((p,i) => (<option key={i} value={p} />))}
-                  </datalist>
-                </div>
-                <div>
-                  <label>Project Type</label>
-                  <select value={row.projecttype} onChange={e => { const newRows = [...rows]; newRows[idx].projecttype = e.target.value; setRows(newRows); }} style={{ width: '100%', padding: 8 }}>
-                    <option value="">Select Type</option>
-                    {projectTypes.map((pt,i) => (<option key={i} value={pt}>{pt}</option>))}
-                  </select>
-                </div>
-                <div>
-                  <label>Date</label>
-                  <input type="date" value={row.date} onChange={e => { const newRows = [...rows]; newRows[idx].date = e.target.value; setRows(newRows); }} style={{ width: '100%', padding: 8 }} />
-                </div>
-                <div>
-                  <label>Month</label>
-                  <input type="month" value={row.month} onChange={e => { const newRows = [...rows]; newRows[idx].month = e.target.value; setRows(newRows); }} style={{ width: '100%', padding: 8 }} />
-                </div>
-                <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-                  <button type="button" onClick={() => handleRemoveRow(idx)}>Remove</button>
-                  {idx === rows.length - 1 && <button type="button" onClick={handleAddRow}>Add Row</button>}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ marginTop: 12 }}>
-            <button onClick={handleBulkAssign} disabled={loading} style={{ padding: '8px 16px' }}>{loading ? 'Assigning...' : 'Assign Tasks'}</button>
-          </div>
-
-          <div style={{ marginTop: 24 }}>
-            <h3>Assigned Tasks</h3>
-            {assignments.length === 0 ? <p>No assignments</p> : (
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr>
-                    <th style={{ borderBottom: '1px solid #ddd', padding: 8 }}>Employee</th>
-                    <th style={{ borderBottom: '1px solid #ddd', padding: 8 }}>Project</th>
-                    <th style={{ borderBottom: '1px solid #ddd', padding: 8 }}>Type</th>
-                    <th style={{ borderBottom: '1px solid #ddd', padding: 8 }}>Month</th>
-                    <th style={{ borderBottom: '1px solid #ddd', padding: 8 }}>Count</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {assignments.map(a => (
-                    <tr key={a._id}>
-                      <td style={{ padding: 8 }}>{a.eid} - {a.ename}</td>
-                      <td style={{ padding: 8 }}>{a.projectname}</td>
-                      <td style={{ padding: 8 }}>{a.projecttype}</td>
-                      <td style={{ padding: 8 }}>{a.month}</td>
-                      <td style={{ padding: 8 }}>{a.count}</td>
-                    </tr>
+      <NewNavbar />
+      <div className={styles.pageWrap}>
+        <div className={styles.container}>
+          <div className={styles.card}>
+            <div className={styles.header}>
+              <div className={styles.title}>Assign Monthly Task</div>
+              <div className={styles.controls}>
+                <select className={styles.select} value={selectedUser} onChange={e => { setSelectedUser(e.target.value); fetchAssignments(e.target.value); }}>
+                  <option value="">Select Employee</option>
+                  {users.map(u => (
+                    <option key={u.employeeId || u.eid} value={u.employeeId || u.eid}>{(u.employeeId || u.eid)} - {(u.name || u.ename)}</option>
                   ))}
-                </tbody>
-              </table>
-            )}
+                </select>
+                <button className={styles.primaryBtn} onClick={handleBulkAssign} disabled={loading}>{loading ? 'Assigning...' : 'Assign Tasks'}</button>
+              </div>
+            </div>
+
+            <div className={styles.gridRows}>
+              {rows.map((row, idx) => (
+                <div key={idx} className={styles.row}>
+                  <div>
+                    <label>Project Name</label>
+                    <input list="project-list" className={styles.input} value={row.projectname} onChange={e => { const newRows = [...rows]; newRows[idx].projectname = e.target.value; setRows(newRows); }} />
+                    <datalist id="project-list">
+                      {projects.map((p,i) => (<option key={i} value={p} />))}
+                    </datalist>
+                  </div>
+                  <div>
+                    <label>Project Type</label>
+                    <select className={styles.input} value={row.projecttype} onChange={e => { const newRows = [...rows]; newRows[idx].projecttype = e.target.value; setRows(newRows); }}>
+                      <option value="">Select Type</option>
+                      {projectTypes.map((pt,i) => (<option key={i} value={pt}>{pt}</option>))}
+                    </select>
+                  </div>
+                  <div>
+                    <label>Month</label>
+                    <input type="month" className={styles.input} value={row.month} onChange={e => { const newRows = [...rows]; newRows[idx].month = e.target.value; setRows(newRows); }} />
+                  </div>
+                  <div className={styles.rowActions}>
+                    <button type="button" className={styles.ghostBtn} onClick={() => handleRemoveRow(idx)}>Remove</button>
+                    {idx === rows.length - 1 && <button type="button" className={styles.ghostBtn} onClick={handleAddRow}>Add Row</button>}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: 10 }}>
+              <h3>Assigned Tasks</h3>
+              {assignments.length === 0 ? <p className={styles.mutedText}>No assignments</p> : (
+                <table className={styles.assignTable}>
+                  <thead>
+                    <tr>
+                      <th>Employee</th>
+                      <th>Project</th>
+                      <th>Type</th>
+                      <th>Approval</th>
+                      <th>Month</th>
+                      <th>Count</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {assignments.map(a => (
+                      <tr key={a._id}>
+                        <td>{a.eid} - {a.ename}</td>
+                        <td>{a.projectname}</td>
+                        <td>{a.projecttype}</td>
+                        <td>{a.approval === 'approved' ? <span className={`${styles.badge} ${styles.approved}`}>approved</span> : <span className={`${styles.badge} ${styles.pending}`}>{a.approval || 'pending'}</span>}</td>
+                        <td>{a.month}</td>
+                        <td>{a.count}</td>
+                        <td>
+                          <button className={styles.dangerBtn} onClick={() => handleDeleteAssignment(a._id)}>Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
         </div>
       </div>

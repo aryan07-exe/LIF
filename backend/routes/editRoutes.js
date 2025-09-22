@@ -3,6 +3,7 @@ const OnsiteTask = require('../models/OnsiteTask');
 const express = require('express');
 const router = express.Router();
 const Task = require('../models/Task');
+const MonthlyTask = require('../models/MonthlyTask');
 
 
 // GET all onsite tasks (for edit page)
@@ -99,6 +100,25 @@ router.patch('/approval/:id', async (req, res) => {
     task.approval = approval;
     await task.save();
     console.log(`Approval updated for ${req.params.id}:`, approval);
+
+    try {
+      // Derive month from task.date which is expected in 'YYYY-MM-DD' format
+      const dateStr = (task.date || '').toString();
+      const month = dateStr.slice(0,7); // 'YYYY-MM'
+
+      // Update MonthlyTask documents that match this employee/project/month
+      const filter = {
+        projectname: task.projectname,
+        projecttype: task.projecttype,
+        month: month
+      };
+      // If you want to scope to employee, include `eid: task.eid` in filter
+      const result = await MonthlyTask.updateMany(filter, { $set: { approval: approval } });
+      console.log('MonthlyTask sync result:', result.modifiedCount || result.nModified || result.modified);
+    } catch (syncErr) {
+      console.error('Error syncing MonthlyTask approval:', syncErr);
+    }
+
     res.json(task);
   } catch (err) {
     console.error('Error updating approval:', { body: req.body, err });
