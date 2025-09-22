@@ -3,7 +3,9 @@ const mongoose=require('mongoose');
 const cors=require('cors');
 const app=express();
 // ...existing code...
-require("dotenv").config();
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 
 // Configure CORS with multiple allowed origins
