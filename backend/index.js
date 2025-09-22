@@ -85,7 +85,11 @@ app.use('/api/monthly-task', monthlyTaskRoutes);
 
 // Ensure MongoDB connection string is provided
 const mongoUri = process.env.MONGO_URL;
+console.log('🔍 MONGO_URL from env:', mongoUri);
+
 if (!mongoUri) {
+  console.error('MONGO ERROR');
+  // Exit so the server doesn't run without a DB connection
   process.exit(1);
 }
 
