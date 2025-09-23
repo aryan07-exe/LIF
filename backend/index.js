@@ -13,7 +13,7 @@ const allowedOrigins = [
   'http://localhost:3000',  // Local development
   'https://liffrontend.vercel.app',  // Your deployed frontend URL
   'https://lifclone.onrender.com',  // Another possible frontend URL
-  'https://lif.onrender.com' // Production frontend domain
+  ' https://lif-lkgk.onrender.com' // Production frontend domain
 ];
 
 app.use(cors({
@@ -677,6 +677,9 @@ app.delete('/api/postproduction/delete/:id', async (req, res) => {
     console.error('Error deleting post-production task:', error);
     res.status(500).json({ message: 'Error deleting post-production task', error: error.message });
   }
+});
+app.get('/ping',(req,res)=>{
+    res.send("API is running");
 });
 
 app.listen(port,()=>{

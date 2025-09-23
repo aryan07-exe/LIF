@@ -26,7 +26,7 @@ const AddProject = () => {
     }
 
     try {
-      const response = await axios.post('https://lif.onrender.com/api/projects', {
+      const response = await axios.post(' https://lif-lkgk.onrender.com/api/projects', {
         projectname: projectName.trim()
       }, {
         headers: {

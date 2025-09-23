@@ -13,7 +13,7 @@ const ViewUsers = () => {
     const fetchUsers = async () => {
       try {
         // Use the /api/users endpoint to get all user details (public)
-        const response = await axios.get('https://lif.onrender.com/api/users');
+        const response = await axios.get(' https://lif-lkgk.onrender.com/api/users');
         setUsers(response.data);
       } catch (err) {
         setError('Failed to fetch users.');

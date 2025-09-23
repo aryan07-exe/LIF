@@ -43,7 +43,7 @@ const OnsiteAdminPanel = () => {
     try {
       const token = localStorage.getItem('token');
       const payload = { ...editForm };
-      const res = await axios.put(`https://lif.onrender.com/api/edit/onsite/update/${id}`, payload, {
+      const res = await axios.put(` https://lif-lkgk.onrender.com/api/edit/onsite/update/${id}`, payload, {
         headers: { Authorization: token }
       });
       const updated = res.data;
@@ -104,7 +104,7 @@ const OnsiteAdminPanel = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://lif.onrender.com/api/users/eids');
+      const response = await axios.get(' https://lif-lkgk.onrender.com/api/users/eids');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -115,7 +115,7 @@ const OnsiteAdminPanel = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('https://lif.onrender.com/onsite/tasks', {
+      const response = await axios.get(' https://lif-lkgk.onrender.com/onsite/tasks', {
         headers: { Authorization: token }
       });
       let fetchedTasks = response.data.tasks || [];
@@ -225,7 +225,7 @@ const OnsiteAdminPanel = () => {
     if (!window.confirm('Are you sure you want to delete this entry?')) return;
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`https://lif.onrender.com/api/onsite/delete/${id}`, {
+      await axios.delete(` https://lif-lkgk.onrender.com/api/onsite/delete/${id}`, {
         headers: { Authorization: token }
       });
       setTasks((prev) => prev.filter((t) => t._id !== id));

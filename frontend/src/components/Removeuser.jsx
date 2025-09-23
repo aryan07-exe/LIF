@@ -18,7 +18,7 @@ const RemoveUser = () => {
     setError('');
     try {
       // Use the same logic as ViewUsersFull
-      const res = await axios.get('https://lif.onrender.com/api/users');
+      const res = await axios.get(' https://lif-lkgk.onrender.com/api/users');
       setUsers(res.data);
     } catch (err) {
       setError('Failed to fetch users.');
@@ -33,7 +33,7 @@ const RemoveUser = () => {
     setError('');
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`https://lif.onrender.com/api/users/${id}`, {
+      await axios.delete(` https://lif-lkgk.onrender.com/api/users/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

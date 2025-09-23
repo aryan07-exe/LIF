@@ -106,7 +106,7 @@ const OnsiteMonthlyView = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('https://lif.onrender.com/onsite/tasks', {
+      const response = await axios.get(' https://lif-lkgk.onrender.com/onsite/tasks', {
         headers: { Authorization: token }
       });
       
@@ -150,7 +150,7 @@ const OnsiteMonthlyView = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://lif.onrender.com/api/users/eids');
+      const response = await axios.get(' https://lif-lkgk.onrender.com/api/users/eids');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);

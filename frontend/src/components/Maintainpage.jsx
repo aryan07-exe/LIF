@@ -29,7 +29,7 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('https://lif.onrender.com/api/auth/login', formData);
+      const response = await axios.post(' https://lif-lkgk.onrender.com/api/auth/login', formData);
       const user = response.data.user;
       // Store token and user info in localStorage
       localStorage.setItem('token', response.data.token);

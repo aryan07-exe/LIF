@@ -19,7 +19,7 @@ const TaskCalendar = () => {
 
   const fetchCalendar = async (eid) => {
     try {
-      const res = await axios.get(`https://lif.onrender.com/api/tasks/last7days/${eid}`);
+      const res = await axios.get(` https://lif-lkgk.onrender.com/api/tasks/last7days/${eid}`);
       setCalendar(res.data);
     } catch (error) {
       console.error("Error fetching calendar data", error);

@@ -162,7 +162,7 @@ const PostProductionMonthlyView = () => {
       delete payload.createdAt;
       delete payload.updatedAt;
 
-      const res = await axios.put(`https://lif.onrender.com/api/edit/update/${id}`, payload, {
+      const res = await axios.put(` https://lif-lkgk.onrender.com/api/edit/update/${id}`, payload, {
         headers: { Authorization: token }
       });
       const updated = res.data;
@@ -172,7 +172,7 @@ const PostProductionMonthlyView = () => {
       // If approval changed, call dedicated approval endpoint and use its response
       if (payload.approval !== undefined) {
         try {
-          const apprRes = await axios.patch(`https://lif.onrender.com/api/edit/approval/${id}`, { approval: payload.approval }, { headers: { Authorization: token } });
+          const apprRes = await axios.patch(` https://lif-lkgk.onrender.com/api/edit/approval/${id}`, { approval: payload.approval }, { headers: { Authorization: token } });
           console.log('PATCH approval response:', apprRes.data);
           finalUpdated = apprRes.data || updated;
         } catch (apprErr) {
@@ -199,7 +199,7 @@ const PostProductionMonthlyView = () => {
     if (!window.confirm('Are you sure you want to delete this entry?')) return;
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`https://lif.onrender.com/api/postproduction/delete/${id}`, {
+      await axios.delete(` https://lif-lkgk.onrender.com/api/postproduction/delete/${id}`, {
         headers: { Authorization: token }
       });
       setTasks((prev) => prev.filter((t) => t._id !== id));
@@ -212,7 +212,7 @@ const PostProductionMonthlyView = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('https://lif.onrender.com/postproduction/monthly', {
+      const response = await axios.get(' https://lif-lkgk.onrender.com/postproduction/monthly', {
         headers: { Authorization: token },
         params: {
           eid: filters.eid,
@@ -247,7 +247,7 @@ const PostProductionMonthlyView = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('https://lif.onrender.com/api/users/eids');
+      const response = await axios.get(' https://lif-lkgk.onrender.com/api/users/eids');
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -264,7 +264,7 @@ const PostProductionMonthlyView = () => {
   // Fetch project types from backend
   const fetchProjectTypes = async () => {
     try {
-      const res = await axios.get('https://lif.onrender.com/api/task/projecttypes');
+      const res = await axios.get(' https://lif-lkgk.onrender.com/api/task/projecttypes');
       setProjectTypes(res.data.projectTypes || []);
     } catch (error) {
       setProjectTypes([]);
@@ -274,7 +274,7 @@ const PostProductionMonthlyView = () => {
   // Fetch project statuses from backend
   const fetchProjectStatuses = async () => {
     try {
-      const res = await axios.get('https://lif.onrender.com/api/task/projectstatuses');
+      const res = await axios.get(' https://lif-lkgk.onrender.com/api/task/projectstatuses');
       setProjectStatuses(res.data.projectStatuses || []);
     } catch (error) {
       setProjectStatuses([]);

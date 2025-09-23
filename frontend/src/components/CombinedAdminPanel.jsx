@@ -18,7 +18,7 @@ const CombinedAdminPanel = () => {
       try {
         const token = localStorage.getItem('token');
         // Onsite tasks fetch (same as OnsiteAdminPanel)
-        const onsiteRes = await axios.get('https://lif.onrender.com/onsite/tasks', {
+        const onsiteRes = await axios.get(' https://lif-lkgk.onrender.com/onsite/tasks', {
           headers: { Authorization: token }
         });
         setOnsiteTasks(onsiteRes.data.tasks || []);

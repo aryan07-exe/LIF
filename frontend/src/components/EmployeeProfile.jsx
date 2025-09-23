@@ -43,7 +43,7 @@ const EmployeeProfile = () => {
       if (!eid) { setAssignments([]); setAssignLoading(false); return; }
   // use full API URL (change to your deployment if needed)
   const token = localStorage.getItem('token');
-  const apiBase = 'https://lif.onrender.com';
+  const apiBase = ' https://lif-lkgk.onrender.com';
   const res = await axios.get(`${apiBase}/api/monthly-task`, { params: { eid }, headers: token ? { Authorization: token } : {} });
       setAssignments(res.data || []);
     } catch (err) {

@@ -32,10 +32,10 @@ const Taskname = () => {
 
   // Fetch project type and status options from Option model (not Task model)
   useEffect(() => {
-    axios.get('https://lif.onrender.com/api/task/projecttypes')
+    axios.get(' https://lif-lkgk.onrender.com/api/task/projecttypes')
       .then(res => setProjectTypes(res.data.projectTypes || []))
       .catch(() => setProjectTypes([]));
-    axios.get('https://lif.onrender.com/api/task/projectstatuses')
+    axios.get(' https://lif-lkgk.onrender.com/api/task/projectstatuses')
       .then(res => setProjectStatuses(res.data.projectStatuses || []))
       .catch(() => setProjectStatuses([]));
   }, []);
@@ -65,7 +65,7 @@ const Taskname = () => {
         throw new Error('No authentication token found');
       }
       // Fetch project names from new backend API
-      const response = await axios.get('https://lif.onrender.com/api/projectname/names', {
+      const response = await axios.get(' https://lif-lkgk.onrender.com/api/projectname/names', {
         headers: {
           'Authorization': token
         }
@@ -131,7 +131,7 @@ const Taskname = () => {
       }
 
       console.log('Submitting form data:', formData);
-      const response = await axios.post('https://lif.onrender.com/task', formData, {
+      const response = await axios.post(' https://lif-lkgk.onrender.com/task', formData, {
         headers: {
           'Authorization': token,
           'Content-Type': 'application/json'

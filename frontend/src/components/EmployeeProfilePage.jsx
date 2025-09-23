@@ -27,12 +27,12 @@ const EmployeeProfilePage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    axios.get('https://lif.onrender.com/api/users/eids')
+    axios.get(' https://lif-lkgk.onrender.com/api/users/eids')
       .then(res => setUsers(res.data))
       .catch(() => setUsers([]));
     // Fetch all tasks (no filters)
     setLoading(true);
-    axios.get('https://lif.onrender.com/postproduction/monthly', {
+    axios.get(' https://lif-lkgk.onrender.com/postproduction/monthly', {
       params: {
         startDate: '2000-01-01', // very early date
         endDate: '2100-12-31',   // very late date

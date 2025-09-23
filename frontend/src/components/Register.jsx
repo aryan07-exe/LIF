@@ -38,7 +38,7 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('https://lif.onrender.com/api/auth/register', formData, {
+      const response = await axios.post(' https://lif-lkgk.onrender.com/api/auth/register', formData, {
         headers: {
           'Content-Type': 'application/json'
         }

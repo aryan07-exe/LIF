@@ -30,7 +30,7 @@ const AddUser = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('https://lif.onrender.com/users', formData, {
+      const response = await axios.post(' https://lif-lkgk.onrender.com/users', formData, {
         headers: {
           'Authorization': token
         }

@@ -22,7 +22,7 @@ const OnsiteCalendar = () => {
 
   const fetchCalendar = async (eid) => {
     try {
-      const res = await axios.get(`https://lif.onrender.com/api/onsite/last7days/${eid}`);
+      const res = await axios.get(` https://lif-lkgk.onrender.com/api/onsite/last7days/${eid}`);
       setCalendar(res.data);
     } catch (error) {
       console.error("Error fetching onsite calendar data", error);

@@ -22,14 +22,14 @@ const OptionManager = () => {
   }, []);
 
   const fetchOptions = async () => {
-    const types = await axios.get('https://lif.onrender.com/api/task/projecttypes');
+    const types = await axios.get(' https://lif-lkgk.onrender.com/api/task/projecttypes');
     setProjectTypes(types.data.projectTypes || []);
-    const statuses = await axios.get('https://lif.onrender.com/api/task/projectstatuses');
+    const statuses = await axios.get(' https://lif-lkgk.onrender.com/api/task/projectstatuses');
     setProjectStatuses(statuses.data.projectStatuses || []);
   };
 
   const fetchPointsList = async () => {
-    const res = await axios.get('https://lif.onrender.com/api/points');
+    const res = await axios.get(' https://lif-lkgk.onrender.com/api/points');
     // Convert array to object: { type: points }
     const obj = {};
     (res.data.points || []).forEach(pt => { obj[pt.type] = pt.points; });
@@ -39,12 +39,12 @@ const OptionManager = () => {
   // Project Type handlers
   const addType = async () => {
     if (!newType.trim()) return;
-    await axios.post('https://lif.onrender.com/api/task/projecttypes', { value: newType });
+    await axios.post(' https://lif-lkgk.onrender.com/api/task/projecttypes', { value: newType });
     setNewType('');
     fetchOptions();
   };
   const deleteType = async (val) => {
-    await axios.delete(`https://lif.onrender.com/api/task/projecttypes/${encodeURIComponent(val)}`);
+    await axios.delete(` https://lif-lkgk.onrender.com/api/task/projecttypes/${encodeURIComponent(val)}`);
     fetchOptions();
   };
   const startEditType = (idx, val) => {
@@ -52,7 +52,7 @@ const OptionManager = () => {
     setEditTypeValue(val);
   };
   const saveEditType = async (oldVal) => {
-    await axios.put(`https://lif.onrender.com/api/task/projecttypes/${encodeURIComponent(oldVal)}`, { newValue: editTypeValue });
+    await axios.put(` https://lif-lkgk.onrender.com/api/task/projecttypes/${encodeURIComponent(oldVal)}`, { newValue: editTypeValue });
     setEditTypeIdx(null);
     setEditTypeValue('');
     fetchOptions();
@@ -64,7 +64,7 @@ const OptionManager = () => {
   };
   const saveEditPoints = async (type) => {
     try {
-      await axios.put(`https://lif.onrender.com/api/points/${encodeURIComponent(type)}`, { points: Number(editPointsValue) });
+      await axios.put(` https://lif-lkgk.onrender.com/api/points/${encodeURIComponent(type)}`, { points: Number(editPointsValue) });
       setMsg('Points updated for this project type!');
       setEditPointsIdx(null);
       setEditPointsValue('');
@@ -77,12 +77,12 @@ const OptionManager = () => {
   // Project Status handlers
   const addStatus = async () => {
     if (!newStatus.trim()) return;
-    await axios.post('https://lif.onrender.com/api/task/projectstatuses', { value: newStatus });
+    await axios.post(' https://lif-lkgk.onrender.com/api/task/projectstatuses', { value: newStatus });
     setNewStatus('');
     fetchOptions();
   };
   const deleteStatus = async (val) => {
-    await axios.delete(`https://lif.onrender.com/api/task/projectstatuses/${encodeURIComponent(val)}`);
+    await axios.delete(` https://lif-lkgk.onrender.com/api/task/projectstatuses/${encodeURIComponent(val)}`);
     fetchOptions();
   };
   const startEditStatus = (idx, val) => {
@@ -90,7 +90,7 @@ const OptionManager = () => {
     setEditStatusValue(val);
   };
   const saveEditStatus = async (oldVal) => {
-    await axios.put(`https://lif.onrender.com/api/task/projectstatuses/${encodeURIComponent(oldVal)}`, { newValue: editStatusValue });
+    await axios.put(` https://lif-lkgk.onrender.com/api/task/projectstatuses/${encodeURIComponent(oldVal)}`, { newValue: editStatusValue });
     setEditStatusIdx(null);
     setEditStatusValue('');
     fetchOptions();

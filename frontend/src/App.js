@@ -38,15 +38,15 @@ import Removeuser from "./components/Removeuser";
 import MaintainUser from "./components/Maintainuser";
 import Seeuser from "./components/EmployeeProfilePage";
 import MonthlyTask from "./components/AssignMonthlyTask";
-import BreakPage from "./components/BreakPage";
+//  import BreakPage from "./components/BreakPage";
 const App = () => {
   return (
     <Router>
       <Routes>
        
         {/* Define routes here */}
-        <Route path="/" element={<BreakPage />} />
-        {/* <Route path="/" element={<Login />} /> */}
+        {/* <Route path="/" element={<BreakPage />} /> */}
+        <Route path="/" element={<Login />} />
         <Route path="/ne" element={<PrivateRoute><NewProjecr /></PrivateRoute>} />
         <Route path="/task" element={<PrivateRoute><Task /></PrivateRoute>} />
         <Route path="/task2" element={<PrivateRoute><Task2 /></PrivateRoute>} />
