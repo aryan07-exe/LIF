@@ -37,7 +37,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import Removeuser from "./components/Removeuser";
 import MaintainUser from "./components/Maintainuser";
 import Seeuser from "./components/EmployeeProfilePage";
-import MonthlyTask from "./components/AssignMonthlyTask";
+import AssignTask from "./components/AssignTask";
+import AssignedTaskList from "./components/AssignedTaskList";
 //  import BreakPage from "./components/BreakPage";
 const App = () => {
   return (
@@ -79,7 +80,10 @@ const App = () => {
  <Route path="/see-user" element={<AdminRoute><Seeuser /></AdminRoute>} />
   <Route path="/manage-options" element={<AdminRoute><OptionManager /></AdminRoute>} />
   <Route path="/combined-admin" element={<AdminRoute><CombinedAdminPanel /></AdminRoute>} />
-  <Route path="/assigntasks" element={<AdminRoute><MonthlyTask /></AdminRoute>} />
+        <Route path="/assign-task" element={<AdminRoute><AssignTask /></AdminRoute>} />
+         <Route path="/assign-list" element={<AdminRoute><AssignedTaskList  /></AdminRoute>} />
+
+  {/* Monthly assignment UI removed */}
    </Routes>
     </Router>
   );

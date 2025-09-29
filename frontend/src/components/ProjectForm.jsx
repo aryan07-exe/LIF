@@ -143,7 +143,7 @@ const ProjectForm = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/projectdetails", form, {
+      const response = await axios.post(" https://lif-lkgk.onrender.com/api/projectdetails", form, {
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("token"),

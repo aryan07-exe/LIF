@@ -32,10 +32,13 @@ app.use(cors({
   credentials: true
 }));
 const moment = require('moment');
-
 const port=process.env.PORT || 5000;
 require('dotenv').config();
 const ProjectDetails = require('./models/ProjectDetails');
+
+// Parse JSON bodies before mounting any routes
+app.use(express.json());
+
 const editRoutes = require('./routes/editRoutes');
 app.use('/api/edit', editRoutes);
 const Task=require('./models/Task');
@@ -47,7 +50,6 @@ const OnsiteTask = require('./models/OnsiteTask');
 // Import routes
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects')
-app.use(express.json());
 
   
 
@@ -78,9 +80,9 @@ app.use('/api/projectname', projectnameRoutes);
 const pointsRoutes = require('./routes/pointsRoutes');
 app.use('/api/points', pointsRoutes);
 
-// Monthly task routes
-const monthlyTaskRoutes = require('./routes/monthlyTaskRoutes');
-app.use('/api/monthly-task', monthlyTaskRoutes);
+// Assigned task routes (new)
+const assignedTaskRoutes = require('./routes/assignedTaskRoutes');
+app.use('/api/assigned-task', assignedTaskRoutes);
 
 
 // Ensure MongoDB connection string is provided

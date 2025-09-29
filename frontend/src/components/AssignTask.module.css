@@ -1,0 +1,50 @@
+:root{
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --accent: #6c0428;
+  --accent-2: #a80a3c;
+  --muted: #6b7280;
+}
+
+.pageWrap { padding:1.25rem; background:var(--bg); min-height:calc(100vh - 60px); }
+.container { max-width:1100px; margin:0 auto; }
+.card { background:var(--card); border-radius:14px; box-shadow:0 10px 30px rgba(16,24,40,0.08); padding:1.25rem; border:1px solid rgba(108,4,40,0.06); }
+.header { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:0.9rem; }
+.title { font-size:1.25rem; font-weight:800; color:var(--accent); letter-spacing:0.2px; }
+.controls { display:flex; gap:0.6rem; align-items:center; }
+.select, .input, .btn { padding:0.6rem 0.85rem; border-radius:10px; border:1px solid #eee; background:#fff; }
+.select { min-width:220px; }
+.gridRows { display:grid; gap:12px; margin-top:0.85rem; }
+.groupCard { border:1px solid rgba(0,0,0,0.04); padding:12px; border-radius:10px; background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.98)); }
+.row { display:grid; grid-template-columns: 1fr 140px 120px; gap:12px; align-items:end; }
+.row label { display:block; margin-bottom:6px; font-weight:600; color:var(--muted); }
+.row input, .row select { width:100%; padding:0.65rem; border-radius:8px; border:1px solid #eee; }
+.rowActions { display:flex; gap:10px; justify-content:flex-end; }
+.mutedText { color:var(--muted); font-size:0.95rem; }
+.primaryBtn { background:var(--accent); color:#fff; border:none; cursor:pointer; border-radius:10px; padding:0.6rem 0.95rem; font-weight:700; box-shadow: 0 6px 18px rgba(108,4,40,0.12); }
+.ghostBtn { background:transparent; border:1px solid rgba(16,24,40,0.06); cursor:pointer; border-radius:10px; padding:0.5rem 0.8rem; }
+.dangerBtn { background:#ef4444; color:#fff; border:none; cursor:pointer; border-radius:10px; padding:0.5rem 0.75rem; font-weight:700; }
+
+.assignTableWrap { width:100%; overflow:auto; border-radius:10px; box-shadow: 0 6px 18px rgba(16,24,40,0.04); background: #fff; border: 1px solid rgba(0,0,0,0.04); }
+.assignTable { width:100%; border-collapse:collapse; margin:0; min-width:640px; }
+.assignTable thead th { position:sticky; top:0; z-index:2; text-align:left; padding:0.85rem 0.9rem; background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff; font-weight:700; }
+.assignTable td { padding:0.75rem 0.9rem; border-bottom:1px solid rgba(0,0,0,0.04); vertical-align:middle; }
+.assignTable tbody tr:nth-child(even) { background: #fbf7f9; }
+.assignTable tbody tr:hover { background: #fff0f5; transform: translateZ(0); }
+.assignTable th:first-child, .assignTable td:first-child { width: 18%; }
+.assignTable th:nth-child(2), .assignTable td:nth-child(2) { width: 42%; }
+.assignTable th:nth-child(3), .assignTable td:nth-child(3) { width: 20%; text-align:center; }
+.assignTable th:nth-child(4), .assignTable td:nth-child(4) { width: 20%; text-align:center; }
+
+.assignedCard { background: var(--card); border-radius:12px; padding:1rem; box-shadow: 0 8px 20px rgba(16,24,40,0.06); border:1px solid rgba(108,4,40,0.04); }
+
+
+@media (max-width:880px) {
+  .row { grid-template-columns: 1fr; }
+  .select { min-width:unset; width:100%; }
+  .controls { flex-direction:column; align-items:stretch; }
+  .assignTable { min-width:unset; font-size:0.95rem; }
+  .assignTable thead th { font-size:0.95rem; }
+  .assignTable td { padding:0.6rem 0.6rem; }
+  .assignTableWrap { box-shadow: none; border: none; }
+}

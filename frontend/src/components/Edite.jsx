@@ -12,7 +12,7 @@ const Task3AdminPanel = () => {
   const [editForm, setEditForm] = useState({});
 
  useEffect(() => {
-  axios.get('http://localhost:5000/api/edit/all')
+  axios.get(' https://lif-lkgk.onrender.com/api/edit/all')
     .then(res => {
       const sortedData = res.data.sort((a, b) => new Date(b.date) - new Date(a.date));
       setTasks(sortedData);
@@ -36,7 +36,7 @@ const Task3AdminPanel = () => {
 
   const handleEditSave = async (id) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/edit/update/${id}`, editForm);
+      const res = await axios.put(` https://lif-lkgk.onrender.com/api/edit/update/${id}`, editForm);
       const updated = res.data;
       setTasks((prev) => prev.map((t) => (t._id === id ? updated : t)));
       setEditIdx(null);

@@ -3,7 +3,60 @@ const OnsiteTask = require('../models/OnsiteTask');
 const express = require('express');
 const router = express.Router();
 const Task = require('../models/Task');
-const MonthlyTask = require('../models/MonthlyTask');
+
+// Helper to sync AssignedTask counts when approval transitions to 'approved'
+async function syncAssignedOnApproval(prevApproval, task) {
+  if (prevApproval === 'approved' || !task || task.approval !== 'approved') return;
+  try {
+    const AssignedTask = require('../models/AssignedTask');
+    // Extract month/year from task.date (expected YYYY-MM-DD)
+    let year = null, month = null;
+    if (task.date && typeof task.date === 'string') {
+      const parts = task.date.split('-');
+      if (parts.length >= 2) {
+        year = Number(parts[0]);
+        month = Number(parts[1]);
+      }
+    }
+
+    // Find grouped document for this eid+month+year
+    const filter = { eid: task.eid };
+    if (month) filter.month = month;
+    if (year) filter.year = year;
+
+    let doc = await AssignedTask.findOne(filter);
+    if (!doc) {
+      // Create a doc with this single completed task (assigned 0 -> completed 1)
+      doc = new AssignedTask({
+        eid: task.eid,
+        month: month || (new Date()).getMonth() + 1,
+        year: year || (new Date()).getFullYear(),
+        tasks: [{ projectType: task.projecttype, assigned: 0, completed: 1 }]
+      });
+      await doc.save();
+      console.log('Created new AssignedTask doc for approved task:', doc._id.toString());
+    } else {
+      // Find projectType entry
+      const tIndex = doc.tasks.findIndex(t => t.projectType === task.projecttype);
+      if (tIndex === -1) {
+        // add new entry
+        doc.tasks.push({ projectType: task.projecttype, assigned: 0, completed: 1 });
+        await doc.save();
+        console.log('Added new projectType entry to AssignedTask doc', doc._id.toString());
+      } else {
+        // increment completed and decrement assigned (min 0)
+        const entry = doc.tasks[tIndex];
+        entry.completed = (Number(entry.completed) || 0) + 1;
+        entry.assigned = Math.max(0, (Number(entry.assigned) || 0) - 1);
+        doc.tasks[tIndex] = entry;
+        await doc.save();
+        console.log('Updated AssignedTask counts for doc', doc._id.toString(), 'entry', entry.projectType, 'assigned->', entry.assigned, 'completed->', entry.completed);
+      }
+    }
+  } catch (syncErr) {
+    console.error('Error syncing AssignedTask on approval:', syncErr);
+  }
+}
 
 
 // GET all onsite tasks (for edit page)
@@ -70,11 +123,24 @@ router.put('/update/:id', async (req, res) => {
       const entry = await ProjectTypePoints.findOne({ type: updateData.projecttype });
       updateData.points = entry ? entry.points : 0;
     }
+
+    const taskId = req.params.id;
+    // load current task to compare approval
+    const existing = await Task.findById(taskId).lean();
+    const prevApproval = existing ? existing.approval : null;
     const updatedTask = await Task.findByIdAndUpdate(
-      req.params.id,
+      taskId,
       updateData,
       { new: true, runValidators: true }
     );
+
+    // If approval transitioned to 'approved', sync AssignedTask counts
+    try {
+      await syncAssignedOnApproval(prevApproval, updatedTask);
+    } catch (e) {
+      console.error('syncAssignedOnApproval failed after PUT update:', e);
+    }
+
     if (!updatedTask) {
       return res.status(404).json({ error: 'Task not found.' });
     }
@@ -97,26 +163,19 @@ router.patch('/approval/:id', async (req, res) => {
     if (!task) {
       return res.status(404).json({ error: 'Task not found.' });
     }
+
+    const prevApproval = task.approval;
     task.approval = approval;
     await task.save();
-    console.log(`Approval updated for ${req.params.id}:`, approval);
+    console.log(`Approval updated for ${req.params.id}: from ${prevApproval} to ${approval}`);
 
-    try {
-      // Derive month from task.date which is expected in 'YYYY-MM-DD' format
-      const dateStr = (task.date || '').toString();
-      const month = dateStr.slice(0,7); // 'YYYY-MM'
-
-      // Update MonthlyTask documents that match this employee/project/month
-      const filter = {
-        projectname: task.projectname,
-        projecttype: task.projecttype,
-        month: month
-      };
-      // If you want to scope to employee, include `eid: task.eid` in filter
-      const result = await MonthlyTask.updateMany(filter, { $set: { approval: approval } });
-      console.log('MonthlyTask sync result:', result.modifiedCount || result.nModified || result.modified);
-    } catch (syncErr) {
-      console.error('Error syncing MonthlyTask approval:', syncErr);
+    // If approval changed to 'approved' from a different state, sync AssignedTask counts
+    if (prevApproval !== 'approved' && approval === 'approved') {
+      try {
+        await syncAssignedOnApproval(prevApproval, task);
+      } catch (syncErr) {
+        console.error('Error syncing AssignedTask on approval:', syncErr);
+      }
     }
 
     res.json(task);

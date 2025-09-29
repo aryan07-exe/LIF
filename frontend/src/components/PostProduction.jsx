@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import LifFooter from './LifFooter';
 import axios from 'axios';
+
 import { motion } from 'framer-motion';
 import { Calendar, User, Search, Trash2, Award, Download } from 'lucide-react';
 import './OnsiteMonthlyView.css';
 import './PostProductionMonthlyView.css';
 import Navbar from './NewNavbar';
 import * as XLSX from 'xlsx';
-
+const API_BASE = ' https://lif-lkgk.onrender.com';
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
@@ -162,25 +163,15 @@ const PostProductionMonthlyView = () => {
       delete payload.createdAt;
       delete payload.updatedAt;
 
-      const res = await axios.put(` https://lif-lkgk.onrender.com/api/edit/update/${id}`, payload, {
+      const res = await axios.put(`${API_BASE}/api/edit/update/${id}`, payload, {
         headers: { Authorization: token }
       });
       const updated = res.data;
       console.log('PUT update response:', updated);
 
-      let finalUpdated = updated;
-      // If approval changed, call dedicated approval endpoint and use its response
-      if (payload.approval !== undefined) {
-        try {
-          const apprRes = await axios.patch(` https://lif-lkgk.onrender.com/api/edit/approval/${id}`, { approval: payload.approval }, { headers: { Authorization: token } });
-          console.log('PATCH approval response:', apprRes.data);
-          finalUpdated = apprRes.data || updated;
-        } catch (apprErr) {
-          console.error('Approval update failed:', apprErr);
-          // fallback: merge approval into updated so UI reflects intended change
-          finalUpdated = { ...updated, approval: payload.approval };
-        }
-      }
+      // The server-side PUT handler now runs approval sync when approval changes.
+      // Rely on the PUT response as the source of truth and avoid a separate PATCH to prevent races.
+      const finalUpdated = updated;
       setTasks((prev) => prev.map((t) => (t._id === id ? finalUpdated : t)));
       setEditIdx(null);
       setSavingId(null);
@@ -199,7 +190,7 @@ const PostProductionMonthlyView = () => {
     if (!window.confirm('Are you sure you want to delete this entry?')) return;
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(` https://lif-lkgk.onrender.com/api/postproduction/delete/${id}`, {
+      await axios.delete(`${API_BASE}/api/postproduction/delete/${id}`, {
         headers: { Authorization: token }
       });
       setTasks((prev) => prev.filter((t) => t._id !== id));
@@ -212,7 +203,7 @@ const PostProductionMonthlyView = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(' https://lif-lkgk.onrender.com/postproduction/monthly', {
+      const response = await axios.get(`${API_BASE}/postproduction/monthly`, {
         headers: { Authorization: token },
         params: {
           eid: filters.eid,
@@ -247,7 +238,7 @@ const PostProductionMonthlyView = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(' https://lif-lkgk.onrender.com/api/users/eids');
+  const response = await axios.get(`${API_BASE}/api/users/eids`);
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -264,7 +255,7 @@ const PostProductionMonthlyView = () => {
   // Fetch project types from backend
   const fetchProjectTypes = async () => {
     try {
-      const res = await axios.get(' https://lif-lkgk.onrender.com/api/task/projecttypes');
+  const res = await axios.get(`${API_BASE}/api/task/projecttypes`);
       setProjectTypes(res.data.projectTypes || []);
     } catch (error) {
       setProjectTypes([]);
@@ -274,7 +265,7 @@ const PostProductionMonthlyView = () => {
   // Fetch project statuses from backend
   const fetchProjectStatuses = async () => {
     try {
-      const res = await axios.get(' https://lif-lkgk.onrender.com/api/task/projectstatuses');
+  const res = await axios.get(`${API_BASE}/api/task/projectstatuses`);
       setProjectStatuses(res.data.projectStatuses || []);
     } catch (error) {
       setProjectStatuses([]);

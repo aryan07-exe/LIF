@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+// AssignedTaskList replaced by inline block below
 
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
@@ -27,32 +28,7 @@ const EmployeeProfile = () => {
     setUser(userData);
   }, []);
 
-  // Monthly assignments state
-  const [assignments, setAssignments] = useState([]);
-  const [assignLoading, setAssignLoading] = useState(false);
-
-  useEffect(() => {
-    // fetch assignments when user is available
-    if (user && (user.employeeId || user.eid)) fetchAssignments();
-  }, [user]);
-
-  const fetchAssignments = async () => {
-    try {
-      setAssignLoading(true);
-      const eid = user.employeeId || user.eid || localStorage.getItem('eid');
-      if (!eid) { setAssignments([]); setAssignLoading(false); return; }
-  // use full API URL (change to your deployment if needed)
-  const token = localStorage.getItem('token');
-  const apiBase = ' https://lif-lkgk.onrender.com';
-  const res = await axios.get(`${apiBase}/api/monthly-task`, { params: { eid }, headers: token ? { Authorization: token } : {} });
-      setAssignments(res.data || []);
-    } catch (err) {
-      console.error('Failed to fetch monthly assignments', err);
-      setAssignments([]);
-    } finally {
-      setAssignLoading(false);
-    }
-  };
+  // Monthly assignments feature removed — backend endpoints deleted.
 
   useEffect(() => {
     if (user?.name && nameRef.current) {
@@ -201,50 +177,110 @@ const EmployeeProfile = () => {
 
           {/* Calendar Section - styled to match profile card */}
           {renderCalendarCards()}
-          {/* Monthly assignments for logged-in employee */}
-          <div style={{ marginTop: 20 }}>
-            <div className={styles.sectionHeader}><h3>Assigned Monthly Tasks</h3></div>
-            {assignLoading ? (
-              <div>Loading assignments...</div>
-            ) : assignments.length === 0 ? (
-              <div>No monthly assignments found.</div>
-            ) : (
-              <div style={{ overflowX: 'auto' }}>
-                <table className={styles.assignmentsTable}>
-                  <thead>
-                    <tr>
-                      <th>Project</th>
-                      <th>Type</th>
-                      <th>Month</th>
-                      <th>Count</th>
-                      <th>Approval</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {assignments.map(a => (
-                      <tr key={a._id}>
-                        <td>{a.projectname}</td>
-                        <td>{a.projecttype}</td>
-                        <td>{a.month}</td>
-                        <td>{a.count}</td>
-                        <td>
-                          {a.approval === 'approved' ? (
-                            <span className={`${styles.badge} ${styles.approved}`}>approved</span>
-                          ) : (
-                            <span className={`${styles.badge} ${styles.pending}`}>{a.approval || 'pending'}</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          {/* Assigned tasks for employee (inline) */}
+            <div className={styles.assignmentsCard}>
+              <div className={styles.assignmentsHeader}>
+                <div>
+                  <div className={styles.assignmentsTitle}>Assigned Tasks</div>
+                  <div className={styles.assignmentsSubtle}>Tasks assigned to you by month</div>
+                </div>
               </div>
-            )}
-          </div>
+              <div className={styles.assignmentsBody}>
+                <InlineAssignedTasks />
+              </div>
+            </div>
         </main>
       </div>
     </>
   );
 };
+
+function InlineAssignedTasks() {
+  const [tasks, setTasks] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState('');
+
+  React.useEffect(() => {
+    const directEid = localStorage.getItem('eid') || localStorage.getItem('employeeId');
+    let eid = directEid;
+    if (!eid) {
+      try {
+        const userRaw = localStorage.getItem('user');
+        if (userRaw) {
+          const user = JSON.parse(userRaw);
+          eid = user.employeeId || user.eid || user.employee_id;
+        }
+      } catch (_) {}
+    }
+    if (!eid) {
+      setError('Employee ID not found');
+      return;
+    }
+    fetchAssigned(eid);
+  }, []);
+
+  const fetchAssigned = async (eid) => {
+    setLoading(true);
+    setError('');
+    try {
+      const token = localStorage.getItem('token');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch(`${' https://lif-lkgk.onrender.com'}/api/assigned-task?eid=${encodeURIComponent(eid)}`, { headers });
+      if (!res.ok) {
+        setError('Failed to load assigned tasks');
+        setTasks([]);
+        return;
+      }
+      const data = await res.json();
+      setTasks(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Error fetching assigned tasks', err);
+      setError('Error fetching assigned tasks');
+      setTasks([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (error) return <div className={styles.assignmentsEmpty}>{error}</div>;
+  if (loading) return <div className={styles.assignmentsEmpty}>Loading...</div>;
+  if (!tasks || tasks.length === 0) return <div className={styles.assignmentsEmpty}>No assigned tasks found.</div>;
+
+  return (
+    <table className={styles.assignmentsTable}>
+      <thead>
+        <tr>
+          <th className={styles.colProjectType}>Month</th>
+          <th className={styles.colProjectType}>Project Type</th>
+          <th className={styles.colAssigned}>Assigned</th>
+          <th className={styles.colCompleted}>Completed</th>
+          <th className={styles.colActions}></th>
+        </tr>
+      </thead>
+      <tbody>
+        {tasks.map((t, i) => (
+          <tr key={`${t._id}::${t.projectType}::${i}`}>
+            <td>{t.year}-{String(t.month).padStart(2,'0')}</td>
+            <td style={{ textAlign: 'left' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <div style={{ fontWeight: 800, color: 'var(--accent-2)' }}>{t.projectType}</div>
+                <div style={{ fontSize: 12, color: 'var(--muted)' }}>{/* optional subtitle */}</div>
+              </div>
+            </td>
+            <td style={{ textAlign: 'center' }}>
+              <span className={`${styles.pill} ${styles.assigned}`}>{t.assigned}</span>
+            </td>
+            <td style={{ textAlign: 'center' }}>
+              <span className={`${styles.pill} ${styles.completed}`}>{t.completed}</span>
+            </td>
+            <td className={styles.colActions}>
+              <button className={styles.tinyBtn} title="Details">View</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
 
 export default EmployeeProfile;
