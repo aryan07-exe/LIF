@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import NewNavbar from './NewNavbar';
 import styles from './AssignTask.module.css';
@@ -9,6 +10,7 @@ const emptyTaskRow = () => ({ projectType: '', assigned: 1 });
 const emptyMonthGroup = () => ({ month: new Date().toISOString().slice(0,7), tasks: [ emptyTaskRow() ] });
 
 export default function AssignTask() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [projectTypes, setProjectTypes] = useState([]);
   const [selectedUser, setSelectedUser] = useState('');
@@ -107,6 +109,7 @@ export default function AssignTask() {
                   {users.map(u => (<option key={u.employeeId||u.eid} value={u.employeeId||u.eid}>{(u.employeeId||u.eid)} - {(u.name||u.ename)}</option>))}
                 </select>
                 <button className={styles.primaryBtn} onClick={handleSubmit} disabled={loading}>{loading? 'Saving...':'Save Assignments'}</button>
+                <button className={`${styles.secondaryBtn} bg-red-800`} onClick={() => navigate('/assign-list')} style={{ marginLeft: 8 }}>Get Details</button>
               </div>
             </div>
 

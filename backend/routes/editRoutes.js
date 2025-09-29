@@ -39,18 +39,18 @@ async function syncAssignedOnApproval(prevApproval, task) {
         // Find projectType entry
         const tIndex = doc.tasks.findIndex(t => t.projectType === task.projecttype);
         if (tIndex === -1) {
-          // add new entry; do NOT decrement assigned — new created entries default assigned: 0
+          // add new entry (assigned stays 0, completed becomes 1)
           doc.tasks.push({ projectType: task.projecttype, assigned: 0, completed: 1 });
           await doc.save();
           console.log('Added new projectType entry to AssignedTask doc', doc._id.toString());
         } else {
-          // increment completed only; do NOT modify assigned
+          // increment completed only; do NOT decrement assigned per product decision
           const entry = doc.tasks[tIndex];
           entry.completed = (Number(entry.completed) || 0) + 1;
-          // leave entry.assigned untouched
+          // leave entry.assigned unchanged
           doc.tasks[tIndex] = entry;
           await doc.save();
-          console.log('Updated AssignedTask completed for doc', doc._id.toString(), 'entry', entry.projectType, 'completed->', entry.completed);
+          console.log('Updated AssignedTask counts for doc', doc._id.toString(), 'entry', entry.projectType, 'assigned->', entry.assigned, 'completed->', entry.completed);
         }
       }
   } catch (syncErr) {
