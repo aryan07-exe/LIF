@@ -35,24 +35,24 @@ async function syncAssignedOnApproval(prevApproval, task) {
       });
       await doc.save();
       console.log('Created new AssignedTask doc for approved task:', doc._id.toString());
-    } else {
-      // Find projectType entry
-      const tIndex = doc.tasks.findIndex(t => t.projectType === task.projecttype);
-      if (tIndex === -1) {
-        // add new entry
-        doc.tasks.push({ projectType: task.projecttype, assigned: 0, completed: 1 });
-        await doc.save();
-        console.log('Added new projectType entry to AssignedTask doc', doc._id.toString());
       } else {
-        // increment completed and decrement assigned (min 0)
-        const entry = doc.tasks[tIndex];
-        entry.completed = (Number(entry.completed) || 0) + 1;
-        entry.assigned = Math.max(0, (Number(entry.assigned) || 0) - 1);
-        doc.tasks[tIndex] = entry;
-        await doc.save();
-        console.log('Updated AssignedTask counts for doc', doc._id.toString(), 'entry', entry.projectType, 'assigned->', entry.assigned, 'completed->', entry.completed);
+        // Find projectType entry
+        const tIndex = doc.tasks.findIndex(t => t.projectType === task.projecttype);
+        if (tIndex === -1) {
+          // add new entry; do NOT decrement assigned — new created entries default assigned: 0
+          doc.tasks.push({ projectType: task.projecttype, assigned: 0, completed: 1 });
+          await doc.save();
+          console.log('Added new projectType entry to AssignedTask doc', doc._id.toString());
+        } else {
+          // increment completed only; do NOT modify assigned
+          const entry = doc.tasks[tIndex];
+          entry.completed = (Number(entry.completed) || 0) + 1;
+          // leave entry.assigned untouched
+          doc.tasks[tIndex] = entry;
+          await doc.save();
+          console.log('Updated AssignedTask completed for doc', doc._id.toString(), 'entry', entry.projectType, 'completed->', entry.completed);
+        }
       }
-    }
   } catch (syncErr) {
     console.error('Error syncing AssignedTask on approval:', syncErr);
   }
